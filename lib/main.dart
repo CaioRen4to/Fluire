@@ -14,8 +14,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fluire',
       debugShowCheckedModeBanner: false,
-      initialRoute: Rotas.login,  
-      routes: Rotas.rotas,        
+      initialRoute: Rotas.login,
+      routes: Rotas.rotas,
+      onGenerateRoute: Rotas.onGenerateRoute,
     );
   }
 }
