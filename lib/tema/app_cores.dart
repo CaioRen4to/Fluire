@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class appColors{
+class AppColors{
   //cores primarias:
   static const Color primaryColor = Color.fromARGB(255, 236, 163, 29);
   //variação mais clara da cor primária — hover, estados selecionados
@@ -21,7 +21,7 @@ class appColors{
   static const Color textoClaro = Color.fromARGB(255, 248, 248, 248);
 
   //pop-up destaques, badges, notificações
-  static const Color pop_up = Color.fromARGB(255, 170, 163, 101);
+  static const Color popUp = Color.fromARGB(255, 170, 163, 101);
 
   //divisores e bordas sutis
   static const Color divisor = Color.fromARGB(255, 248, 242, 161);
@@ -33,9 +33,9 @@ class appColors{
   static const Color iconsInativosColor = Color.fromARGB(172, 237, 233, 220);
 
   //botão de presente (usuario - totem)
-  static const Color Botao_presente = Color.fromARGB(219, 131, 185, 5);
+  static const Color botaoPresente = Color.fromARGB(219, 131, 185, 5);
   //botao de falta (usuario - totem)
-  static const Color Botao_falta = Color.fromARGB(208, 237, 114, 20);
+  static const Color botaoFalta = Color.fromARGB(208, 237, 114, 20);
 
   //sucesso — confirmações, presença marcada
   static const Color sucesso = Color(0xFF6DB89A);
