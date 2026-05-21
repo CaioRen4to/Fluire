@@ -228,7 +228,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, Rotas.home),
+                    onPressed: () => Navigator.pushReplacementNamed(context, Rotas.agenda),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF111111),
                       foregroundColor: Colors.white,

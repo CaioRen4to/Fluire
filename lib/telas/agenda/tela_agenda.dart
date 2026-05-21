@@ -47,7 +47,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
     return Scaffold(
 
-      backgroundColor: appColors.backgroundColor,
+      backgroundColor: AppColors.backgroundColor,
 
       body: Center(
 
@@ -63,14 +63,14 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
             decoration: BoxDecoration(
 
-              color: appColors.backgroundColor,
+              color: AppColors.backgroundColor,
 
               borderRadius: BorderRadius.circular(24),
 
               boxShadow: [
 
                 BoxShadow(
-                  color: appColors.sombra,
+                  color: AppColors.sombra,
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -100,7 +100,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: appColors.textoPrimario,
+                        color: AppColors.textoPrimario,
                       ),
                     ),
 
@@ -150,8 +150,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
                           decoration: BoxDecoration(
 
                             color: selecionado
-                                ? appColors.primaryColor
-                                : appColors.fundoCard,
+                                ? AppColors.primaryColor
+                                : AppColors.fundoCard,
 
                             borderRadius:
                                 BorderRadius.circular(22),
@@ -171,9 +171,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                 style: TextStyle(
 
                                   color: selecionado
-                                      ? appColors.textoClaro
-                                      : appColors
-                                          .textoSecundario,
+                                      ? AppColors.textoClaro
+                                      : AppColors.textoSecundario,
                                 ),
                               ),
 
@@ -189,9 +188,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                       FontWeight.bold,
 
                                   color: selecionado
-                                      ? appColors.textoClaro
-                                      : appColors
-                                          .textoPrimario,
+                                      ? AppColors.textoClaro
+                                      : AppColors.textoPrimario,
                                 ),
                               ),
                             ],
@@ -214,11 +212,11 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
                     filled: true,
 
-                    fillColor: appColors.fundoCard,
+                    fillColor: AppColors.fundoCard,
 
                     prefixIcon: Icon(
                       Icons.search,
-                      color: appColors.textoSecundario,
+                      color: AppColors.textoSecundario,
                     ),
 
                     border: OutlineInputBorder(
@@ -248,7 +246,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
                       decoration: BoxDecoration(
 
-                        color: appColors.fundoCard,
+                        color: AppColors.fundoCard,
 
                         borderRadius:
                             BorderRadius.circular(24),
@@ -280,7 +278,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                     fontWeight:
                                         FontWeight.bold,
                                     color:
-                                        appColors.textoPrimario,
+                                        AppColors.textoPrimario,
                                   ),
                                 ),
                               ),
@@ -295,7 +293,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
                                 decoration: BoxDecoration(
 
-                                  color: appColors.alerta,
+                                  color: AppColors.alerta,
 
                                   borderRadius:
                                       BorderRadius.circular(
@@ -309,7 +307,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
                                   style: TextStyle(
                                     color:
-                                        appColors.textoClaro,
+                                        AppColors.textoClaro,
                                     fontWeight:
                                         FontWeight.bold,
                                   ),
@@ -326,7 +324,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
                             style: TextStyle(
                               color:
-                                  appColors.textoSecundario,
+                                  AppColors.textoSecundario,
                             ),
                           ),
 
@@ -340,7 +338,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                 Icons.access_time,
                                 size: 18,
                                 color:
-                                    appColors.textoSecundario,
+                                    AppColors.textoSecundario,
                               ),
 
                               const SizedBox(width: 6),
@@ -366,14 +364,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                   style:
                                       ElevatedButton.styleFrom(
 
-                                    backgroundColor:
-                                        appColors
-                                            .primariaClara,
-
-                                    foregroundColor:
-                                        appColors
-                                            .textoPrimario,
-
+                                    backgroundColor: AppColors.primariaClara,
+                                    foregroundColor: AppColors.textoPrimario,
                                     elevation: 0,
                                   ),
 
@@ -395,13 +387,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
                                   style:
                                       ElevatedButton.styleFrom(
 
-                                    backgroundColor:
-                                        appColors
-                                            .primaryColor,
-
-                                    foregroundColor:
-                                        appColors
-                                            .textoClaro,
+                                    backgroundColor: AppColors.primaryColor,
+                                    foregroundColor: AppColors.textoClaro,
 
                                     elevation: 0,
                                   ),
@@ -440,10 +427,10 @@ class _TelaAgendaState extends State<TelaAgenda> {
                     style: ElevatedButton.styleFrom(
 
                       backgroundColor:
-                          appColors.primaryColor,
+                          AppColors.primaryColor,
 
                       foregroundColor:
-                          appColors.textoClaro,
+                          AppColors.textoClaro,
 
                       elevation: 0,
 
@@ -471,14 +458,14 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
       decoration: BoxDecoration(
 
-        color: appColors.fundoCard,
+        color: AppColors.fundoCard,
 
         shape: BoxShape.circle,
       ),
 
       child: Icon(
         icon,
-        color: appColors.textoPrimario,
+        color: AppColors.textoPrimario,
       ),
     );
   }
