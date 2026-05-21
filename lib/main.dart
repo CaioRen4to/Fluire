@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:fluire/rotas.dart';
+
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return MaterialApp(
+      title: 'Fluire',
+      debugShowCheckedModeBanner: false,
+      initialRoute: Rotas.login,  
+      routes: Rotas.rotas,        
+    );
   }
-  
 }
