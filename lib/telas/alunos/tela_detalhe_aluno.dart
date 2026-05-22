@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../tema/app_cores.dart';
+import 'package:fluire/rotas.dart';
+import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/widgets/menu_lateral.dart';
 
 class TelaDetalheAluno extends StatelessWidget {
   final Map<String, dynamic> aluno;
@@ -20,6 +25,7 @@ class TelaDetalheAluno extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      drawer: const MenuLateral(rotaAtual: Rotas.alunos),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.primaryColor,
         onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
@@ -32,12 +38,12 @@ class TelaDetalheAluno extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: AppSpacing.screenPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _btnHeader(Icons.arrow_back, () => Navigator.pop(context)),
-                  Text('Detalhes', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.textoPrimario)),
+                  Text('Detalhes', style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario)),
                   _btnHeader(Icons.edit_outlined, () => ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Editar aluno')),
                       )),
@@ -46,14 +52,14 @@ class TelaDetalheAluno extends StatelessWidget {
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: AppSpacing.screenPaddingHorizontal,
                 child: Column(
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(24),
+                      padding: AppSpacing.cardPaddingLarge,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: AppBorders.radiusXXLarge,
                         gradient: LinearGradient(colors: [AppColors.primaryColor, AppColors.primaryColor.withValues(alpha: 0.7)]),
                       ),
                       child: Column(
@@ -61,39 +67,39 @@ class TelaDetalheAluno extends StatelessWidget {
                           CircleAvatar(
                             radius: 38,
                             backgroundColor: Colors.white.withValues(alpha: 0.2),
-                            child: Text('${aluno['inicial']}', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
+                            child: Text('${aluno['inicial']}', style: const TextStyle(fontSize: 30, fontWeight: AppTypography.fontWeightBold, color: Colors.white)),
                           ),
-                          const SizedBox(height: 12),
-                          Text('${aluno['nome']}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                          const SizedBox(height: 4),
+                          AppSpacing.gapLg,
+                          Text('${aluno['nome']}', style: const TextStyle(fontSize: 22, fontWeight: AppTypography.fontWeightBold, color: Colors.white)),
+                          AppSpacing.gapXs,
                           Text('${aluno['modalidade']}', style: TextStyle(fontSize: 13, color: AppColors.primariaClara)),
-                          const SizedBox(height: 14),
+                          AppSpacing.gapLg,
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20)),
+                            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                            decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: AppBorders.radiusLarge),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(width: 8, height: 8, decoration: BoxDecoration(shape: BoxShape.circle, color: corStatus)),
-                                const SizedBox(width: 6),
-                                Text(ativo ? 'Ativo' : 'Inativo', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                                AppSpacing.gapSmHorizontal,
+                                Text(ativo ? 'Ativo' : 'Inativo', style: const TextStyle(color: Colors.white, fontWeight: AppTypography.fontWeightSemiBold)),
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    AppSpacing.gapLg,
                     Row(
                       children: [
                         Expanded(child: _stat('${aluno['presencas']}', 'Presenças', AppColors.sucesso)),
-                        const SizedBox(width: 10),
+                        AppSpacing.gapSmHorizontal,
                         Expanded(child: _stat('4', 'Faltas', AppColors.erro)),
-                        const SizedBox(width: 10),
+                        AppSpacing.gapSmHorizontal,
                         Expanded(child: _stat('89%', 'Frequência', AppColors.primaryColor)),
                       ],
                     ),
-                    const SizedBox(height: 18),
+                    AppSpacing.gapLg,
                     _bloco(
                       'Informações',
                       Column(
@@ -106,7 +112,7 @@ class TelaDetalheAluno extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 18),
+                    AppSpacing.gapLg,
                     _bloco(
                       'Histórico recente',
                       Column(
@@ -122,20 +128,20 @@ class TelaDetalheAluno extends StatelessWidget {
                                   Container(
                                     width: 42,
                                     height: 42,
-                                    decoration: BoxDecoration(color: cor.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
+                                    decoration: BoxDecoration(color: cor.withValues(alpha: 0.12), borderRadius: AppBorders.radiusMedium),
                                     child: Icon(ok ? Icons.check : Icons.close, color: cor),
                                   ),
-                                  const SizedBox(width: 12),
+                                  AppSpacing.gapMdHorizontal,
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('${h['aula']}', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textoPrimario)),
-                                        Text('${h['data']}', style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
+                                        Text('${h['aula']}', style: TextStyle(fontWeight: AppTypography.fontWeightSemiBold, color: AppColors.textoPrimario)),
+                                        Text('${h['data']}', style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
                                       ],
                                     ),
                                   ),
-                                  Text(ok ? 'Presente' : 'Falta', style: TextStyle(fontWeight: FontWeight.w600, color: cor)),
+                                  Text(ok ? 'Presente' : 'Falta', style: TextStyle(fontWeight: AppTypography.fontWeightSemiBold, color: cor)),
                                 ],
                               ),
                             ],
@@ -143,7 +149,7 @@ class TelaDetalheAluno extends StatelessWidget {
                         }),
                       ),
                     ),
-                    const SizedBox(height: 90),
+                    AppSpacing.gapXxl,
                   ],
                 ),
               ),
@@ -165,42 +171,42 @@ class TelaDetalheAluno extends StatelessWidget {
       );
 
   Widget _stat(String valor, String titulo, Color cor) => Container(
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: BorderRadius.circular(18)),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
         child: Column(
           children: [
-            Text(valor, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: cor)),
-            const SizedBox(height: 4),
-            Text(titulo, style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
+            Text(valor, style: TextStyle(fontSize: AppTypography.fontSizeH2, fontWeight: AppTypography.fontWeightBold, color: cor)),
+            AppSpacing.gapXs,
+            Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
           ],
         ),
       );
 
   Widget _bloco(String titulo, Widget conteudo) => Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: BorderRadius.circular(18)),
+        padding: AppSpacing.cardPadding,
+        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(titulo, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textoPrimario)),
-            const SizedBox(height: 14),
+            Text(titulo, style: AppTypography.headline.copyWith(color: AppColors.textoPrimario)),
+            AppSpacing.gapLg,
             conteudo,
           ],
         ),
       );
 
   Widget _info(IconData icon, String titulo, String valor) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Row(
           children: [
             Icon(icon, size: 20, color: AppColors.primaryColor),
-            const SizedBox(width: 12),
+            AppSpacing.gapMdHorizontal,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(titulo, style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
-                Text(valor, style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textoPrimario)),
+                Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
+                Text(valor, style: AppTypography.bodyMedium.copyWith(fontWeight: AppTypography.fontWeightSemiBold, color: AppColors.textoPrimario)),
               ],
             ),
           ],

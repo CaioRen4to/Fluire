@@ -1,6 +1,12 @@
-import 'package:fluire/tema/app_cores.dart';
-import 'package:flutter/material.dart';
 import 'package:fluire/rotas.dart';
+import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/app_sombras.dart';
+import 'package:fluire/widgets/menu_lateral.dart';
+import 'package:flutter/material.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -27,21 +33,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "teacher": "Ana Silva",
       "time": "08:00",
       "students": "8/10",
-      "color": appColors.sucesso,
+      "color": AppColors.sucesso,
     },
     {
       "title": "Reformer Avançado",
       "teacher": "Carlos Lima",
       "time": "09:30",
       "students": "5/6",
-      "color": appColors.alerta,
+      "color": AppColors.alerta,
     },
     {
       "title": "Pilates Funcional",
       "teacher": "Mariana Costa",
       "time": "11:00",
       "students": "7/8",
-      "color": appColors.primaryColor,
+      "color": AppColors.primaryColor,
     },
   ];
 
@@ -50,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       SnackBar(
         content: Text(text),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: appColors.primaryColor,
+        backgroundColor: AppColors.primaryColor,
       ),
     );
   }
@@ -58,10 +64,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: appColors.backgroundColor,
+      backgroundColor: AppColors.backgroundColor,
+      drawer: const MenuLateral(rotaAtual: Rotas.painel),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: AppSpacing.screenPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -69,13 +76,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _circleButton(Icons.menu),
-                  const Text(
+                  const BotaoMenu(),
+                  Text(
                     "Painel",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      color: appColors.textoPrimario,
+                    style: AppTypography.displayLarge.copyWith(
+                      color: AppColors.textoPrimario,
                     ),
                   ),
                   Stack(
@@ -88,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
-                            color: appColors.primaryColor,
+                            color: AppColors.primaryColor,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -98,7 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
 
-              const SizedBox(height: 24),
+              AppSpacing.gapXl,
 
               // CARDS
               Row(
@@ -108,22 +113,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: "Alunos Presentes",
                       value: "24",
                       icon: Icons.people_outline,
-                      iconColor: appColors.primaryColor,
+                      iconColor: AppColors.primaryColor,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  AppSpacing.gapMdHorizontal,
                   Expanded(
                     child: _infoCard(
                       title: "Aulas Hoje",
                       value: "6",
                       icon: Icons.calendar_today_outlined,
-                      iconColor: appColors.sucesso,
+                      iconColor: AppColors.sucesso,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 14),
+              AppSpacing.gapMd,
 
               Row(
                 children: [
@@ -132,36 +137,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       title: "Em Andamento",
                       value: "2",
                       icon: Icons.play_arrow_rounded,
-                      iconColor: appColors.alerta,
+                      iconColor: AppColors.alerta,
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  AppSpacing.gapMdHorizontal,
                   Expanded(
                     child: _infoCard(
                       title: "Freq. Média",
                       value: "87%",
                       icon: Icons.trending_up,
-                      iconColor: appColors.primaryColor,
+                      iconColor: AppColors.primaryColor,
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 24),
+              AppSpacing.gapXl,
 
               // GRAFICO
               Container(
-                padding: const EdgeInsets.all(20),
+                padding: AppSpacing.cardPaddingLarge,
                 decoration: BoxDecoration(
-                  color: appColors.fundoCard,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: appColors.sombra,
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+                  color: AppColors.fundoCard,
+                  borderRadius: AppBorders.radiusXXLarge,
+                  boxShadow: AppShadows.cardShadow,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,21 +171,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           "Frequência Semanal",
                           style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: appColors.textoPrimario,
+                            fontSize: AppTypography.fontSizeH4,
+                            fontWeight: AppTypography.fontWeightBold,
+                            color: AppColors.textoPrimario,
                           ),
                         ),
                         Text(
                           "Mai 2026",
                           style: TextStyle(
-                            color: appColors.textoSecundario,
-                            fontWeight: FontWeight.w500,
+                            color: AppColors.textoSecundario,
+                            fontWeight: AppTypography.fontWeightMedium,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 30),
+                    AppSpacing.gapXxl,
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -212,19 +211,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                                 decoration: BoxDecoration(
                                   color: isSelected
-                                      ? appColors.primaryColor
-                                      : appColors.primariaClara,
+                                      ? AppColors.primaryColor
+                                      : AppColors.primariaClara,
 
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
 
-                              const SizedBox(height: 10),
+                              AppSpacing.gapSm,
                               Text(
                                 item["day"],
                                 style: const TextStyle(
-                                  color: appColors.textoSecundario,
-                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textoSecundario,
+                                  fontWeight: AppTypography.fontWeightMedium,
                                 ),
                               ),
                             ],
@@ -236,59 +235,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
 
-              const SizedBox(height: 28),
+              AppSpacing.gapXxl,
 
               // AULAS DE HOJE
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Aulas de Hoje",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: appColors.textoPrimario,
+                    style: AppTypography.displaySmall.copyWith(
+                      color: AppColors.textoPrimario,
                     ),
                   ),
 
                   TextButton(
-                    onPressed: () {
-                      _showMessage("Abrindo todas as aulas...");
-                    },
+                    onPressed: () => Navigator.pushReplacementNamed(context, Rotas.agenda),
                     child: const Text(
                       "Ver todas",
                       style: TextStyle(
-                        color: appColors.primaryColor,
-                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryColor,
+                        fontWeight: AppTypography.fontWeightSemiBold,
                       ),
                     ),
                   ),
                 ],
               ),
 
-              const SizedBox(height: 12),
+              AppSpacing.gapMd,
 
               Column(
                 children: todayClasses.map((item) {
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
                     child: _classCard(item),
                   );
                 }).toList(),
               ),
 
-              const SizedBox(height: 20),
+              AppSpacing.gapXl,
 
-              const Text(
+              Text(
                 "Ações Rápidas",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: appColors.textoPrimario,
+                style: AppTypography.displaySmall.copyWith(
+                  color: AppColors.textoPrimario,
                 ),
               ),
 
-              const SizedBox(height: 16),
+              AppSpacing.gapLg,
 
               Row(
                 children: [
@@ -296,9 +289,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: _quickAction(
                       title: "Frequência",
                       icon: Icons.analytics_rounded,
-                      onTap: () {
-                        _showMessage("Abrindo Frequência...");
-                      },
+                      onTap: () => Navigator.pushNamed(context, Rotas.frequenciaTotem),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -306,9 +297,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: _quickAction(
                       title: "Alunos",
                       icon: Icons.groups_rounded,
-                      onTap: () {
-                        _showMessage("Abrindo Alunos...");
-                      },
+                      onTap: () => Navigator.pushReplacementNamed(context, Rotas.alunos),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -316,9 +305,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: _quickAction(
                       title: "Agenda",
                       icon: Icons.event_note_rounded,
-                      onTap: () {
-                        _showMessage("Abrindo Agenda...");
-                      },
+                      onTap: () => Navigator.pushReplacementNamed(context, Rotas.agenda),
                     ),
                   ),
                 ],
@@ -336,13 +323,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       width: 48,
       height: 48,
-
       decoration: BoxDecoration(
-        color: appColors.fundoCard,
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.fundoCard,
+        borderRadius: AppBorders.radiusMedium,
       ),
-
-      child: Icon(icon, color: appColors.textoPrimario),
+      child: Icon(icon, color: AppColors.textoPrimario),
     );
   }
 
@@ -353,20 +338,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color iconColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(18),
-
+      padding: AppSpacing.cardPadding,
       decoration: BoxDecoration(
-        color: appColors.fundoCard,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: appColors.sombra,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: AppColors.fundoCard,
+        borderRadius: AppBorders.radiusXLarge,
+        boxShadow: AppShadows.cardShadow,
       ),
-
       child: Row(
         children: [
           Expanded(
@@ -376,32 +353,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: appColors.textoSecundario,
-                    fontWeight: FontWeight.w500,
+                    color: AppColors.textoSecundario,
+                    fontWeight: AppTypography.fontWeightMedium,
                   ),
                 ),
-
-                const SizedBox(height: 10),
-
+                AppSpacing.gapMd,
                 Text(
                   value,
                   style: const TextStyle(
                     fontSize: 38,
-                    fontWeight: FontWeight.bold,
-                    color: appColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightBold,
+                    color: AppColors.textoPrimario,
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.all(12),
-
+            padding: const EdgeInsets.all(AppSpacing.md),
             decoration: BoxDecoration(
               color: iconColor.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
-
             child: Icon(icon, color: iconColor),
           ),
         ],
@@ -411,45 +384,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _classCard(Map<String, dynamic> item) {
     return InkWell(
-      borderRadius: BorderRadius.circular(24),
-
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Abrindo ${item["title"]}"),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      },
+      borderRadius: AppBorders.radiusXLarge,
+      onTap: () => Navigator.pushNamed(
+        context,
+        Rotas.frequenciaTotem,
+        arguments: {
+          'nome': item['title'],
+          'professor': item['teacher'],
+          'horario': item['time'],
+        },
+      ),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: AppSpacing.cardPadding,
         decoration: BoxDecoration(
-          color: appColors.fundoCard,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: appColors.sombra,
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: AppColors.fundoCard,
+          borderRadius: AppBorders.radiusXLarge,
+          boxShadow: AppShadows.cardShadow,
         ),
-
         child: Row(
           children: [
             Container(
               width: 52,
               height: 52,
-
               decoration: BoxDecoration(
                 color: item["color"].withOpacity(0.12),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.access_time_rounded, color: item["color"]),
             ),
-
-            const SizedBox(width: 14),
-
+            AppSpacing.gapMdHorizontal,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,34 +420,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Text(
                     item["title"],
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: appColors.textoPrimario,
+                      fontSize: AppTypography.fontSizeXXXl,
+                      fontWeight: AppTypography.fontWeightBold,
+                      color: AppColors.textoPrimario,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.gapXs,
                   Text(
                     "${item["teacher"]} • ${item["time"]}",
-                    style: const TextStyle(color: appColors.textoSecundario),
+                    style: const TextStyle(color: AppColors.textoSecundario),
                   ),
                 ],
               ),
             ),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   item["students"],
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: appColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightBold,
+                    fontSize: AppTypography.fontSizeXXXl,
+                    color: AppColors.textoPrimario,
                   ),
                 ),
-
-                const SizedBox(height: 6),
-
+                AppSpacing.gapSm,
                 Container(
                   width: 8,
                   height: 8,
@@ -507,51 +467,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required VoidCallback onTap,
   }) {
     return InkWell(
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: AppBorders.radiusXLarge,
       onTap: onTap,
       child: Container(
         height: 120,
-
         decoration: BoxDecoration(
-          color: appColors.fundoCard,
-          borderRadius: BorderRadius.circular(24),
-
-          boxShadow: [
-            BoxShadow(
-              color: appColors.sombra,
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: AppColors.fundoCard,
+          borderRadius: AppBorders.radiusXLarge,
+          boxShadow: AppShadows.cardShadow,
         ),
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ÍCONE
             Container(
               width: 52,
               height: 52,
-
               decoration: BoxDecoration(
-                color: appColors.primariaClara,
+                color: AppColors.primariaClara,
                 shape: BoxShape.circle,
               ),
-
-              child: Icon(icon, color: appColors.primaryColor, size: 26),
+              child: Icon(icon, color: AppColors.primaryColor, size: 26),
             ),
-
-            const SizedBox(height: 12),
-
-            // TEXTO
+            AppSpacing.gapMd,
             Text(
               title,
               textAlign: TextAlign.center,
-
               style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                color: appColors.textoPrimario,
+                fontWeight: AppTypography.fontWeightBold,
+                fontSize: AppTypography.fontSizeXXl,
+                color: AppColors.textoPrimario,
               ),
             ),
           ],

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fluire/tema/app_cores.dart';
 import 'package:fluire/rotas.dart';
 
-class ProfessoresPage extends StatefulWidget {
-  const ProfessoresPage({super.key});
+class TelaProfessores extends StatefulWidget {
+  const TelaProfessores({super.key});
 
   @override
-  State<ProfessoresPage> createState() => _ProfessoresPageState();
+  State<TelaProfessores> createState() => _TelaProfessoresState();
 }
 
-class _ProfessoresPageState extends State<ProfessoresPage> {
+class _TelaProfessoresState extends State<TelaProfessores> {
   final TextEditingController _searchController = TextEditingController();
 
   int selectedIndex = -1;
@@ -64,7 +64,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: appColors.backgroundColor,
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -85,7 +85,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: appColors.textoPrimario,
+                      color: AppColors.textoPrimario,
                     ),
                   ),
                   const Spacer(),
@@ -102,7 +102,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
-                            color: appColors.primaryColor,
+                            color: AppColors.primaryColor,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -124,7 +124,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     child: _StatCard(
                       value: professores.length.toString(),
                       label: 'Total',
-                      color: appColors.primaryColor,
+                      color: AppColors.primaryColor,
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -132,7 +132,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     child: _StatCard(
                       value: activeTeachers.toString(),
                       label: 'Ativos',
-                      color: appColors.sucesso,
+                      color: AppColors.sucesso,
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -140,7 +140,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     child: _StatCard(
                       value: totalLessons.toString(),
                       label: 'Aulas Hoje',
-                      color: appColors.pop_up,
+                      color: AppColors.popUp,
                     ),
                   ),
                 ],
@@ -155,7 +155,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
               child: Container(
                 height: 58,
                 decoration: BoxDecoration(
-                  color: appColors.fundoCard,
+                  color: AppColors.fundoCard,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextField(
@@ -166,16 +166,16 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     });
                   },
                   style: TextStyle(
-                    color: appColors.textoPrimario,
+                    color: AppColors.textoPrimario,
                   ),
                   decoration: InputDecoration(
                     hintText: 'Buscar professor...',
                     hintStyle: TextStyle(
-                      color: appColors.textoSecundario,
+                      color: AppColors.textoSecundario,
                     ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
-                      color: appColors.textoSecundario,
+                      color: AppColors.textoSecundario,
                     ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.only(top: 16),
@@ -199,17 +199,17 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
-                      color: appColors.fundoCard,
+                      color: AppColors.fundoCard,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: selectedIndex == index
-                            ? appColors.primaryColor
+                            ? AppColors.primaryColor
                             : Colors.transparent,
                         width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: appColors.sombra,
+                          color: AppColors.sombra,
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -234,11 +234,11 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                 CircleAvatar(
                                   radius: 28,
                                   backgroundColor:
-                                      appColors.primaryColor,
+                                      AppColors.primaryColor,
                                   child: Text(
                                     professor['name'][0],
                                     style: const TextStyle(
-                                      color: appColors.textoClaro,
+                                      color: AppColors.textoClaro,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 24,
                                     ),
@@ -258,7 +258,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                           fontSize: 22,
                                           fontWeight: FontWeight.w700,
                                           color:
-                                              appColors.textoPrimario,
+                                              AppColors.textoPrimario,
                                         ),
                                       ),
                                       const SizedBox(height: 6),
@@ -266,7 +266,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                         professor['specialties'],
                                         style: TextStyle(
                                           fontSize: 15,
-                                          color: appColors
+                                          color: AppColors
                                               .textoSecundario,
                                         ),
                                       ),
@@ -275,7 +275,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                         professor['phone'],
                                         style: TextStyle(
                                           fontSize: 15,
-                                          color: appColors
+                                          color: AppColors
                                               .textoSecundario,
                                         ),
                                       ),
@@ -290,8 +290,8 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                       height: 10,
                                       decoration: BoxDecoration(
                                         color: professor['active']
-                                            ? appColors.sucesso
-                                            : appColors.erro,
+                                            ? AppColors.sucesso
+                                            : AppColors.erro,
                                         shape: BoxShape.circle,
                                       ),
                                     ),
@@ -302,8 +302,8 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                                           : 'Inativo',
                                       style: TextStyle(
                                         color: professor['active']
-                                            ? appColors.sucesso
-                                            : appColors.erro,
+                                            ? AppColors.sucesso
+                                            : AppColors.erro,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -369,9 +369,9 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        appColors.primaryColor,
+                        AppColors.primaryColor,
                     foregroundColor:
-                        appColors.textoClaro,
+                        AppColors.textoClaro,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius:
@@ -392,7 +392,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: appColors.fundoCard,
+      color: AppColors.fundoCard,
       shape: const CircleBorder(),
       child: InkWell(
         customBorder: const CircleBorder(),
@@ -402,7 +402,7 @@ class _ProfessoresPageState extends State<ProfessoresPage> {
           height: 54,
           child: Icon(
             icon,
-            color: appColors.textoPrimario,
+            color: AppColors.textoPrimario,
           ),
         ),
       ),
@@ -426,7 +426,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       height: 100,
       decoration: BoxDecoration(
-        color: appColors.fundoCard,
+        color: AppColors.fundoCard,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -444,7 +444,7 @@ class _StatCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: appColors.textoSecundario,
+              color: AppColors.textoSecundario,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -495,7 +495,7 @@ class _ActionChipState extends State<_ActionChip> {
         ),
         decoration: BoxDecoration(
           color: pressed
-              ? appColors.primariaClara
+              ? AppColors.primariaClara
               : Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
@@ -506,7 +506,7 @@ class _ActionChipState extends State<_ActionChip> {
                   Text(
                     widget.label,
                     style: TextStyle(
-                      color: appColors.textoPrimario,
+                      color: AppColors.textoPrimario,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -514,20 +514,20 @@ class _ActionChipState extends State<_ActionChip> {
                   Icon(
                     widget.icon,
                     size: 16,
-                    color: appColors.textoSecundario,
+                    color: AppColors.textoSecundario,
                   ),
                 ]
               : [
                   Icon(
                     widget.icon,
                     size: 16,
-                    color: appColors.primaryColor,
+                    color: AppColors.primaryColor,
                   ),
                   const SizedBox(width: 8),
                   Text(
                     widget.label,
                     style: TextStyle(
-                      color: appColors.textoPrimario,
+                      color: AppColors.textoPrimario,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

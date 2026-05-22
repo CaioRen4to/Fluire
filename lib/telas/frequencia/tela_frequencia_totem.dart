@@ -2,23 +2,54 @@ import 'package:flutter/material.dart';
 import '../../tema/app_cores.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
-  const TelaFrequenciaTotem({super.key});
+  final Map<String, dynamic>? aula;
+
+  const TelaFrequenciaTotem({super.key, this.aula});
 
   @override
   State<TelaFrequenciaTotem> createState() => _TelaFrequenciaTotemState();
 }
 
 class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
-  final _aula = {'nome': 'Mat Pilates', 'professor': 'Ana Silva', 'horario': '08:00'};
+  static const _aulaPadrao = {'nome': 'Mat Pilates', 'professor': 'Ana Silva', 'horario': '08:00'};
+
+  static final _alunosPorAula = <String, List<Map<String, dynamic>>>{
+    'Mat Pilates': [
+      {'nome': 'Julia Ferreira', 'inicial': 'J', 'status': 'pending'},
+      {'nome': 'Carla Santos', 'inicial': 'C', 'status': 'pending'},
+      {'nome': 'Beatriz Lima', 'inicial': 'B', 'status': 'present'},
+      {'nome': 'Fernanda Costa', 'inicial': 'F', 'status': 'absent'},
+      {'nome': 'Priscila Alves', 'inicial': 'P', 'status': 'pending'},
+    ],
+    'Pilates Funcional': [
+      {'nome': 'Amanda Souza', 'inicial': 'A', 'status': 'pending'},
+      {'nome': 'Renata Oliveira', 'inicial': 'R', 'status': 'present'},
+      {'nome': 'Tatiane Souza', 'inicial': 'T', 'status': 'pending'},
+      {'nome': 'Camila Rocha', 'inicial': 'C', 'status': 'absent'},
+    ],
+    'Yoga Relax': [
+      {'nome': 'Luciana Mendes', 'inicial': 'L', 'status': 'present'},
+      {'nome': 'Patricia Gomes', 'inicial': 'P', 'status': 'pending'},
+      {'nome': 'Sandra Melo', 'inicial': 'S', 'status': 'pending'},
+    ],
+  };
+
+  late Map<String, dynamic> _aula;
+  late List<Map<String, dynamic>> _alunos;
   final _hora = '08:00:00';
 
-  final List<Map<String, dynamic>> _alunos = [
-    {'nome': 'Julia Ferreira', 'inicial': 'J', 'status': 'pending'},
-    {'nome': 'Carla Santos', 'inicial': 'C', 'status': 'pending'},
-    {'nome': 'Beatriz Lima', 'inicial': 'B', 'status': 'present'},
-    {'nome': 'Fernanda Costa', 'inicial': 'F', 'status': 'absent'},
-    {'nome': 'Priscila Alves', 'inicial': 'P', 'status': 'pending'},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _aula = Map<String, dynamic>.from(widget.aula ?? _aulaPadrao);
+    if (!_aula.containsKey('nome')) _aula['nome'] = _aulaPadrao['nome'];
+    if (!_aula.containsKey('professor')) _aula['professor'] = _aulaPadrao['professor'];
+    if (!_aula.containsKey('horario')) _aula['horario'] = _aulaPadrao['horario'];
+    final nome = _aula['nome'] as String;
+    _alunos = List<Map<String, dynamic>>.from(
+      _alunosPorAula[nome] ?? _alunosPorAula['Mat Pilates']!,
+    );
+  }
 
   int _contar(String status) => _alunos.where((a) => a['status'] == status).length;
 
@@ -46,6 +77,10 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
               child: Row(
                 children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Color(0xFF3D2B00)),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                   CircleAvatar(radius: 23, backgroundColor: AppColors.primaryColor, child: const Icon(Icons.waves, color: Colors.white)),
                   const SizedBox(width: 12),
                   const Expanded(
@@ -85,7 +120,7 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                         children: [
                           const Text('AULA EM ANDAMENTO', style: TextStyle(fontSize: 10, color: Color(0xFFFFE5A0), fontWeight: FontWeight.w700, letterSpacing: 1.5)),
                           const SizedBox(height: 6),
-                          Text(_aula['nome']!, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
+                          Text('${_aula['nome']}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
                           const SizedBox(height: 4),
                           Text('${_aula['professor']} · ${_aula['horario']}', style: const TextStyle(fontSize: 13, color: Color(0xFFFFE5A0))),
                         ],

@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/app_sombras.dart';
+import 'package:fluire/widgets/menu_lateral.dart';
 
 enum _FiltroHistorico { todos, presente, falta }
 
@@ -11,7 +17,6 @@ class TelaHistoricoFrequencia extends StatefulWidget {
 }
 
 class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
-  static const _pad = EdgeInsets.symmetric(horizontal: 16);
 
   _FiltroHistorico _filtro = _FiltroHistorico.todos;
   final _buscaController = TextEditingController();
@@ -135,21 +140,20 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      drawer: const MenuLateral(rotaAtual: Rotas.historico),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              padding: AppSpacing.screenPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _iconeHeader(Icons.menu, () => _mensagem('Menu em breve')),
+                  const BotaoMenu(),
                   Text(
                     'Histórico',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                    style: AppTypography.displaySmall.copyWith(
                       color: AppColors.textoPrimario,
                     ),
                   ),
@@ -161,13 +165,13 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
               ),
             ),
             Padding(
-              padding: _pad,
+              padding: AppSpacing.screenPaddingHorizontal,
               child: Row(
                 children: [
                   _cardResumo('$_totalPresencas', 'Presenças', AppColors.sucesso),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   _cardResumo('$_totalFaltas', 'Faltas', AppColors.erro),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   _cardResumo(
                     '$_taxaPercentual%',
                     'Taxa',
@@ -176,43 +180,43 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.gapLg,
             Padding(
-              padding: _pad,
+              padding: AppSpacing.screenPaddingHorizontal,
               child: _graficoSemanal(),
             ),
-            const SizedBox(height: 18),
+            AppSpacing.gapLg,
             Padding(
-              padding: _pad,
+              padding: AppSpacing.screenPaddingHorizontal,
               child: TextField(
                 controller: _buscaController,
                 decoration: InputDecoration(
                   hintText: 'Buscar aluno ou aula...',
-                  hintStyle: TextStyle(color: AppColors.textoSecundario),
+                  hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textoSecundario),
                   prefixIcon: Icon(Icons.search, color: AppColors.popUp),
                   filled: true,
                   fillColor: AppColors.fundoCard,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: AppBorders.radiusLarge,
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            AppSpacing.gapMd,
             Padding(
-              padding: _pad,
+              padding: AppSpacing.screenPaddingHorizontal,
               child: Row(
                 children: [
                   _chipFiltro('Todos', _FiltroHistorico.todos),
-                  const SizedBox(width: 8),
+                  AppSpacing.gapSmHorizontal,
                   _chipFiltro('Presente', _FiltroHistorico.presente),
-                  const SizedBox(width: 8),
+                  AppSpacing.gapSmHorizontal,
                   _chipFiltro('Falta', _FiltroHistorico.falta),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.gapLg,
             ..._registrosFiltrados.map(_cardRegistro),
             if (_registrosFiltrados.isEmpty)
               Padding(
@@ -232,7 +236,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
   Widget _iconeHeader(IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(21),
+      borderRadius: AppBorders.radiusMedium,
       child: Container(
         width: 42,
         height: 42,
@@ -248,32 +252,26 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
   Widget _cardResumo(String valor, String titulo, Color cor) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
         decoration: BoxDecoration(
           color: AppColors.fundoCard,
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.sombra,
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          borderRadius: AppBorders.radiusLarge,
+          boxShadow: AppShadows.cardShadowSmall,
         ),
         child: Column(
           children: [
             Text(
               valor,
               style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: AppTypography.fontSizeH2,
+                fontWeight: AppTypography.fontWeightBold,
                 color: cor,
               ),
             ),
-            const SizedBox(height: 4),
+            AppSpacing.gapXs,
             Text(
               titulo,
-              style: TextStyle(fontSize: 12, color: AppColors.textoSecundario),
+              style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario),
             ),
           ],
         ),
@@ -287,30 +285,22 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
         .reduce((a, b) => a > b ? a : b);
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: AppSpacing.cardPadding,
       decoration: BoxDecoration(
         color: AppColors.fundoCard,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.sombra,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: AppBorders.radiusLarge,
+        boxShadow: AppShadows.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Frequência Semanal',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            style: AppTypography.headline.copyWith(
               color: AppColors.textoPrimario,
             ),
           ),
-          const SizedBox(height: 24),
+          AppSpacing.gapXxl,
           SizedBox(
             height: 120,
             child: Row(
@@ -338,11 +328,10 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                           _barra(alturaBarra(fal), AppColors.erro),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      AppSpacing.gapSm,
                       Text(
                         _diasSemana[i],
-                        style: TextStyle(
-                          fontSize: 11,
+                        style: AppTypography.caption.copyWith(
                           color: AppColors.textoSecundario,
                         ),
                       ),
@@ -376,17 +365,17 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
         onTap: () => setState(() => _filtro = tipo),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
             color: ativo ? AppColors.primaryColor : AppColors.fundoCard,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: AppBorders.radiusXLarge,
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+              fontWeight: AppTypography.fontWeightSemiBold,
+              fontSize: AppTypography.fontSizeMd,
               color: ativo ? AppColors.textoClaro : AppColors.textoPrimario,
             ),
           ),
@@ -400,24 +389,18 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
     final corStatus = presente ? AppColors.sucesso : AppColors.erro;
 
     return Padding(
-      padding: _pad.copyWith(bottom: 12),
+      padding: AppSpacing.screenPaddingHorizontal.copyWith(bottom: AppSpacing.md),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: AppBorders.radiusLarge,
         onTap: () => _mensagem(
           '${registro['nome']} — ${presente ? 'presente' : 'falta'} em ${registro['data']}',
         ),
         child: Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpacing.lg),
           decoration: BoxDecoration(
             color: AppColors.fundoCard,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            borderRadius: AppBorders.radiusLarge,
+            boxShadow: AppShadows.cardShadowSmall,
           ),
           child: Row(
             children: [
@@ -434,24 +417,21 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                   size: 22,
                 ),
               ),
-              const SizedBox(width: 14),
+              AppSpacing.gapMdHorizontal,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       registro['nome'],
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
+                      style: AppTypography.titleMedium.copyWith(
                         color: AppColors.textoPrimario,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    AppSpacing.gapXs,
                     Text(
                       '${registro['aula']} · ${registro['professor']}',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textoSecundario,
                       ),
                     ),
@@ -463,17 +443,15 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 children: [
                   Text(
                     presente ? 'presente' : 'falta',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
+                    style: AppTypography.bodySmall.copyWith(
+                      fontWeight: AppTypography.fontWeightSemiBold,
                       color: corStatus,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  AppSpacing.gapXs,
                   Text(
                     registro['data'],
-                    style: TextStyle(
-                      fontSize: 11,
+                    style: AppTypography.caption.copyWith(
                       color: AppColors.textoSecundario,
                     ),
                   ),

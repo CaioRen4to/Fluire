@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/widgets/menu_lateral.dart';
 
 class TelaAgenda extends StatefulWidget {
   const TelaAgenda({super.key});
@@ -44,73 +49,33 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       backgroundColor: AppColors.backgroundColor,
-
-      body: Center(
-
+      drawer: const MenuLateral(rotaAtual: Rotas.agenda),
+      body: SafeArea(
         child: SingleChildScrollView(
-
-          padding: const EdgeInsets.all(24),
-
-          child: Container(
-
-            width: 430,
-
-            padding: const EdgeInsets.all(24),
-
-            decoration: BoxDecoration(
-
-              color: AppColors.backgroundColor,
-
-              borderRadius: BorderRadius.circular(24),
-
-              boxShadow: [
-
-                BoxShadow(
-                  color: AppColors.sombra,
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-
-            child: Column(
-
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
-              children: [
-
-                /// HEADER
-                Row(
-
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-
-                  children: [
-
-                    _botaoIcone(Icons.menu),
-
-                    Text(
-                      "Agenda",
-
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textoPrimario,
-                      ),
+          padding: AppSpacing.screenPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const BotaoMenu(),
+                  Text(
+                    "Agenda",
+                    style: AppTypography.displayLarge.copyWith(
+                      color: AppColors.textoPrimario,
                     ),
+                  ),
+                  _botaoIcone(
+                    Icons.notifications_none,
+                  ),
+                ],
+              ),
 
-                    _botaoIcone(
-                      Icons.notifications_none,
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 28),
+              AppSpacing.gapXxl,
 
                 /// DIAS
                 SizedBox(
@@ -140,53 +105,31 @@ class _TelaAgendaState extends State<TelaAgenda> {
                         },
 
                         child: Container(
-
                           width: 68,
-
-                          margin: const EdgeInsets.only(
-                            right: 12,
-                          ),
-
+                          margin: const EdgeInsets.only(right: AppSpacing.md),
                           decoration: BoxDecoration(
-
                             color: selecionado
                                 ? AppColors.primaryColor
                                 : AppColors.fundoCard,
-
-                            borderRadius:
-                                BorderRadius.circular(22),
+                            borderRadius: AppBorders.radiusLarge,
                           ),
-
                           child: Column(
-
-                            mainAxisAlignment:
-                                MainAxisAlignment.center,
-
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-
                               Text(
-
                                 item["dia"]!,
-
                                 style: TextStyle(
-
                                   color: selecionado
                                       ? AppColors.textoClaro
                                       : AppColors.textoSecundario,
                                 ),
                               ),
-
-                              const SizedBox(height: 6),
-
+                              AppSpacing.gapSm,
                               Text(
-
                                 item["numero"]!,
-
                                 style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight:
-                                      FontWeight.bold,
-
+                                  fontSize: AppTypography.fontSizeH3,
+                                  fontWeight: AppTypography.fontWeightBold,
                                   color: selecionado
                                       ? AppColors.textoClaro
                                       : AppColors.textoPrimario,
@@ -200,202 +143,131 @@ class _TelaAgendaState extends State<TelaAgenda> {
                   ),
                 ),
 
-                const SizedBox(height: 22),
+                AppSpacing.gapLg,
 
                 /// SEARCH
                 TextField(
-
                   decoration: InputDecoration(
-
-                    hintText:
-                        "Buscar aula ou professor",
-
+                    hintText: "Buscar aula ou professor",
                     filled: true,
-
                     fillColor: AppColors.fundoCard,
-
                     prefixIcon: Icon(
                       Icons.search,
                       color: AppColors.textoSecundario,
                     ),
-
                     border: OutlineInputBorder(
-
-                      borderRadius:
-                          BorderRadius.circular(18),
-
+                      borderRadius: AppBorders.radiusLarge,
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
 
-                const SizedBox(height: 28),
+                AppSpacing.gapXxl,
 
                 /// LISTA DE AULAS
                 Column(
-
                   children: aulas.map((aula) {
-
                     return Container(
-
-                      margin: const EdgeInsets.only(
-                        bottom: 18,
-                      ),
-
-                      padding: const EdgeInsets.all(20),
-
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                      padding: AppSpacing.cardPaddingLarge,
                       decoration: BoxDecoration(
-
                         color: AppColors.fundoCard,
-
-                        borderRadius:
-                            BorderRadius.circular(24),
+                        borderRadius: AppBorders.radiusXLarge,
                       ),
-
                       child: Column(
-
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Row(
-
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceBetween,
-
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-
                               Expanded(
-
                                 child: Text(
-
                                   aula["titulo"]!,
-
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight:
-                                        FontWeight.bold,
-                                    color:
-                                        AppColors.textoPrimario,
+                                  style: AppTypography.displaySmall.copyWith(
+                                    color: AppColors.textoPrimario,
                                   ),
                                 ),
                               ),
-
                               Container(
-
-                                padding:
-                                    const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppSpacing.md,
+                                  vertical: AppSpacing.sm,
                                 ),
-
                                 decoration: BoxDecoration(
-
                                   color: AppColors.alerta,
-
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    20,
-                                  ),
+                                  borderRadius: AppBorders.radiusLarge,
                                 ),
-
                                 child: Text(
-
                                   aula["status"]!,
-
                                   style: TextStyle(
-                                    color:
-                                        AppColors.textoClaro,
-                                    fontWeight:
-                                        FontWeight.bold,
+                                    color: AppColors.textoClaro,
+                                    fontWeight: AppTypography.fontWeightBold,
                                   ),
                                 ),
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 8),
+                          AppSpacing.gapSm,
 
                           Text(
-
                             aula["professor"]!,
-
                             style: TextStyle(
-                              color:
-                                  AppColors.textoSecundario,
+                              color: AppColors.textoSecundario,
                             ),
                           ),
 
-                          const SizedBox(height: 16),
+                          AppSpacing.gapLg,
 
                           Row(
-
                             children: [
-
                               Icon(
                                 Icons.access_time,
                                 size: 18,
-                                color:
-                                    AppColors.textoSecundario,
+                                color: AppColors.textoSecundario,
                               ),
-
-                              const SizedBox(width: 6),
-
+                              AppSpacing.gapSmHorizontal,
                               Text(
                                 aula["horario"]!,
                               ),
                             ],
                           ),
 
-                          const SizedBox(height: 22),
+                          AppSpacing.gapLg,
 
                           Row(
-
                             children: [
-
                               Expanded(
-
                                 child: ElevatedButton(
-
                                   onPressed: () {},
-
-                                  style:
-                                      ElevatedButton.styleFrom(
-
+                                  style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primariaClara,
                                     foregroundColor: AppColors.textoPrimario,
                                     elevation: 0,
                                   ),
-
                                   child: const Text(
                                     "Detalhes",
                                   ),
                                 ),
                               ),
-
-                              const SizedBox(width: 12),
-
+                              AppSpacing.gapMdHorizontal,
                               Expanded(
-
-                                child:
-                                    ElevatedButton(
-
-                                  onPressed: () {},
-
-                                  style:
-                                      ElevatedButton.styleFrom(
-
+                                child: ElevatedButton(
+                                  onPressed: () => Navigator.pushNamed(
+                                    context,
+                                    Rotas.frequenciaTotem,
+                                    arguments: {
+                                      'nome': aula['titulo'],
+                                      'professor': aula['professor'],
+                                      'horario': aula['horario'],
+                                    },
+                                  ),
+                                  style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primaryColor,
                                     foregroundColor: AppColors.textoClaro,
-
                                     elevation: 0,
                                   ),
-
-                                  child: const Text(
-                                    "Frequência",
-                                  ),
+                                  child: const Text('Frequência'),
                                 ),
                               ),
                             ],
@@ -406,38 +278,23 @@ class _TelaAgendaState extends State<TelaAgenda> {
                   }).toList(),
                 ),
 
-                const SizedBox(height: 12),
+                AppSpacing.gapMd,
 
                 /// BOTÃO FINAL
                 SizedBox(
-
                   width: double.infinity,
-                  height: 56,
-
+                  height: 52,
                   child: ElevatedButton.icon(
-
                     onPressed: () {},
-
                     icon: const Icon(Icons.add),
-
                     label: const Text(
                       "Nova Aula",
                     ),
-
                     style: ElevatedButton.styleFrom(
-
-                      backgroundColor:
-                          AppColors.primaryColor,
-
-                      foregroundColor:
-                          AppColors.textoClaro,
-
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: AppColors.textoClaro,
                       elevation: 0,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(18),
-                      ),
+                      shape: AppBorders.buttonShape,
                     ),
                   ),
                 ),
@@ -445,24 +302,18 @@ class _TelaAgendaState extends State<TelaAgenda> {
             ),
           ),
         ),
-      ),
-    );
+      );  
   }
 
+
   Widget _botaoIcone(IconData icon) {
-
     return Container(
-
       width: 52,
       height: 52,
-
       decoration: BoxDecoration(
-
         color: AppColors.fundoCard,
-
         shape: BoxShape.circle,
       ),
-
       child: Icon(
         icon,
         color: AppColors.textoPrimario,
