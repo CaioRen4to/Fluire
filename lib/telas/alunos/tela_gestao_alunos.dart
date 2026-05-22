@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/core/estado_carregamento.dart';
+import 'package:fluire/providers/aluno_provider.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_sombras.dart';
-import 'package:fluire/componentes/menu_lateral.dart';
+import '../../tema/app_cores.dart';
 
 class TelaGestaoAlunos extends StatelessWidget {
   TelaGestaoAlunos({super.key});
@@ -17,109 +15,108 @@ class TelaGestaoAlunos extends StatelessWidget {
     {'nome': 'Fernanda Costa', 'inicial': 'F', 'telefone': '(11) 99999-4444', 'modalidade': 'Duet Reformer', 'presencas': 45, 'status': true},
   ];
 
+  static const _pad = EdgeInsets.symmetric(horizontal: 16);
+
   @override
   Widget build(BuildContext context) {
-    final ativos = alunos.where((a) => a['status'] == true).length;
+    final provider = context.watch<AlunoProvider>();
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      drawer: const MenuLateral(rotaAtual: Rotas.alunos),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primaryColor,
-        onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Adicionar aluno')),
-        ),
+        onPressed: () => ModalFormularioAluno.abrir(context: context),
         child: const Icon(Icons.add, color: Colors.white),
       ),
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: AppSpacing.screenPadding,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _icone(Icons.menu),
-                  Text('Alunos', style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario)),
+                  Text('Alunos', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textoPrimario)),
                   _icone(Icons.notifications_outlined),
                 ],
               ),
             ),
             Padding(
-              padding: AppSpacing.screenPaddingHorizontal,
+              padding: _pad,
               child: Row(
                 children: [
                   _resumo('${alunos.length}', 'Total', AppColors.primaryColor),
-                  AppSpacing.gapSmHorizontal,
+                  const SizedBox(width: 10),
                   _resumo('$ativos', 'Ativos', AppColors.sucesso),
-                  AppSpacing.gapSmHorizontal,
+                  const SizedBox(width: 10),
                   _resumo('${alunos.length - ativos}', 'Inativos', AppColors.erro),
                 ],
               ),
             ),
-            AppSpacing.gapLg,
+            const SizedBox(height: 18),
             Padding(
-              padding: AppSpacing.screenPaddingHorizontal,
+              padding: _pad,
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Buscar aluno...',
                   prefixIcon: Icon(Icons.search, color: AppColors.popUp),
                   filled: true,
                   fillColor: AppColors.fundoCard,
-                  border: OutlineInputBorder(borderRadius: AppBorders.radiusXLarge, borderSide: BorderSide.none),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
                 ),
               ),
             ),
-            AppSpacing.gapLg,
+            const SizedBox(height: 18),
             Expanded(
               child: ListView.separated(
-                padding: AppSpacing.screenPaddingHorizontal,
+                padding: _pad,
                 itemCount: alunos.length,
-                separatorBuilder: (_, _) => AppSpacing.gapSm,
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (_, i) {
                   final a = alunos[i];
                   final ativo = a['status'] == true;
                   final corStatus = ativo ? AppColors.sucesso : AppColors.erro;
 
                   return InkWell(
-                    borderRadius: AppBorders.radiusLarge,
+                    borderRadius: BorderRadius.circular(18),
                     onTap: () => Navigator.pushNamed(
                       context,
                       Rotas.detalheAluno,
                       arguments: a,
                     ),
                     child: Container(
-                      padding: const EdgeInsets.all(AppSpacing.md),
+                      padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
                         color: AppColors.fundoCard,
-                        borderRadius: AppBorders.radiusLarge,
-                        boxShadow: AppShadows.cardShadowSmall,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 6, offset: const Offset(0, 2))],
                       ),
                       child: Row(
                         children: [
                           CircleAvatar(
                             radius: 26,
                             backgroundColor: AppColors.primaryColor,
-                            child: Text(a['inicial'], style: const TextStyle(color: Colors.white, fontWeight: AppTypography.fontWeightBold, fontSize: 18)),
+                            child: Text(a['inicial'], style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
                           ),
-                          AppSpacing.gapMdHorizontal,
+                          const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(a['nome'], style: AppTypography.titleMedium.copyWith(color: AppColors.textoPrimario)),
-                                AppSpacing.gapXs,
-                                Text(a['modalidade'], style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
-                                AppSpacing.gapXs,
-                                Text('${a['presencas']} presenças', style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
+                                Text(a['nome'], style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textoPrimario)),
+                                const SizedBox(height: 4),
+                                Text(a['modalidade'], style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
+                                const SizedBox(height: 4),
+                                Text('${a['presencas']} presenças', style: TextStyle(fontSize: 11, color: AppColors.textoSecundario)),
                               ],
                             ),
                           ),
                           Column(
                             children: [
                               Container(width: 10, height: 10, decoration: BoxDecoration(shape: BoxShape.circle, color: corStatus)),
-                              AppSpacing.gapXs,
-                              Text(ativo ? 'Ativo' : 'Inativo', style: AppTypography.bodySmall.copyWith(fontWeight: AppTypography.fontWeightSemiBold, color: corStatus)),
+                              const SizedBox(height: 6),
+                              Text(ativo ? 'Ativo' : 'Inativo', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: corStatus)),
                             ],
                           ),
                         ],
@@ -141,18 +138,11 @@ class TelaGestaoAlunos extends StatelessWidget {
           decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
           child: Column(
             children: [
-              Text(valor, style: TextStyle(fontSize: AppTypography.fontSizeH2, fontWeight: AppTypography.fontWeightBold, color: cor)),
-              AppSpacing.gapXs,
-              Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
+              Text(valor, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: cor)),
+              const SizedBox(height: 4),
+              Text(titulo, style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
             ],
           ),
         ),
-      );
-
-  Widget _icone(IconData icon) => Container(
-        width: 42,
-        height: 42,
-        decoration: const BoxDecoration(color: AppColors.fundoCard, shape: BoxShape.circle),
-        child: Icon(icon, size: 22, color: AppColors.textoPrimario),
       );
 }
