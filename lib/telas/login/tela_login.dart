@@ -1,4 +1,9 @@
 import 'package:fluire/rotas.dart';
+import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/app_sombras.dart';
 import 'package:flutter/material.dart';
 
 class TelaLogin extends StatefulWidget {
@@ -12,23 +17,17 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF0F5),
+      backgroundColor: AppColors.backgroundColor,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: AppSpacing.screenPadding,
           child: Container(
             width: 420,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 48),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl, vertical: AppSpacing.xxxl),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.07),
-                  blurRadius: 40,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+              color: AppColors.fundoCard,
+              borderRadius: AppBorders.radiusLarge,
+              boxShadow: AppShadows.elevatedShadow,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -38,43 +37,39 @@ class _TelaLoginState extends State<TelaLogin> {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF5EDE0),
+                    color: AppColors.primariaClara,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.waves,
-                    color: Color(0xFFBFA07A),
+                    color: AppColors.primaryColor,
                     size: 32,
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.gapXl,
 
                 // Título
-                const Text(
+                Text(
                   'Welcome to Fluirê',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF111111),
+                  style: AppTypography.displayMedium.copyWith(
+                    color: AppColors.textoPrimario,
                   ),
                 ),
-                const SizedBox(height: 6),
-                const Text(
+                AppSpacing.gapSm,
+                Text(
                   'Sign in to continue',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF888888)),
+                  style: AppTypography.bodyLarge.copyWith(color: AppColors.textoSecundario),
                 ),
-                const SizedBox(height: 32),
+                AppSpacing.gapXxl,
 
                 // Botão Google
                 OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 52),
-                    side: const BorderSide(color: Color(0xFFDDDDDD)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    backgroundColor: Colors.white,
+                    side: BorderSide(color: AppColors.divisor),
+                    shape: AppBorders.buttonShape,
+                    backgroundColor: AppColors.fundoCard,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -89,164 +84,157 @@ class _TelaLoginState extends State<TelaLogin> {
                           color: Color(0xFF4285F4),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      AppSpacing.gapSmHorizontal,
                       const Text(
                         'Continue with Google',
                         style: TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF222222),
-                          fontWeight: FontWeight.w500,
+                          fontSize: AppTypography.fontSizeXl,
+                          color: AppColors.textoPrimario,
+                          fontWeight: AppTypography.fontWeightMedium,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.gapXl,
 
                 // Divisor OR
                 Row(
                   children: [
-                    const Expanded(child: Divider(color: Color(0xFFE0E0E0))),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
+                    const Expanded(child: Divider(color: AppColors.divisor)),
+                    Padding(
+                      padding: AppSpacing.screenPaddingHorizontal,
                       child: Text(
                         'OR',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFFAAAAAA),
+                          fontSize: AppTypography.fontSizeSm,
+                          color: AppColors.textoSecundario,
                           letterSpacing: 1.2,
                         ),
                       ),
                     ),
-                    const Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                    const Expanded(child: Divider(color: AppColors.divisor)),
                   ],
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.gapXl,
 
                 // Label Email
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Email',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF222222),
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.textoPrimario,
+                      fontWeight: AppTypography.fontWeightMedium,
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.gapSm,
 
                 // Campo Email
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     hintText: 'you@example.com',
-                    hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
+                    hintStyle: TextStyle(color: AppColors.textoSecundario),
                     prefixIcon: const Icon(
                       Icons.mail_outline,
-                      color: Color(0xFFBBBBBB),
+                      color: AppColors.textoSecundario,
                       size: 20,
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppColors.fundoCard,
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 16,
+                      vertical: AppSpacing.lg,
+                      horizontal: AppSpacing.lg,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(color: AppColors.divisor),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(color: AppColors.divisor),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF222222),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(
+                        color: AppColors.primaryColor,
                         width: 1.5,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                AppSpacing.gapLg,
 
                 // Label Password
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Password',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF222222),
+                    style: AppTypography.bodyLarge.copyWith(
+                      color: AppColors.textoPrimario,
+                      fontWeight: AppTypography.fontWeightMedium,
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                AppSpacing.gapSm,
 
                 // Campo Password
                 TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
                     hintText: '••••••••',
-                    hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
+                    hintStyle: TextStyle(color: AppColors.textoSecundario),
                     prefixIcon: const Icon(
                       Icons.lock_outline,
-                      color: Color(0xFFBBBBBB),
+                      color: AppColors.textoSecundario,
                       size: 20,
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: AppColors.fundoCard,
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 16,
+                      vertical: AppSpacing.lg,
+                      horizontal: AppSpacing.lg,
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(color: AppColors.divisor),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(color: AppColors.divisor),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: Color(0xFF222222),
+                      borderRadius: AppBorders.radiusSmall,
+                      borderSide: BorderSide(
+                        color: AppColors.primaryColor,
                         width: 1.5,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 24),
+                AppSpacing.gapXl,
 
                 // Botão Sign In
                 SizedBox(
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () => Navigator.pushReplacementNamed(context, Rotas.agenda),
+                    onPressed: () => Navigator.pushReplacementNamed(context, Rotas.painel),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF111111),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: AppColors.textoClaro,
+                      shape: AppBorders.buttonShape,
                       elevation: 0,
                     ),
-                    child: const Text(
+                    child: Text(
                       'Sign in',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: AppTypography.titleLarge,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                AppSpacing.gapLg,
 
                 // Footer links
                 Row(
@@ -254,11 +242,10 @@ class _TelaLoginState extends State<TelaLogin> {
                   children: [
                     GestureDetector(
                       onTap: () {},
-                      child: const Text(
+                      child: Text(
                         'Forgot password?',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF888888),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textoSecundario,
                         ),
                       ),
                     ),
@@ -266,20 +253,19 @@ class _TelaLoginState extends State<TelaLogin> {
                       onTap: () => Navigator.pushNamed(
                         context,
                         Rotas.cadastro,
-                      ), // <-- navegação
+                      ),
                       child: RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           text: 'Need an account? ',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF888888),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textoSecundario,
                           ),
                           children: [
                             TextSpan(
                               text: 'Sign up',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF111111),
+                              style: AppTypography.bodySmall.copyWith(
+                                fontWeight: AppTypography.fontWeightBold,
+                                color: AppColors.textoPrimario,
                               ),
                             ),
                           ],

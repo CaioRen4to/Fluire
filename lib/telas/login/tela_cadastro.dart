@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/rotas.dart';
+import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/app_sombras.dart';
 
 class TelaCadastro extends StatefulWidget {
   const TelaCadastro({super.key});
@@ -16,23 +21,17 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
   Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: const Color(0xFFEEF0F5),
+    backgroundColor: AppColors.backgroundColor,
     body: Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: AppSpacing.screenPadding,
         child: Container(
           width: 420,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 48),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl, vertical: AppSpacing.xxxl),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.07),
-                blurRadius: 40,
-                offset: const Offset(0, 8),
-              ),
-            ],
+            color: AppColors.fundoCard,
+            borderRadius: AppBorders.radiusLarge,
+            boxShadow: AppShadows.elevatedShadow,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -41,47 +40,40 @@ class _TelaCadastroState extends State<TelaCadastro> {
               Container(
                 width: 72,
                 height: 72,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF5EDE0),
+                decoration: BoxDecoration(
+                  color: AppColors.primariaClara,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.waves,
-                  color: Color(0xFFBFA07A),
+                  color: AppColors.primaryColor,
                   size: 32,
                 ),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.gapXl,
 
               // Título
-              const Text(
+              Text(
                 'Criar sua conta',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF111111),
+                style: AppTypography.displayMedium.copyWith(
+                  color: AppColors.textoPrimario,
                 ),
               ),
-              const SizedBox(height: 6),
-              const Text(
+              AppSpacing.gapSm,
+              Text(
                 'Preencha os dados para começar',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF888888),
-                ),
+                style: AppTypography.bodyLarge.copyWith(color: AppColors.textoSecundario),
               ),
-              const SizedBox(height: 32),
+              AppSpacing.gapXxl,
 
               // Botão Google
               OutlinedButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 52),
-                  side: const BorderSide(color: Color(0xFFDDDDDD)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  backgroundColor: Colors.white,
+                  side: BorderSide(color: AppColors.divisor),
+                  shape: AppBorders.buttonShape,
+                  backgroundColor: AppColors.fundoCard,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -96,196 +88,186 @@ class _TelaCadastroState extends State<TelaCadastro> {
                         color: Color(0xFF4285F4),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    AppSpacing.gapSmHorizontal,
                     const Text(
                       'Continuar com Google',
                       style: TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF222222),
-                        fontWeight: FontWeight.w500,
+                        fontSize: AppTypography.fontSizeXl,
+                        color: AppColors.textoPrimario,
+                        fontWeight: AppTypography.fontWeightMedium,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              AppSpacing.gapXl,
 
               // Divisor OR
-              const Row(
+              Row(
                 children: [
-                  Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                  const Expanded(child: Divider(color: AppColors.divisor)),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    padding: AppSpacing.screenPaddingHorizontal,
                     child: Text(
                       'OU',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFFAAAAAA),
+                        fontSize: AppTypography.fontSizeSm,
+                        color: AppColors.textoSecundario,
                         letterSpacing: 1.2,
                       ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Color(0xFFE0E0E0))),
+                  const Expanded(child: Divider(color: AppColors.divisor)),
                 ],
               ),
-              const SizedBox(height: 24),
+              AppSpacing.gapXl,
 
               // Campo Nome
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Nome completo',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF222222),
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightMedium,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.gapSm,
               TextFormField(
                 decoration: InputDecoration(
                   hintText: 'Seu nome',
-                  hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
-                  prefixIcon: const Icon(Icons.person_outline, color: Color(0xFFBBBBBB), size: 20),
+                  hintStyle: TextStyle(color: AppColors.textoSecundario),
+                  prefixIcon: const Icon(Icons.person_outline, color: AppColors.textoSecundario, size: 20),
                   filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF222222), width: 1.5)),
+                  fillColor: AppColors.fundoCard,
+                  contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg),
+                  border: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5)),
                 ),
               ),
-              const SizedBox(height: 20),
+              AppSpacing.gapLg,
 
               // Campo Email
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Email',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF222222),
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightMedium,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.gapSm,
               TextFormField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: 'you@example.com',
-                  hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
-                  prefixIcon: const Icon(Icons.mail_outline, color: Color(0xFFBBBBBB), size: 20),
+                  hintStyle: TextStyle(color: AppColors.textoSecundario),
+                  prefixIcon: const Icon(Icons.mail_outline, color: AppColors.textoSecundario, size: 20),
                   filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF222222), width: 1.5)),
+                  fillColor: AppColors.fundoCard,
+                  contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg),
+                  border: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5)),
                 ),
               ),
-              const SizedBox(height: 20),
+              AppSpacing.gapLg,
 
               // Campo Senha
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Senha',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF222222),
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightMedium,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.gapSm,
               TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: '••••••••',
-                  hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
-                  prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFFBBBBBB), size: 20),
+                  hintStyle: TextStyle(color: AppColors.textoSecundario),
+                  prefixIcon: const Icon(Icons.lock_outline, color: AppColors.textoSecundario, size: 20),
                   filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF222222), width: 1.5)),
+                  fillColor: AppColors.fundoCard,
+                  contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg),
+                  border: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5)),
                 ),
               ),
-              const SizedBox(height: 20),
+              AppSpacing.gapLg,
 
               // Campo Confirmar Senha
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'Confirmar senha',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF222222),
+                  style: AppTypography.bodyLarge.copyWith(
+                    color: AppColors.textoPrimario,
+                    fontWeight: AppTypography.fontWeightMedium,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              AppSpacing.gapSm,
               TextFormField(
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: '••••••••',
-                  hintStyle: const TextStyle(color: Color(0xFFBBBBBB)),
-                  prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFFBBBBBB), size: 20),
+                  hintStyle: TextStyle(color: AppColors.textoSecundario),
+                  prefixIcon: const Icon(Icons.lock_outline, color: AppColors.textoSecundario, size: 20),
                   filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE0E0E0))),
-                  focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFF222222), width: 1.5)),
+                  fillColor: AppColors.fundoCard,
+                  contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.lg, horizontal: AppSpacing.lg),
+                  border: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  enabledBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.divisor)),
+                  focusedBorder: OutlineInputBorder(borderRadius: AppBorders.radiusSmall, borderSide: BorderSide(color: AppColors.primaryColor, width: 1.5)),
                 ),
               ),
-              const SizedBox(height: 28),
+              AppSpacing.gapXxl,
 
               // Botão Cadastrar
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Navigator.pushReplacementNamed(context, Rotas.painel),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF111111),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    backgroundColor: AppColors.primaryColor,
+                    foregroundColor: AppColors.textoClaro,
+                    shape: AppBorders.buttonShape,
                     elevation: 0,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Criar conta',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: AppTypography.titleLarge,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              AppSpacing.gapLg,
 
               // Footer — voltar pro login
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Já tem uma conta? ',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario),
                   ),
                   GestureDetector(
                     onTap: () => Navigator.pushReplacementNamed(context, Rotas.login),
-                    child: const Text(
+                    child: Text(
                       'Entrar',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF111111),
+                      style: AppTypography.bodySmall.copyWith(
+                        fontWeight: AppTypography.fontWeightBold,
+                        color: AppColors.textoPrimario,
                       ),
                     ),
                   ),
