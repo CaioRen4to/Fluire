@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/rotas.dart';
+import 'package:fluire/componentes/menu_lateral.dart';
 
 class TelaAgenda extends StatefulWidget {
   const TelaAgenda({super.key});
@@ -46,416 +51,156 @@ class _TelaAgendaState extends State<TelaAgenda> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-
-      backgroundColor: appColors.backgroundColor,
-
-      body: Center(
-
+      backgroundColor: AppColors.backgroundColor,
+      drawer: const MenuLateral(rotaAtual: Rotas.agenda),
+      body: SafeArea(
         child: SingleChildScrollView(
-
-          padding: const EdgeInsets.all(24),
-
-          child: Container(
-
-            width: 430,
-
-            padding: const EdgeInsets.all(24),
-
-            decoration: BoxDecoration(
-
-              color: appColors.backgroundColor,
-
-              borderRadius: BorderRadius.circular(24),
-
-              boxShadow: [
-
-                BoxShadow(
-                  color: appColors.sombra,
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-
-            child: Column(
-
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
-              children: [
-
-                /// HEADER
-                Row(
-
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
-
-                  children: [
-
-                    _botaoIcone(Icons.menu),
-
-                    Text(
-                      "Agenda",
-
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: appColors.textoPrimario,
-                      ),
-                    ),
-
-                    _botaoIcone(
-                      Icons.notifications_none,
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 28),
-
-                /// DIAS
-                SizedBox(
-
-                  height: 84,
-
-                  child: ListView.builder(
-
-                    scrollDirection: Axis.horizontal,
-
-                    itemCount: dias.length,
-
-                    itemBuilder: (context, index) {
-
-                      final item = dias[index];
-
-                      final selecionado =
-                          diaSelecionado == index;
-
-                      return GestureDetector(
-
-                        onTap: () {
-
-                          setState(() {
-                            diaSelecionado = index;
-                          });
-                        },
-
-                        child: Container(
-
-                          width: 68,
-
-                          margin: const EdgeInsets.only(
-                            right: 12,
-                          ),
-
-                          decoration: BoxDecoration(
-
-                            color: selecionado
-                                ? appColors.primaryColor
-                                : appColors.fundoCard,
-
-                            borderRadius:
-                                BorderRadius.circular(22),
-                          ),
-
-                          child: Column(
-
-                            mainAxisAlignment:
-                                MainAxisAlignment.center,
-
-                            children: [
-
-                              Text(
-
-                                item["dia"]!,
-
-                                style: TextStyle(
-
-                                  color: selecionado
-                                      ? appColors.textoClaro
-                                      : appColors
-                                          .textoSecundario,
-                                ),
-                              ),
-
-                              const SizedBox(height: 6),
-
-                              Text(
-
-                                item["numero"]!,
-
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight:
-                                      FontWeight.bold,
-
-                                  color: selecionado
-                                      ? appColors.textoClaro
-                                      : appColors
-                                          .textoPrimario,
-                                ),
-                              ),
-                            ],
-                          ),
+          padding: AppSpacing.screenPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _botaoIcone(Icons.menu),
+                  Text("Agenda", style: AppTypography.displayLarge.copyWith(color: AppColors.textoPrimario)),
+                  _botaoIcone(Icons.notifications_none),
+                ],
+              ),
+              AppSpacing.gapXl,
+              SizedBox(
+                height: 84,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: dias.length,
+                  itemBuilder: (context, index) {
+                    final item = dias[index];
+                    final selecionado = diaSelecionado == index;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          diaSelecionado = index;
+                        });
+                      },
+                      child: Container(
+                        width: 68,
+                        margin: const EdgeInsets.only(right: AppSpacing.md),
+                        decoration: BoxDecoration(
+                          color: selecionado ? AppColors.primaryColor : AppColors.fundoCard,
+                          borderRadius: AppBorders.radiusXLarge,
                         ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 22),
-
-                /// SEARCH
-                TextField(
-
-                  decoration: InputDecoration(
-
-                    hintText:
-                        "Buscar aula ou professor",
-
-                    filled: true,
-
-                    fillColor: appColors.fundoCard,
-
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: appColors.textoSecundario,
-                    ),
-
-                    border: OutlineInputBorder(
-
-                      borderRadius:
-                          BorderRadius.circular(18),
-
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 28),
-
-                /// LISTA DE AULAS
-                Column(
-
-                  children: aulas.map((aula) {
-
-                    return Container(
-
-                      margin: const EdgeInsets.only(
-                        bottom: 18,
-                      ),
-
-                      padding: const EdgeInsets.all(20),
-
-                      decoration: BoxDecoration(
-
-                        color: appColors.fundoCard,
-
-                        borderRadius:
-                            BorderRadius.circular(24),
-                      ),
-
-                      child: Column(
-
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
-
-                        children: [
-
-                          Row(
-
-                            mainAxisAlignment:
-                                MainAxisAlignment
-                                    .spaceBetween,
-
-                            children: [
-
-                              Expanded(
-
-                                child: Text(
-
-                                  aula["titulo"]!,
-
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight:
-                                        FontWeight.bold,
-                                    color:
-                                        appColors.textoPrimario,
-                                  ),
-                                ),
-                              ),
-
-                              Container(
-
-                                padding:
-                                    const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-
-                                decoration: BoxDecoration(
-
-                                  color: appColors.alerta,
-
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                    20,
-                                  ),
-                                ),
-
-                                child: Text(
-
-                                  aula["status"]!,
-
-                                  style: TextStyle(
-                                    color:
-                                        appColors.textoClaro,
-                                    fontWeight:
-                                        FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          Text(
-
-                            aula["professor"]!,
-
-                            style: TextStyle(
-                              color:
-                                  appColors.textoSecundario,
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          Row(
-
-                            children: [
-
-                              Icon(
-                                Icons.access_time,
-                                size: 18,
-                                color:
-                                    appColors.textoSecundario,
-                              ),
-
-                              const SizedBox(width: 6),
-
-                              Text(
-                                aula["horario"]!,
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 22),
-
-                          Row(
-
-                            children: [
-
-                              Expanded(
-
-                                child: ElevatedButton(
-
-                                  onPressed: () {},
-
-                                  style:
-                                      ElevatedButton.styleFrom(
-
-                                    backgroundColor:
-                                        appColors
-                                            .primariaClara,
-
-                                    foregroundColor:
-                                        appColors
-                                            .textoPrimario,
-
-                                    elevation: 0,
-                                  ),
-
-                                  child: const Text(
-                                    "Detalhes",
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(width: 12),
-
-                              Expanded(
-
-                                child:
-                                    ElevatedButton(
-
-                                  onPressed: () {},
-
-                                  style:
-                                      ElevatedButton.styleFrom(
-
-                                    backgroundColor:
-                                        appColors
-                                            .primaryColor,
-
-                                    foregroundColor:
-                                        appColors
-                                            .textoClaro,
-
-                                    elevation: 0,
-                                  ),
-
-                                  child: const Text(
-                                    "Frequência",
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(item["dia"]!, style: TextStyle(color: selecionado ? AppColors.textoClaro : AppColors.textoSecundario)),
+                            AppSpacing.gapSm,
+                            Text(item["numero"]!, style: TextStyle(fontSize: AppTypography.fontSizeH3, fontWeight: AppTypography.fontWeightBold, color: selecionado ? AppColors.textoClaro : AppColors.textoPrimario)),
+                          ],
+                        ),
                       ),
                     );
-                  }).toList(),
+                  },
                 ),
-
-                const SizedBox(height: 12),
-
-                /// BOTÃO FINAL
-                SizedBox(
-
-                  width: double.infinity,
-                  height: 56,
-
-                  child: ElevatedButton.icon(
-
-                    onPressed: () {},
-
-                    icon: const Icon(Icons.add),
-
-                    label: const Text(
-                      "Nova Aula",
+              ),
+              AppSpacing.gapLg,
+              TextField(
+                decoration: InputDecoration(
+                  hintText: "Buscar aula ou professor",
+                  filled: true,
+                  fillColor: AppColors.fundoCard,
+                  prefixIcon: Icon(Icons.search, color: AppColors.textoSecundario),
+                  border: OutlineInputBorder(borderRadius: AppBorders.radiusXLarge, borderSide: BorderSide.none),
+                ),
+              ),
+              AppSpacing.gapXxl,
+              Column(
+                children: aulas.map((aula) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                    padding: AppSpacing.cardPaddingLarge,
+                    decoration: BoxDecoration(
+                      color: AppColors.fundoCard,
+                      borderRadius: AppBorders.radiusXXLarge,
                     ),
-
-                    style: ElevatedButton.styleFrom(
-
-                      backgroundColor:
-                          appColors.primaryColor,
-
-                      foregroundColor:
-                          appColors.textoClaro,
-
-                      elevation: 0,
-
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(18),
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(aula["titulo"]!, style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario)),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                color: AppColors.alerta,
+                                borderRadius: AppBorders.radiusLarge,
+                              ),
+                              child: Text(aula["status"]!, style: TextStyle(color: AppColors.textoClaro, fontWeight: AppTypography.fontWeightBold)),
+                            ),
+                          ],
+                        ),
+                        AppSpacing.gapSm,
+                        Text(aula["professor"]!, style: TextStyle(color: AppColors.textoSecundario)),
+                        AppSpacing.gapLg,
+                        Row(
+                          children: [
+                            Icon(Icons.access_time, size: 18, color: AppColors.textoSecundario),
+                            AppSpacing.gapSmHorizontal,
+                            Text(aula["horario"]!),
+                          ],
+                        ),
+                        AppSpacing.gapLg,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primariaClara,
+                                  foregroundColor: AppColors.textoPrimario,
+                                  elevation: 0,
+                                ),
+                                child: const Text("Detalhes"),
+                              ),
+                            ),
+                            AppSpacing.gapMdHorizontal,
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => Navigator.pushNamed(context, Rotas.frequenciaTotem, arguments: {'nome': aula['titulo'], 'professor': aula['professor'], 'horario': aula['horario']}),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primaryColor,
+                                  foregroundColor: AppColors.textoClaro,
+                                  elevation: 0,
+                                ),
+                                child: const Text('Frequência'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                  );
+                }).toList(),
+              ),
+              AppSpacing.gapMd,
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add),
+                  label: const Text("Nova Aula"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    foregroundColor: AppColors.textoClaro,
+                    elevation: 0,
+                    shape: AppBorders.buttonShape,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -463,23 +208,14 @@ class _TelaAgendaState extends State<TelaAgenda> {
   }
 
   Widget _botaoIcone(IconData icon) {
-
     return Container(
-
       width: 52,
       height: 52,
-
       decoration: BoxDecoration(
-
-        color: appColors.fundoCard,
-
+        color: AppColors.fundoCard,
         shape: BoxShape.circle,
       ),
-
-      child: Icon(
-        icon,
-        color: appColors.textoPrimario,
-      ),
+      child: Icon(icon, color: AppColors.textoPrimario),
     );
   }
 }

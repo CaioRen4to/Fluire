@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../tema/app_cores.dart';
+import '../../tema/app_tipografia.dart';
+import '../../tema/app_espacamento.dart';
+import '../../tema/app_bordas.dart';
+import '../../tema/app_sombras.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
   const TelaFrequenciaTotem({super.key});
@@ -38,16 +42,16 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
     final aguardando = _contar('pending');
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F0E6),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              padding: AppSpacing.screenPadding,
               child: Row(
                 children: [
                   CircleAvatar(radius: 23, backgroundColor: AppColors.primaryColor, child: const Icon(Icons.waves, color: Colors.white)),
-                  const SizedBox(width: 12),
+                  AppSpacing.gapMdHorizontal,
                   const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,23 +62,23 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 8)],
+                      borderRadius: AppBorders.radiusMedium,
+                      boxShadow: AppShadows.cardShadowSmall,
                     ),
-                    child: Text(_hora, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                    child: Text(_hora, style: TextStyle(fontSize: AppTypography.fontSizeLg, fontWeight: AppTypography.fontWeightBold, letterSpacing: 1.2)),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: AppSpacing.screenPaddingHorizontal,
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding: AppSpacing.cardPaddingLarge,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: AppBorders.radiusXLarge,
                   gradient: const LinearGradient(colors: [Color(0xFFD4A847), Color(0xFF7A7A2A)]),
                 ),
                 child: Row(
@@ -83,11 +87,11 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('AULA EM ANDAMENTO', style: TextStyle(fontSize: 10, color: Color(0xFFFFE5A0), fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-                          const SizedBox(height: 6),
-                          Text(_aula['nome']!, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
-                          const SizedBox(height: 4),
-                          Text('${_aula['professor']} · ${_aula['horario']}', style: const TextStyle(fontSize: 13, color: Color(0xFFFFE5A0))),
+                          const Text('AULA EM ANDAMENTO', style: TextStyle(fontSize: AppTypography.fontSizeXs, color: Color(0xFFFFE5A0), fontWeight: FontWeight.w700, letterSpacing: 1.5)),
+                          AppSpacing.gapSm,
+                          Text(_aula['nome']!, style: TextStyle(fontSize: AppTypography.fontSizeH2, fontWeight: AppTypography.fontWeightBold, color: Colors.white)),
+                          AppSpacing.gapXs,
+                          Text('${_aula['professor']} · ${_aula['horario']}', style: TextStyle(fontSize: AppTypography.fontSizeSm, color: Color(0xFFFFE5A0))),
                         ],
                       ),
                     ),
@@ -117,25 +121,25 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            AppSpacing.gapMd,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: AppSpacing.screenPaddingHorizontal,
               child: Row(
                 children: [
                   _resumo(AppColors.sucesso, 'Presentes', '$presentes'),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   _resumo(AppColors.erro, 'Faltas', '$faltas'),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   _resumo(const Color(0xFF9E9E9E), 'Aguard.', '$aguardando'),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.gapLg,
             Expanded(
               child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: AppSpacing.screenPaddingHorizontal.copyWith(top: AppSpacing.xs),
                 itemCount: _alunos.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => AppSpacing.gapSm,
                 itemBuilder: (_, i) {
                   final a = _alunos[i];
                   final presente = a['status'] == 'present';
@@ -143,23 +147,23 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
 
                   return Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: AppBorders.radiusLarge,
                       color: presente ? const Color(0xFFEDF7ED) : ausente ? const Color(0xFFFDEDED) : Colors.white,
-                      boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
+                      boxShadow: AppShadows.cardShadowSmall,
                     ),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
                       leading: CircleAvatar(
                         radius: 24,
                         backgroundColor: AppColors.primaryColor,
-                        child: Text(a['inicial'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                        child: Text(a['inicial'], style: TextStyle(fontSize: AppTypography.fontSizeLg, fontWeight: AppTypography.fontWeightBold, color: Colors.white)),
                       ),
-                      title: Text(a['nome'], style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF2A1A00))),
+                      title: Text(a['nome'], style: TextStyle(fontSize: AppTypography.fontSizeMd, fontWeight: AppTypography.fontWeightSemiBold, color: const Color(0xFF2A1A00))),
                       subtitle: Text(
                         presente ? 'Presente ✓' : ausente ? 'Ausente ✗' : 'Aguardando confirmação',
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                          fontSize: AppTypography.fontSizeSm,
+                          fontWeight: AppTypography.fontWeightMedium,
                           color: presente ? AppColors.sucesso : ausente ? AppColors.erro : const Color(0xFF9E8050),
                         ),
                       ),
@@ -167,7 +171,7 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _acao(Icons.check_rounded, AppColors.botaoPresente, !presente, () => _setStatus(i, 'present')),
-                          const SizedBox(width: 8),
+                          AppSpacing.gapXsHorizontal,
                           _acao(Icons.close_rounded, AppColors.botaoFalta, !ausente, () => _setStatus(i, 'absent')),
                         ],
                       ),
@@ -177,10 +181,10 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: AppSpacing.screenPadding.copyWith(bottom: AppSpacing.md),
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 10, offset: const Offset(0, -2))],
+                boxShadow: AppShadows.elevatedShadow,
               ),
               child: Row(
                 children: [
@@ -192,13 +196,13 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.sucesso,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => _marcarTodos('pending'),
@@ -207,8 +211,8 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFF9E8050),
                         side: const BorderSide(color: Color(0xFFD4B87A)),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
                       ),
                     ),
                   ),
@@ -223,19 +227,19 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
 
   Widget _resumo(Color cor, String label, String valor) => Expanded(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
+            borderRadius: AppBorders.radiusMedium,
+            boxShadow: AppShadows.cardShadowSmall,
           ),
           child: Column(
             children: [
               Container(width: 8, height: 8, decoration: BoxDecoration(color: cor, shape: BoxShape.circle)),
-              const SizedBox(height: 6),
-              Text(valor, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: cor)),
-              const SizedBox(height: 2),
-              Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF9E8050))),
+              AppSpacing.gapSm,
+              Text(valor, style: TextStyle(fontSize: AppTypography.fontSizeLg, fontWeight: AppTypography.fontWeightBold, color: cor)),
+              AppSpacing.gapXs,
+              Text(label, style: TextStyle(fontSize: AppTypography.fontSizeXs, color: const Color(0xFF9E8050))),
             ],
           ),
         ),
@@ -248,7 +252,7 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           height: 42,
           decoration: BoxDecoration(
             color: ativo ? cor : cor.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppBorders.radiusMedium,
           ),
           child: Icon(icon, color: Colors.white, size: 22),
         ),
