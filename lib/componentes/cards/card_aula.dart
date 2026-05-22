@@ -4,8 +4,8 @@ import 'package:fluire/tema/app_cores.dart';
 import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/componentes/botao.dart';
-import 'package:fluire/componentes/card_padrao.dart';
+import 'package:fluire/componentes/botao/botao.dart';
+import 'package:fluire/componentes/cards/card_padrao.dart';
 
 class CardAula extends StatelessWidget {
   final Aula aula;

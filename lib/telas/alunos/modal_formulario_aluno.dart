@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:fluire/models/aluno.dart';
 import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/componentes/input_padrao.dart';
-import 'package:fluire/componentes/modal_padrao.dart';
-import 'package:fluire/componentes/botao.dart';
+import 'package:fluire/componentes/input_padrao/input_padrao.dart';
+import 'package:fluire/componentes/modal_padrao/modal_padrao.dart';
+import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/tema/app_espacamento.dart';
 
 class ModalFormularioAluno {

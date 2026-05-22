@@ -19,8 +19,8 @@ class ModalPadrao {
       barrierLabel: titulo,
       barrierColor: Colors.black45,
       transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (_, __, ___) => const SizedBox.shrink(),
-      transitionBuilder: (ctx, anim, _, __) {
+      pageBuilder: (context, animation, secondaryAnimation) => const SizedBox.shrink(),
+      transitionBuilder: (ctx, anim, animation, child) {
         final escala = Tween<double>(begin: 0.92, end: 1).animate(
           CurvedAnimation(parent: anim, curve: Curves.easeOutCubic),
         );

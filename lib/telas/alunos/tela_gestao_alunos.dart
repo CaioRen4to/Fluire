@@ -8,8 +8,8 @@ import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/componentes/card_aluno.dart';
-import 'package:fluire/componentes/estado_visual.dart';
+import 'package:fluire/componentes/cards/card_aluno.dart';
+import 'package:fluire/componentes/estado_visual/estado_visual.dart';
 import 'package:fluire/core/animacoes.dart';
 import 'package:fluire/telas/alunos/modal_formulario_aluno.dart';
 

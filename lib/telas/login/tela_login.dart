@@ -4,8 +4,8 @@ import 'package:fluire/core/estado_carregamento.dart';
 import 'package:fluire/providers/auth_provider.dart';
 import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/componentes/input_padrao.dart';
-import 'package:fluire/componentes/botao.dart';
+import 'package:fluire/componentes/input_padrao/input_padrao.dart';
+import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/widgets/auth_layout.dart';
 
 class TelaLogin extends StatefulWidget {

@@ -9,9 +9,9 @@ import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/componentes/card_aula.dart';
-import 'package:fluire/componentes/estado_visual.dart';
-import 'package:fluire/componentes/botao.dart';
+import 'package:fluire/componentes/cards/card_aula.dart';
+import 'package:fluire/componentes/estado_visual/estado_visual.dart';
+import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/core/animacoes.dart';
 import 'package:fluire/telas/agenda/modal_formulario_aula.dart';
 

@@ -8,6 +8,7 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/repositories/mock/registros_frequencia_mock.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
   final Aula? aula;
@@ -36,18 +37,43 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           horarioFim: '09:00',
           frequencia: 'Semanal',
         );
-    _montarRegistros();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (context.read<AlunoProvider>().alunos.isEmpty) {
-        context.read<AlunoProvider>().carregar().then((_) => _montarRegistrosComProvider());
-      } else {
-        _montarRegistrosComProvider();
-      }
-    });
+    final mockLista = RegistrosFrequenciaMock.porNomeAula[_aula.nome];
+    if (mockLista != null && mockLista.isNotEmpty) {
+      _registros = _registrosDeMock(mockLista);
+    } else {
+      _registros = [];
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.read<AlunoProvider>().alunos.isEmpty) {
+          context.read<AlunoProvider>().carregar().then((_) => _montarRegistrosComProvider());
+        } else {
+          _montarRegistrosComProvider();
+        }
+      });
+    }
   }
 
-  void _montarRegistros() {
-    _registros = [];
+  List<RegistroFrequencia> _registrosDeMock(List<Map<String, dynamic>> lista) {
+    return lista
+        .map(
+          (m) => RegistroFrequencia(
+            alunoId: m['alunoId'] as String,
+            alunoNome: m['nome'] as String,
+            inicial: m['inicial'] as String,
+            status: _statusDe(m['status'] as String),
+          ),
+        )
+        .toList();
+  }
+
+  StatusPresenca _statusDe(String valor) {
+    switch (valor) {
+      case 'presente':
+        return StatusPresenca.presente;
+      case 'ausente':
+        return StatusPresenca.ausente;
+      default:
+        return StatusPresenca.pendente;
+    }
   }
 
   void _montarRegistrosComProvider() {

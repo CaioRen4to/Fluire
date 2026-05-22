@@ -10,7 +10,7 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/tema/app_sombras.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/componentes/card_padrao.dart';
+import 'package:fluire/componentes/cards/card_padrao.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

@@ -4,7 +4,6 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/tema/app_sombras.dart';
 
-/// Card padronizado para uso em toda a aplicação
 class CardPadrao extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;

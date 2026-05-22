@@ -6,7 +6,7 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/rotas.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/componentes/botao.dart';
+import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/core/animacoes.dart';
 import 'package:fluire/telas/alunos/modal_formulario_aluno.dart';
 

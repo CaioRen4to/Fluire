@@ -1,17 +1,17 @@
-import 'package:fluire/dados/mock_dados.dart';
 import 'package:fluire/models/usuario.dart';
 import 'package:fluire/repositories/auth_repository.dart';
+import 'package:fluire/repositories/mock/usuarios_mock.dart';
 
-class MockAuthRepository implements AuthRepository {
+class RepositorioAuthMock implements AuthRepository {
   Usuario? _usuarioAtual;
 
-  Future<void> _delay() => Future.delayed(const Duration(milliseconds: 600));
+  Future<void> _aguardar() => Future.delayed(const Duration(milliseconds: 600));
 
   @override
   Future<Usuario> login(String email, String senha) async {
-    await _delay();
+    await _aguardar();
     final emailNorm = email.trim().toLowerCase();
-    final senhaEsperada = MockDados.credenciaisMock[emailNorm];
+    final senhaEsperada = UsuariosMock.credenciais[emailNorm];
     if (senhaEsperada == null || senhaEsperada != senha) {
       throw Exception('E-mail ou senha inválidos.');
     }
@@ -25,7 +25,7 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<Usuario> cadastrar(String nome, String email, String senha) async {
-    await _delay();
+    await _aguardar();
     if (senha.length < 6) {
       throw Exception('A senha deve ter pelo menos 6 caracteres.');
     }
@@ -39,7 +39,7 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<void> logout() async {
-    await _delay();
+    await _aguardar();
     _usuarioAtual = null;
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluire/tema/app_cores.dart';
 import 'package:fluire/core/responsivo.dart';
 import 'package:fluire/widgets/menu_lateral.dart';
-import 'package:fluire/componentes/cabecalho_tela.dart';
+import 'package:fluire/componentes/cabecalho/cabecalho_tela.dart';
 
 class LayoutTela extends StatelessWidget {
   final String titulo;
