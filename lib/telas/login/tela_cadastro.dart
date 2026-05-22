@@ -28,7 +28,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.07),
+                color: Colors.black.withValues(alpha: 0.07),
                 blurRadius: 40,
                 offset: const Offset(0, 8),
               ),
@@ -90,7 +90,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                       'https://www.google.com/favicon.ico',
                       width: 20,
                       height: 20,
-                      errorBuilder: (_, __, ___) => const Icon(
+                      errorBuilder: (_, _, _) => const Icon(
                         Icons.g_mobiledata,
                         size: 22,
                         color: Color(0xFF4285F4),
