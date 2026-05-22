@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 
-/// Sistema de bordas e cantos arredondados padronizado
 class AppBorders {
-  // Raios de borda
-  static const double radiusXs = 8.0;
-  static const double radiusSm = 12.0;
-  static const double radiusMd = 16.0;
-  static const double radiusLg = 20.0;
-  static const double radiusXl = 24.0;
-  static const double radiusXxl = 28.0;
+  // Border radius values
+  static const double radiusSmallValue = 8.0;
+  static const double radiusMediumValue = 12.0;
+  static const double radiusLargeValue = 16.0;
+  static const double radiusXLargeValue = 20.0;
+  static const double radiusXXLargeValue = 24.0;
 
-  // BorderRadius padrão
-  static BorderRadius get radiusSmall => BorderRadius.circular(radiusSm);
-  static BorderRadius get radiusMedium => BorderRadius.circular(radiusMd);
-  static BorderRadius get radiusLarge => BorderRadius.circular(radiusLg);
-  static BorderRadius get radiusXLarge => BorderRadius.circular(radiusXl);
-  static BorderRadius get radiusXXLarge => BorderRadius.circular(radiusXxl);
+  // Border radius objects
+  static const BorderRadius radiusSmallBorder = BorderRadius.all(Radius.circular(radiusSmallValue));
+  static const BorderRadius radiusMediumBorder = BorderRadius.all(Radius.circular(radiusMediumValue));
+  static const BorderRadius radiusLargeBorder = BorderRadius.all(Radius.circular(radiusLargeValue));
+  static const BorderRadius radiusXLargeBorder = BorderRadius.all(Radius.circular(radiusXLargeValue));
+  static const BorderRadius radiusXXLargeBorder = BorderRadius.all(Radius.circular(radiusXXLargeValue));
 
-  // Shape para cards
-  static RoundedRectangleBorder get cardShape => RoundedRectangleBorder(
-        borderRadius: radiusXLarge,
-      );
+  // Named radius constants
+  static const BorderRadius radiusSmall = BorderRadius.all(Radius.circular(8.0));
+  static const BorderRadius radiusMedium = BorderRadius.all(Radius.circular(12.0));
+  static const BorderRadius radiusLarge = BorderRadius.all(Radius.circular(16.0));
+  static const BorderRadius radiusXLarge = BorderRadius.all(Radius.circular(20.0));
+  static const BorderRadius radiusXXLarge = BorderRadius.all(Radius.circular(24.0));
 
-  static RoundedRectangleBorder get buttonShape => RoundedRectangleBorder(
-        borderRadius: radiusMedium,
-      );
+  // Button shape
+  static final RoundedRectangleBorder buttonShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(radiusMediumValue),
+  );
 
-  static RoundedRectangleBorder get inputShape => RoundedRectangleBorder(
-        borderRadius: radiusSmall,
-      );
+  // Input shape
+  static final OutlineInputBorder inputShape = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(radiusSmallValue),
+    borderSide: BorderSide.none,
+  );
 }

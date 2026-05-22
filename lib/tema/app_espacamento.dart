@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
-/// Sistema de espaçamento padronizado para consistência visual
 class AppSpacing {
-  // Espaçamentos base
+  // Spacing values
   static const double xs = 4.0;
   static const double sm = 8.0;
   static const double md = 12.0;
   static const double lg = 16.0;
-  static const double xl = 20.0;
-  static const double xxl = 24.0;
-  static const double xxxl = 32.0;
+  static const double xl = 24.0;
+  static const double xxl = 32.0;
+  static const double xxxl = 48.0;
 
-  // Padding padrão para telas
-  static const EdgeInsets screenPadding = EdgeInsets.symmetric(horizontal: xl, vertical: xl);
-  static const EdgeInsets screenPaddingHorizontal = EdgeInsets.symmetric(horizontal: xl);
-  static const EdgeInsets screenPaddingVertical = EdgeInsets.symmetric(vertical: xl);
+  // Screen padding
+  static const EdgeInsets screenPadding = EdgeInsets.all(lg);
+  static const EdgeInsets screenPaddingHorizontal = EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets screenPaddingVertical = EdgeInsets.symmetric(vertical: lg);
 
-  // Padding para cards
+  // Card padding
   static const EdgeInsets cardPadding = EdgeInsets.all(lg);
   static const EdgeInsets cardPaddingLarge = EdgeInsets.all(xl);
 
-  // Espaçamento entre elementos
+  // Gap widgets
   static const SizedBox gapXs = SizedBox(height: xs);
   static const SizedBox gapSm = SizedBox(height: sm);
   static const SizedBox gapMd = SizedBox(height: md);
@@ -32,5 +31,4 @@ class AppSpacing {
   static const SizedBox gapSmHorizontal = SizedBox(width: sm);
   static const SizedBox gapMdHorizontal = SizedBox(width: md);
   static const SizedBox gapLgHorizontal = SizedBox(width: lg);
-  static const SizedBox gapXlHorizontal = SizedBox(width: xl);
 }

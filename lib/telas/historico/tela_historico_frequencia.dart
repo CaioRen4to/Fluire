@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/app_cores.dart';
 import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/tema/app_sombras.dart';
-import 'package:fluire/widgets/menu_lateral.dart';
+import 'package:fluire/componentes/menu_lateral.dart';
+import 'package:fluire/rotas.dart';
 
 enum _FiltroHistorico { todos, presente, falta }
 
@@ -143,20 +143,15 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
       drawer: const MenuLateral(rotaAtual: Rotas.historico),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.only(bottom: AppSpacing.xxl),
+          padding: const EdgeInsets.only(bottom: 24),
           children: [
             Padding(
               padding: AppSpacing.screenPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const BotaoMenu(),
-                  Text(
-                    'Histórico',
-                    style: AppTypography.displaySmall.copyWith(
-                      color: AppColors.textoPrimario,
-                    ),
-                  ),
+                  _iconeHeader(Icons.menu, () => _mensagem('Menu em breve')),
+                  Text('Histórico', style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario)),
                   _iconeHeader(
                     Icons.notifications_outlined,
                     () => _mensagem('Notificações em breve'),
@@ -180,7 +175,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 ],
               ),
             ),
-            AppSpacing.gapLg,
+            AppSpacing.gapMd,
             Padding(
               padding: AppSpacing.screenPaddingHorizontal,
               child: _graficoSemanal(),
@@ -192,12 +187,12 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 controller: _buscaController,
                 decoration: InputDecoration(
                   hintText: 'Buscar aluno ou aula...',
-                  hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textoSecundario),
+                  hintStyle: TextStyle(color: AppColors.textoSecundario),
                   prefixIcon: Icon(Icons.search, color: AppColors.popUp),
                   filled: true,
                   fillColor: AppColors.fundoCard,
                   border: OutlineInputBorder(
-                    borderRadius: AppBorders.radiusLarge,
+                    borderRadius: AppBorders.radiusXLarge,
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -216,7 +211,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 ],
               ),
             ),
-            AppSpacing.gapLg,
+            AppSpacing.gapMd,
             ..._registrosFiltrados.map(_cardRegistro),
             if (_registrosFiltrados.isEmpty)
               Padding(
@@ -236,7 +231,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
   Widget _iconeHeader(IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: AppBorders.radiusMedium,
+      borderRadius: AppBorders.radiusLarge,
       child: Container(
         width: 42,
         height: 42,
@@ -260,19 +255,9 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
         ),
         child: Column(
           children: [
-            Text(
-              valor,
-              style: TextStyle(
-                fontSize: AppTypography.fontSizeH2,
-                fontWeight: AppTypography.fontWeightBold,
-                color: cor,
-              ),
-            ),
+            Text(valor, style: TextStyle(fontSize: AppTypography.fontSizeH2, fontWeight: AppTypography.fontWeightBold, color: cor)),
             AppSpacing.gapXs,
-            Text(
-              titulo,
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario),
-            ),
+            Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
           ],
         ),
       ),
@@ -285,22 +270,17 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
         .reduce((a, b) => a > b ? a : b);
 
     return Container(
-      padding: AppSpacing.cardPadding,
+      padding: AppSpacing.cardPaddingLarge,
       decoration: BoxDecoration(
         color: AppColors.fundoCard,
-        borderRadius: AppBorders.radiusLarge,
+        borderRadius: AppBorders.radiusXLarge,
         boxShadow: AppShadows.cardShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Frequência Semanal',
-            style: AppTypography.headline.copyWith(
-              color: AppColors.textoPrimario,
-            ),
-          ),
-          AppSpacing.gapXxl,
+          Text('Frequência Semanal', style: AppTypography.titleLarge.copyWith(color: AppColors.textoPrimario)),
+          AppSpacing.gapXl,
           SizedBox(
             height: 120,
             child: Row(
@@ -324,17 +304,12 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           _barra(alturaBarra(pres), AppColors.sucesso),
-                          const SizedBox(width: 3),
+                          AppSpacing.gapXsHorizontal,
                           _barra(alturaBarra(fal), AppColors.erro),
                         ],
                       ),
                       AppSpacing.gapSm,
-                      Text(
-                        _diasSemana[i],
-                        style: AppTypography.caption.copyWith(
-                          color: AppColors.textoSecundario,
-                        ),
-                      ),
+                      Text(_diasSemana[i], style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
                     ],
                   ),
                 );
@@ -353,7 +328,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
       height: altura < 4 ? 4 : altura,
       decoration: BoxDecoration(
         color: cor,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: AppBorders.radiusSmall,
       ),
     );
   }
@@ -368,17 +343,10 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
           padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
           decoration: BoxDecoration(
             color: ativo ? AppColors.primaryColor : AppColors.fundoCard,
-            borderRadius: AppBorders.radiusXLarge,
+            borderRadius: AppBorders.radiusLarge,
           ),
           alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: AppTypography.fontWeightSemiBold,
-              fontSize: AppTypography.fontSizeMd,
-              color: ativo ? AppColors.textoClaro : AppColors.textoPrimario,
-            ),
-          ),
+          child: Text(label, style: TextStyle(fontWeight: AppTypography.fontWeightSemiBold, fontSize: AppTypography.fontSizeSm, color: ativo ? AppColors.textoClaro : AppColors.textoPrimario)),
         ),
       ),
     );
@@ -396,7 +364,7 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
           '${registro['nome']} — ${presente ? 'presente' : 'falta'} em ${registro['data']}',
         ),
         child: Container(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
             color: AppColors.fundoCard,
             borderRadius: AppBorders.radiusLarge,
@@ -422,39 +390,18 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      registro['nome'],
-                      style: AppTypography.titleMedium.copyWith(
-                        color: AppColors.textoPrimario,
-                      ),
-                    ),
+                    Text(registro['nome'], style: AppTypography.titleMedium.copyWith(color: AppColors.textoPrimario)),
                     AppSpacing.gapXs,
-                    Text(
-                      '${registro['aula']} · ${registro['professor']}',
-                      style: AppTypography.bodySmall.copyWith(
-                        color: AppColors.textoSecundario,
-                      ),
-                    ),
+                    Text('${registro['aula']} · ${registro['professor']}', style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
                   ],
                 ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    presente ? 'presente' : 'falta',
-                    style: AppTypography.bodySmall.copyWith(
-                      fontWeight: AppTypography.fontWeightSemiBold,
-                      color: corStatus,
-                    ),
-                  ),
+                  Text(presente ? 'presente' : 'falta', style: AppTypography.bodySmall.copyWith(fontWeight: AppTypography.fontWeightSemiBold, color: corStatus)),
                   AppSpacing.gapXs,
-                  Text(
-                    registro['data'],
-                    style: AppTypography.caption.copyWith(
-                      color: AppColors.textoSecundario,
-                    ),
-                  ),
+                  Text(registro['data'], style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
                 ],
               ),
             ],
