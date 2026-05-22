@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../tema/app_cores.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/models/aula.dart';
+import 'package:fluire/models/registro_frequencia.dart';
+import 'package:fluire/providers/aluno_provider.dart';
+import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/repositories/mock/registros_frequencia_mock.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
-  final Map<String, dynamic>? aula;
+  final Aula? aula;
 
   const TelaFrequenciaTotem({super.key, this.aula});
 
@@ -11,65 +20,100 @@ class TelaFrequenciaTotem extends StatefulWidget {
 }
 
 class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
-  static const _aulaPadrao = {'nome': 'Mat Pilates', 'professor': 'Ana Silva', 'horario': '08:00'};
-
-  static final _alunosPorAula = <String, List<Map<String, dynamic>>>{
-    'Mat Pilates': [
-      {'nome': 'Julia Ferreira', 'inicial': 'J', 'status': 'pending'},
-      {'nome': 'Carla Santos', 'inicial': 'C', 'status': 'pending'},
-      {'nome': 'Beatriz Lima', 'inicial': 'B', 'status': 'present'},
-      {'nome': 'Fernanda Costa', 'inicial': 'F', 'status': 'absent'},
-      {'nome': 'Priscila Alves', 'inicial': 'P', 'status': 'pending'},
-    ],
-    'Pilates Funcional': [
-      {'nome': 'Amanda Souza', 'inicial': 'A', 'status': 'pending'},
-      {'nome': 'Renata Oliveira', 'inicial': 'R', 'status': 'present'},
-      {'nome': 'Tatiane Souza', 'inicial': 'T', 'status': 'pending'},
-      {'nome': 'Camila Rocha', 'inicial': 'C', 'status': 'absent'},
-    ],
-    'Yoga Relax': [
-      {'nome': 'Luciana Mendes', 'inicial': 'L', 'status': 'present'},
-      {'nome': 'Patricia Gomes', 'inicial': 'P', 'status': 'pending'},
-      {'nome': 'Sandra Melo', 'inicial': 'S', 'status': 'pending'},
-    ],
-  };
-
-  late Map<String, dynamic> _aula;
-  late List<Map<String, dynamic>> _alunos;
+  late Aula _aula;
+  late List<RegistroFrequencia> _registros;
   final _hora = '08:00:00';
 
   @override
   void initState() {
     super.initState();
-    _aula = Map<String, dynamic>.from(widget.aula ?? _aulaPadrao);
-    if (!_aula.containsKey('nome')) _aula['nome'] = _aulaPadrao['nome'];
-    if (!_aula.containsKey('professor')) _aula['professor'] = _aulaPadrao['professor'];
-    if (!_aula.containsKey('horario')) _aula['horario'] = _aulaPadrao['horario'];
-    final nome = _aula['nome'] as String;
-    _alunos = List<Map<String, dynamic>>.from(
-      _alunosPorAula[nome] ?? _alunosPorAula['Mat Pilates']!,
-    );
+    _aula = widget.aula ??
+        const Aula(
+          id: 'default',
+          nome: 'Mat Pilates',
+          professorId: 'p1',
+          professorNome: 'Ana Silva',
+          horarioInicio: '08:00',
+          horarioFim: '09:00',
+          frequencia: 'Semanal',
+        );
+    final mockLista = RegistrosFrequenciaMock.porNomeAula[_aula.nome];
+    if (mockLista != null && mockLista.isNotEmpty) {
+      _registros = _registrosDeMock(mockLista);
+    } else {
+      _registros = [];
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.read<AlunoProvider>().alunos.isEmpty) {
+          context.read<AlunoProvider>().carregar().then((_) => _montarRegistrosComProvider());
+        } else {
+          _montarRegistrosComProvider();
+        }
+      });
+    }
   }
 
-  int _contar(String status) => _alunos.where((a) => a['status'] == status).length;
+  List<RegistroFrequencia> _registrosDeMock(List<Map<String, dynamic>> lista) {
+    return lista
+        .map(
+          (m) => RegistroFrequencia(
+            alunoId: m['alunoId'] as String,
+            alunoNome: m['nome'] as String,
+            inicial: m['inicial'] as String,
+            status: _statusDe(m['status'] as String),
+          ),
+        )
+        .toList();
+  }
 
-  void _setStatus(int i, String status) => setState(() => _alunos[i]['status'] = status);
+  StatusPresenca _statusDe(String valor) {
+    switch (valor) {
+      case 'presente':
+        return StatusPresenca.presente;
+      case 'ausente':
+        return StatusPresenca.ausente;
+      default:
+        return StatusPresenca.pendente;
+    }
+  }
 
-  void _marcarTodos(String status) => setState(() {
-        for (final a in _alunos) {
-          a['status'] = status;
+  void _montarRegistrosComProvider() {
+    if (!mounted) return;
+    final alunos = context.read<AlunoProvider>().alunos;
+    final ids = _aula.alunoIds;
+    final participantes = ids.isEmpty ? alunos.take(5) : alunos.where((a) => ids.contains(a.id));
+    setState(() {
+      _registros = participantes
+          .map(
+            (a) => RegistroFrequencia(
+              alunoId: a.id,
+              alunoNome: a.nome,
+              inicial: a.inicial,
+              status: StatusPresenca.pendente,
+            ),
+          )
+          .toList();
+    });
+  }
+
+  int _contar(StatusPresenca s) => _registros.where((r) => r.status == s).length;
+
+  void _setStatus(int i, StatusPresenca status) => setState(() => _registros[i].status = status);
+
+  void _marcarTodos(StatusPresenca status) => setState(() {
+        for (final r in _registros) {
+          r.status = status;
         }
       });
 
   @override
   Widget build(BuildContext context) {
-    final total = _alunos.length;
-    final presentes = _contar('present');
-    final faltas = _contar('absent');
-    final aguardando = _contar('pending');
+    final total = _registros.length;
+    final presentes = _contar(StatusPresenca.presente);
+    final faltas = _contar(StatusPresenca.ausente);
+    final aguardando = _contar(StatusPresenca.pendente);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F0E6),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -78,172 +122,138 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Color(0xFF3D2B00)),
+                    icon: const Icon(Icons.arrow_back, color: AppColors.textoPrimario),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  CircleAvatar(radius: 23, backgroundColor: AppColors.primaryColor, child: const Icon(Icons.waves, color: Colors.white)),
+                  CircleAvatar(
+                    radius: 23,
+                    backgroundColor: AppColors.primaryColor,
+                    child: const Icon(Icons.waves, color: Colors.white),
+                  ),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Fluirê', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF3D2B00))),
-                        Text('Controle de Frequência', style: TextStyle(fontSize: 12, color: Color(0xFF9E7C2E))),
+                        Text('Fluirê', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppColors.textoPrimario)),
+                        Text('Controle de frequência', style: TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
                       ],
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.fundoCard,
+                      borderRadius: AppBorders.radiusMedium,
                       boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 8)],
                     ),
-                    child: Text(_hora, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                    child: Text(_hora, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: const LinearGradient(colors: [Color(0xFFD4A847), Color(0xFF7A7A2A)]),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('AULA EM ANDAMENTO', style: TextStyle(fontSize: 10, color: Color(0xFFFFE5A0), fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-                          const SizedBox(height: 6),
-                          Text('${_aula['nome']}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
-                          const SizedBox(height: 4),
-                          Text('${_aula['professor']} · ${_aula['horario']}', style: const TextStyle(fontSize: 13, color: Color(0xFFFFE5A0))),
-                        ],
-                      ),
+              child: Animacoes.fadeSlide(
+                child: Container(
+                  padding: AppSpacing.cardPaddingLarge,
+                  decoration: BoxDecoration(
+                    borderRadius: AppBorders.radiusXLarge,
+                    gradient: LinearGradient(
+                      colors: [AppColors.primaryColor, AppColors.primaryColor.withValues(alpha: 0.7)],
                     ),
-                    SizedBox(
-                      width: 68,
-                      height: 68,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          CircularProgressIndicator(
-                            value: total == 0 ? 0 : presentes / total,
-                            strokeWidth: 6,
-                            color: Colors.white,
-                            backgroundColor: Colors.white24,
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('$presentes/$total', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
-                              const Text('pres.', style: TextStyle(fontSize: 9, color: Color(0xFFFFE5A0))),
-                            ],
-                          ),
-                        ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'AULA EM ANDAMENTO',
+                              style: TextStyle(fontSize: 10, color: Colors.white70, fontWeight: FontWeight.w700, letterSpacing: 1.2),
+                            ),
+                            AppSpacing.gapSm,
+                            Text(_aula.nome, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                            Text('${_aula.professorNome} · ${_aula.horario}', style: TextStyle(color: AppColors.primariaClara, fontSize: 13)),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 68,
+                        height: 68,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            CircularProgressIndicator(
+                              value: total == 0 ? 0 : presentes / total,
+                              strokeWidth: 6,
+                              color: Colors.white,
+                              backgroundColor: Colors.white24,
+                            ),
+                            Text('$presentes/$total', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            AppSpacing.gapMd,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
                   _resumo(AppColors.sucesso, 'Presentes', '$presentes'),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapSmHorizontal,
                   _resumo(AppColors.erro, 'Faltas', '$faltas'),
-                  const SizedBox(width: 10),
-                  _resumo(const Color(0xFF9E9E9E), 'Aguard.', '$aguardando'),
+                  AppSpacing.gapSmHorizontal,
+                  _resumo(AppColors.textoSecundario, 'Aguard.', '$aguardando'),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            AppSpacing.gapLg,
             Expanded(
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                itemCount: _alunos.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (_, i) {
-                  final a = _alunos[i];
-                  final presente = a['status'] == 'present';
-                  final ausente = a['status'] == 'absent';
-
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: presente ? const Color(0xFFEDF7ED) : ausente ? const Color(0xFFFDEDED) : Colors.white,
-                      boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
+              child: _registros.isEmpty
+                  ? const Center(child: CircularProgressIndicator(color: AppColors.primaryColor))
+                  : ListView.separated(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _registros.length,
+                      separatorBuilder: (_, _) => AppSpacing.gapMd,
+                      itemBuilder: (_, i) => _cardAluno(i),
                     ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      leading: CircleAvatar(
-                        radius: 24,
-                        backgroundColor: AppColors.primaryColor,
-                        child: Text(a['inicial'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                      ),
-                      title: Text(a['nome'], style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Color(0xFF2A1A00))),
-                      subtitle: Text(
-                        presente ? 'Presente ✓' : ausente ? 'Ausente ✗' : 'Aguardando confirmação',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: presente ? AppColors.sucesso : ausente ? AppColors.erro : const Color(0xFF9E8050),
-                        ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _acao(Icons.check_rounded, AppColors.botaoPresente, !presente, () => _setStatus(i, 'present')),
-                          const SizedBox(width: 8),
-                          _acao(Icons.close_rounded, AppColors.botaoFalta, !ausente, () => _setStatus(i, 'absent')),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.fundoCard,
                 boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 10, offset: const Offset(0, -2))],
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => _marcarTodos('present'),
+                      onPressed: () => _marcarTodos(StatusPresenca.presente),
                       icon: const Icon(Icons.check_rounded),
-                      label: const Text('Marcar Todos'),
+                      label: const Text('Marcar todos'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.sucesso,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  AppSpacing.gapMdHorizontal,
                   Expanded(
                     child: OutlinedButton.icon(
-                      onPressed: () => _marcarTodos('pending'),
+                      onPressed: () => _marcarTodos(StatusPresenca.pendente),
                       icon: const Icon(Icons.refresh_rounded),
                       label: const Text('Resetar'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF9E8050),
-                        side: const BorderSide(color: Color(0xFFD4B87A)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
                       ),
                     ),
                   ),
@@ -256,21 +266,63 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
     );
   }
 
+  Widget _cardAluno(int i) {
+    final r = _registros[i];
+    final presente = r.status == StatusPresenca.presente;
+    final ausente = r.status == StatusPresenca.ausente;
+    final corFundo = presente
+        ? AppColors.sucesso.withValues(alpha: 0.08)
+        : ausente
+            ? AppColors.erro.withValues(alpha: 0.08)
+            : AppColors.fundoCard;
+
+    return Animacoes.fadeSlide(
+      delay: Duration(milliseconds: 25 * i),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: AppBorders.radiusLarge,
+          color: corFundo,
+          boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
+        ),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: AppColors.primaryColor,
+            child: Text(r.inicial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+          title: Text(r.alunoNome, style: const TextStyle(fontWeight: FontWeight.w600)),
+          subtitle: Text(
+            presente ? 'Presente ✓' : ausente ? 'Ausente ✗' : 'Aguardando',
+            style: TextStyle(
+              color: presente ? AppColors.sucesso : ausente ? AppColors.erro : AppColors.textoSecundario,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _acao(Icons.check_rounded, AppColors.botaoPresente, !presente, () => _setStatus(i, StatusPresenca.presente)),
+              AppSpacing.gapSmHorizontal,
+              _acao(Icons.close_rounded, AppColors.botaoFalta, !ausente, () => _setStatus(i, StatusPresenca.ausente)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _resumo(Color cor, String label, String valor) => Expanded(
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
+            color: AppColors.fundoCard,
+            borderRadius: AppBorders.radiusLarge,
           ),
           child: Column(
             children: [
               Container(width: 8, height: 8, decoration: BoxDecoration(color: cor, shape: BoxShape.circle)),
-              const SizedBox(height: 6),
+              AppSpacing.gapSm,
               Text(valor, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: cor)),
-              const SizedBox(height: 2),
-              Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF9E8050))),
+              Text(label, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
             ],
           ),
         ),
@@ -278,12 +330,13 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
 
   Widget _acao(IconData icon, Color cor, bool ativo, VoidCallback onTap) => GestureDetector(
         onTap: ativo ? onTap : null,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
           width: 42,
           height: 42,
           decoration: BoxDecoration(
             color: ativo ? cor : cor.withValues(alpha: 0.35),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: AppBorders.radiusSmall,
           ),
           child: Icon(icon, color: Colors.white, size: 22),
         ),

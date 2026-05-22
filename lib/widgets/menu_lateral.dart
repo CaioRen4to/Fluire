@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/providers/auth_provider.dart';
 import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/app_tipografia.dart';
 
 class MenuLateral extends StatelessWidget {
   final String? rotaAtual;
@@ -35,20 +38,16 @@ class MenuLateral extends StatelessWidget {
                   const SizedBox(width: 12),
                   Text(
                     'Fluirê',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textoPrimario,
-                    ),
+                    style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario),
                   ),
                 ],
               ),
             ),
             const Divider(height: 1),
             _item(context, Icons.dashboard_outlined, 'Painel', Rotas.painel),
-            _item(context, Icons.event_note_outlined, 'Agenda', Rotas.agenda),
             _item(context, Icons.people_outline, 'Alunos', Rotas.alunos),
-            _item(context, Icons.fact_check_outlined, 'Frequência', Rotas.frequenciaTotem),
+            _item(context, Icons.event_note_outlined, 'Agenda / Aulas', Rotas.agenda),
+            _item(context, Icons.fact_check_outlined, 'Frequência', Rotas.frequenciaTotem, push: true),
             _item(context, Icons.history, 'Histórico', Rotas.historico),
             _item(context, Icons.school_outlined, 'Professores', Rotas.professores),
             const Spacer(),
@@ -57,11 +56,14 @@ class MenuLateral extends StatelessWidget {
               leading: const Icon(Icons.logout, color: AppColors.erro),
               title: Text(
                 'Sair',
-                style: TextStyle(color: AppColors.erro, fontWeight: FontWeight.w600),
+                style: TextStyle(color: AppColors.erro, fontWeight: AppTypography.fontWeightSemiBold),
               ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacementNamed(Rotas.login);
+              onTap: () async {
+                await context.read<AuthProvider>().logout();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed(Rotas.login);
+                }
               },
             ),
           ],
@@ -70,13 +72,10 @@ class MenuLateral extends StatelessWidget {
     );
   }
 
-  Widget _item(BuildContext context, IconData icon, String titulo, String rota) {
+  Widget _item(BuildContext context, IconData icon, String titulo, String rota, {bool push = false}) {
     final ativo = rotaAtual == rota;
     return ListTile(
-      leading: Icon(
-        icon,
-        color: ativo ? AppColors.primaryColor : AppColors.textoSecundario,
-      ),
+      leading: Icon(icon, color: ativo ? AppColors.primaryColor : AppColors.textoSecundario),
       title: Text(
         titulo,
         style: TextStyle(
@@ -85,7 +84,16 @@ class MenuLateral extends StatelessWidget {
         ),
       ),
       selected: ativo,
-      onTap: () => ir(context, rota),
+      onTap: () {
+        Navigator.pop(context);
+        if (push) {
+          Navigator.pushNamed(context, rota);
+        } else {
+          if (ModalRoute.of(context)?.settings.name != rota) {
+            Navigator.pushReplacementNamed(context, rota);
+          }
+        }
+      },
     );
   }
 }

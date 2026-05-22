@@ -4,7 +4,6 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_bordas.dart';
 import 'package:fluire/tema/app_tipografia.dart';
 
-/// Botão primário padronizado
 class BotaoPrimario extends StatelessWidget {
   final String texto;
   final VoidCallback? onPressed;
@@ -64,7 +63,6 @@ class BotaoPrimario extends StatelessWidget {
   }
 }
 
-/// Botão secundário padronizado
 class BotaoSecundario extends StatelessWidget {
   final String texto;
   final VoidCallback? onPressed;
@@ -94,10 +92,7 @@ class BotaoSecundario extends StatelessWidget {
             vertical: AppSpacing.md,
           ),
           shape: AppBorders.buttonShape,
-          side: BorderSide(
-            color: AppColors.primaryColor,
-            width: 1.5,
-          ),
+          side: const BorderSide(color: AppColors.primaryColor, width: 1.5),
           textStyle: AppTypography.titleLarge,
         ),
         child: Row(
@@ -116,7 +111,6 @@ class BotaoSecundario extends StatelessWidget {
   }
 }
 
-/// Botão de texto padronizado
 class BotaoTexto extends StatelessWidget {
   final String texto;
   final VoidCallback? onPressed;
@@ -146,7 +140,6 @@ class BotaoTexto extends StatelessWidget {
   }
 }
 
-/// Botão de ícone circular
 class BotaoIcone extends StatelessWidget {
   final IconData icone;
   final VoidCallback? onPressed;
@@ -172,10 +165,7 @@ class BotaoIcone extends StatelessWidget {
         child: SizedBox(
           width: 48,
           height: 48,
-          child: Icon(
-            icone,
-            color: corIcone ?? AppColors.textoPrimario,
-          ),
+          child: Icon(icone, color: corIcone ?? AppColors.textoPrimario),
         ),
       ),
     );

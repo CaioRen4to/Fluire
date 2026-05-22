@@ -4,7 +4,6 @@ import 'package:fluire/tema/app_espacamento.dart';
 import 'package:fluire/tema/app_tipografia.dart';
 import 'package:fluire/widgets/menu_lateral.dart';
 
-/// Cabeçalho padronizado para telas com menu lateral
 class CabecalhoTela extends StatelessWidget {
   final String titulo;
   final Widget? acaoDireita;
@@ -29,20 +28,18 @@ class CabecalhoTela extends StatelessWidget {
           if (mostrarMenu) const BotaoMenu() else const SizedBox(width: 48),
           Text(
             titulo,
-            style: AppTypography.displaySmall.copyWith(
-              color: AppColors.textoPrimario,
-            ),
+            style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario),
           ),
           acaoDireita ??
               (onAcaoDireita != null
-                  ? _buildBotaoAcao()
+                  ? _botaoAcao()
                   : const SizedBox(width: 48)),
         ],
       ),
     );
   }
 
-  Widget _buildBotaoAcao() {
+  Widget _botaoAcao() {
     return Material(
       color: AppColors.fundoCard,
       borderRadius: BorderRadius.circular(16),
@@ -52,10 +49,7 @@ class CabecalhoTela extends StatelessWidget {
         child: const SizedBox(
           width: 48,
           height: 48,
-          child: Icon(
-            Icons.notifications_outlined,
-            color: AppColors.textoPrimario,
-          ),
+          child: Icon(Icons.notifications_outlined, color: AppColors.textoPrimario),
         ),
       ),
     );
