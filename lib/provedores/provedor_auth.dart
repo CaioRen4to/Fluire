@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/models/usuario.dart';
-import 'package:fluire/services/auth_service.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/modelos/usuario.dart';
+import 'package:fluire/dados/dados_auth.dart';
 
-class AuthProvider extends ChangeNotifier {
-  final AuthService _service;
+class ProvedorAuth extends ChangeNotifier {
+  final DadosAuth _dados;
 
-  AuthProvider(this._service);
+  ProvedorAuth(this._dados);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   Usuario? usuario;
@@ -19,8 +19,13 @@ class AuthProvider extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      usuario = await _service.login(email, senha);
-      estado = EstadoCarregamento.sucesso;
+      final sucesso = await _dados.login(email, senha);
+      if (sucesso) {
+        usuario = Usuario(id: email, nome: email.split('@')[0], email: email);
+        estado = EstadoCarregamento.sucesso;
+      } else {
+        throw Exception('Email ou senha incorretos.');
+      }
       notifyListeners();
       return true;
     } catch (e) {
@@ -36,8 +41,11 @@ class AuthProvider extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      usuario = await _service.cadastrar(nome, email, senha);
-      estado = EstadoCarregamento.sucesso;
+      final sucesso = await _dados.cadastro(email, senha);
+      if (sucesso) {
+        usuario = Usuario(id: email, nome: nome, email: email);
+        estado = EstadoCarregamento.sucesso;
+      }
       notifyListeners();
       return true;
     } catch (e) {
@@ -49,7 +57,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _service.logout();
+    await _dados.logout();
     usuario = null;
     estado = EstadoCarregamento.inicial;
     notifyListeners();

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/providers/aluno_provider.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/widgets/layout_tela.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/cards/card_aluno.dart';
 import 'package:fluire/componentes/estado_visual/estado_visual.dart';
-import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/telas/alunos/modal_formulario_aluno.dart';
 
 class TelaGestaoAlunos extends StatefulWidget {
@@ -25,13 +22,13 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AlunoProvider>().carregar();
+      context.read<ProvedorAlunos>().carregar();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AlunoProvider>();
+    final provider = context.watch<ProvedorAlunos>();
 
     return LayoutTela(
       titulo: 'Alunos',
@@ -72,7 +69,7 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
     );
   }
 
-  Widget _conteudo(AlunoProvider provider) {
+  Widget _conteudo(ProvedorAlunos provider) {
     switch (provider.estado) {
       case EstadoCarregamento.carregando:
       case EstadoCarregamento.inicial:

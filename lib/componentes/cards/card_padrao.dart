@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_sombras.dart';
+import 'package:fluire/tema/tema.dart';
 
 class CardPadrao extends StatelessWidget {
   final Widget child;

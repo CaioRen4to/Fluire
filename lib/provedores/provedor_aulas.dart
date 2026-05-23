@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/models/aula.dart';
-import 'package:fluire/models/professor.dart';
-import 'package:fluire/repositories/professor_repository.dart';
-import 'package:fluire/services/aula_service.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/modelos/aula.dart';
+import 'package:fluire/modelos/professor.dart';
+import 'package:fluire/dados/dados_aulas.dart';
+import 'package:fluire/dados/dados_professores.dart';
 
-class AulaProvider extends ChangeNotifier {
-  final AulaService _service;
-  final ProfessorRepository _professorRepo;
+class ProvedorAulas extends ChangeNotifier {
+  final DadosAulas _dadosAulas;
+  final DadosProfessores _dadosProfessores;
 
-  AulaProvider(this._service, this._professorRepo);
+  ProvedorAulas(this._dadosAulas, this._dadosProfessores);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   List<Aula> aulas = [];
@@ -36,8 +36,8 @@ class AulaProvider extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      aulas = await _service.listar();
-      professores = await _professorRepo.listar();
+      aulas = await _dadosAulas.listar();
+      professores = await _dadosProfessores.listar();
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
@@ -58,7 +58,7 @@ class AulaProvider extends ChangeNotifier {
 
   Future<bool> salvar(Aula aula, {bool criando = false}) async {
     try {
-      final salva = await _service.salvar(aula, criando: criando);
+      final salva = await _dadosAulas.salvar(aula, criando: criando);
       if (criando) {
         aulas = [...aulas, salva];
       } else {

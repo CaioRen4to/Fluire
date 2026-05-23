@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:fluire/models/aula.dart';
-import 'package:fluire/models/professor.dart';
-import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/providers/aula_provider.dart';
+import 'package:fluire/modelos/aula.dart';
+import 'package:fluire/modelos/professor.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/modal_padrao/modal_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
+import 'package:fluire/tema/tema.dart';
 
 class ModalFormularioAula {
   static const _frequencias = [
@@ -41,8 +39,8 @@ class ModalFormularioAula {
       titulo: criando ? 'Nova aula' : 'Editar aula',
       conteudo: StatefulBuilder(
         builder: (ctx, setModalState) {
-          final aulaProv = context.watch<AulaProvider>();
-          final alunoProv = context.watch<AlunoProvider>();
+          final aulaProv = context.watch<ProvedorAulas>();
+          final alunoProv = context.watch<ProvedorAlunos>();
           final professores = aulaProv.professores;
           if (professorId.isEmpty && professores.isNotEmpty) {
             professorId = professores.first.id;

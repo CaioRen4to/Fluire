@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/tema/tema_app.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/providers/app_providers.dart';
+import 'package:fluire/provedores/provedores_app.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +15,7 @@ void main() {
   ]);
   runApp(
     MultiProvider(
-      providers: AppProviders.providers,
+      providers: ProvedoresApp.providers,
       child: const FluireApp(),
     ),
   );

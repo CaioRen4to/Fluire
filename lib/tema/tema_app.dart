@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/tema.dart';
 
 /// Tema principal da aplicação Fluirê
 class AppTheme {
@@ -15,7 +12,7 @@ class AppTheme {
         primary: AppColors.primaryColor,
         secondary: AppColors.primariaClara,
         surface: AppColors.fundoCard,
-        background: AppColors.backgroundColor,
+        surfaceContainer: AppColors.backgroundColor,
         error: AppColors.erro,
       ),
       
@@ -35,6 +32,17 @@ class AppTheme {
         ),
       ),
       
+      // BottomNavigationBar
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: AppColors.fundoBottomBar,
+        selectedItemColor: AppColors.iconsAtivosColor,
+        unselectedItemColor: AppColors.iconsInativosColor,
+        selectedLabelStyle: AppTypography.bodySmall,
+        unselectedLabelStyle: AppTypography.bodySmall,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+      ),
+      
       // Card
       cardTheme: CardThemeData(
         color: AppColors.fundoCard,
@@ -47,7 +55,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
-          foregroundColor: AppColors.textoClaro,
+          foregroundColor: AppColors.textoPrimario,
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,
@@ -190,7 +198,7 @@ class AppTheme {
       
       // SnackBar
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: AppColors.popUp,
         contentTextStyle: AppTypography.bodyMedium.copyWith(
           color: AppColors.textoClaro,
         ),

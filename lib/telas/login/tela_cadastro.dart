@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/providers/auth_provider.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/provedores/provedor_auth.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/widgets/auth_layout.dart';
+import 'package:fluire/componentes/auth_layout.dart';
 
 class TelaCadastro extends StatefulWidget {
   const TelaCadastro({super.key});
@@ -39,17 +39,29 @@ class _TelaCadastroState extends State<TelaCadastro> {
       );
       return;
     }
-    final auth = context.read<AuthProvider>();
-    final ok = await auth.cadastrar(_nomeCtrl.text, _emailCtrl.text, _senhaCtrl.text);
-    if (!mounted) return;
-    if (ok) {
-      Navigator.pushReplacementNamed(context, Rotas.painel);
+    final auth = context.read<ProvedorAuth>();
+    try {
+      final ok = await auth.cadastrar(_nomeCtrl.text, _emailCtrl.text, _senhaCtrl.text);
+      if (!mounted) return;
+      if (ok) {
+        Navigator.pushReplacementNamed(context, Rotas.painel);
+      }
+    } catch (e) {
+      if (e is UnimplementedError) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Integração com backend necessária. Implemente a API de cadastro.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    final auth = context.watch<ProvedorAuth>();
     final carregando = auth.estado == EstadoCarregamento.carregando;
 
     return AuthLayout(

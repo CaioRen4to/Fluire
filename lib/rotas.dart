@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/core/animacoes.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/models/aula.dart';
+import 'package:fluire/util/animacoes.dart';
+import 'package:fluire/modelos/aluno.dart';
+import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/telas/login/tela_login.dart';
 import 'package:fluire/telas/login/tela_cadastro.dart';
 import 'package:fluire/telas/painel/tela_painel.dart';
@@ -12,6 +12,7 @@ import 'package:fluire/telas/agenda/tela_agenda.dart';
 import 'package:fluire/telas/agenda/tela_detalhe_aula.dart';
 import 'package:fluire/telas/historico/tela_historico_frequencia.dart';
 import 'package:fluire/telas/professores/tela_gestao_professores.dart';
+import 'package:fluire/telas/perfil/tela_perfil.dart';
 
 class Rotas {
   static const String login = '/login';
@@ -24,6 +25,7 @@ class Rotas {
   static const String frequenciaTotem = '/frequencia_totem';
   static const String historico = '/historico';
   static const String professores = '/professores';
+  static const String perfil = '/perfil';
 
   static Map<String, WidgetBuilder> get rotas => {
         login: (_) => const TelaLogin(),
@@ -33,6 +35,7 @@ class Rotas {
         agenda: (_) => const TelaAgenda(),
         historico: (_) => const TelaHistoricoFrequencia(),
         professores: (_) => const TelaProfessores(),
+        perfil: (_) => const TelaPerfil(),
       };
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {

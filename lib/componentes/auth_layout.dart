@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_sombras.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/core/responsivo.dart';
-import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/util/responsivo.dart';
+import 'package:fluire/util/animacoes.dart';
 
 class AuthLayout extends StatelessWidget {
   final String titulo;
@@ -40,7 +36,7 @@ class AuthLayout extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.fundoCard,
                 borderRadius: AppBorders.radiusLarge,
-                boxShadow: AppShadows.elevatedShadow,
+                boxShadow: AppShadows.elevatedShadowList,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/tema/app_cores.dart';
+import 'package:fluire/tema/tema.dart';
 
 class TelaProfessores extends StatefulWidget {
   const TelaProfessores({super.key});

@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/core/animacoes.dart';
-import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/providers/aula_provider.dart';
+import 'package:fluire/util/animacoes.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_sombras.dart';
-import 'package:fluire/widgets/layout_tela.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/cards/card_padrao.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -35,8 +31,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AlunoProvider>().carregar();
-      context.read<AulaProvider>().carregar();
+      context.read<ProvedorAlunos>().carregar();
+      context.read<ProvedorAulas>().carregar();
     });
   }
 
@@ -48,8 +44,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final alunos = context.watch<AlunoProvider>();
-    final aulas = context.watch<AulaProvider>();
+    final alunos = context.watch<ProvedorAlunos>();
+    final aulas = context.watch<ProvedorAulas>();
     final hoje = aulas.aulas.take(3).toList();
 
     return LayoutTela(

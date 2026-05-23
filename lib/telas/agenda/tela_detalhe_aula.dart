@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/providers/aula_provider.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/widgets/layout_tela.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/telas/agenda/modal_formulario_aula.dart';
 
 class TelaDetalheAula extends StatelessWidget {
@@ -19,8 +16,8 @@ class TelaDetalheAula extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final aula = context.watch<AulaProvider>().buscarLocal(aulaId);
-    final alunos = context.watch<AlunoProvider>().alunos;
+    final aula = context.watch<ProvedorAulas>().buscarLocal(aulaId);
+    final alunos = context.watch<ProvedorAlunos>().alunos;
 
     if (aula == null) {
       return LayoutTela(

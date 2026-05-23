@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/providers/aula_provider.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/widgets/layout_tela.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/cards/card_aula.dart';
 import 'package:fluire/componentes/estado_visual/estado_visual.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/core/animacoes.dart';
+import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/telas/agenda/modal_formulario_aula.dart';
 
 class TelaAgenda extends StatefulWidget {
@@ -36,14 +33,14 @@ class _TelaAgendaState extends State<TelaAgenda> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AulaProvider>().carregar();
-      context.read<AlunoProvider>().carregar();
+      context.read<ProvedorAulas>().carregar();
+      context.read<ProvedorAlunos>().carregar();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AulaProvider>();
+    final provider = context.watch<ProvedorAulas>();
 
     return LayoutTela(
       titulo: 'Agenda',
@@ -120,7 +117,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
     );
   }
 
-  Widget _lista(AulaProvider provider) {
+  Widget _lista(ProvedorAulas provider) {
     switch (provider.estado) {
       case EstadoCarregamento.carregando:
       case EstadoCarregamento.inicial:

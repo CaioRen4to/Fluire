@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 
 class EstadoCarregando extends StatelessWidget {

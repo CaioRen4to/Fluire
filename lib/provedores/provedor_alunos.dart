@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/services/aluno_service.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/modelos/aluno.dart';
+import 'package:fluire/dados/dados_alunos.dart';
 
-class AlunoProvider extends ChangeNotifier {
-  final AlunoService _service;
+class ProvedorAlunos extends ChangeNotifier {
+  final DadosAlunos _dados;
 
-  AlunoProvider(this._service);
+  ProvedorAlunos(this._dados);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   List<Aluno> alunos = [];
@@ -31,7 +31,7 @@ class AlunoProvider extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      alunos = await _service.listar();
+      alunos = await _dados.listar();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
@@ -47,7 +47,7 @@ class AlunoProvider extends ChangeNotifier {
 
   Future<bool> salvar(Aluno aluno, {bool criando = false}) async {
     try {
-      final salvo = await _service.salvar(aluno, criando: criando);
+      final salvo = await _dados.salvar(aluno, criando: criando);
       if (criando) {
         alunos = [...alunos, salvo];
       } else {
@@ -68,6 +68,18 @@ class AlunoProvider extends ChangeNotifier {
       return alunos.firstWhere((a) => a.id == id);
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<void> remover(String id) async {
+    try {
+      await _dados.remover(id);
+      alunos = alunos.where((a) => a.id != id).toList();
+      estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      notifyListeners();
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      notifyListeners();
     }
   }
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/modelos/aluno.dart';
+import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/cards/card_padrao.dart';
 
 class CardAluno extends StatelessWidget {

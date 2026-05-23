@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/providers/aluno_provider.dart';
+import 'package:fluire/modelos/aluno.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/modal_padrao/modal_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/tema.dart';
 
 class ModalFormularioAluno {
   static Future<void> abrir({
@@ -51,7 +51,7 @@ class ModalFormularioAluno {
                     ? null
                     : () async {
                         setModalState(() => salvando = true);
-                        final provider = context.read<AlunoProvider>();
+                        final provider = context.read<ProvedorAlunos>();
                         final novo = Aluno(
                           id: aluno?.id ?? const Uuid().v4(),
                           nome: nomeCtrl.text.trim(),

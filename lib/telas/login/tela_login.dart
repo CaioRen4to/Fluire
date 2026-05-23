@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/core/estado_carregamento.dart';
-import 'package:fluire/providers/auth_provider.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/provedores/provedor_auth.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_espacamento.dart';
+import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-import 'package:fluire/widgets/auth_layout.dart';
+import 'package:fluire/componentes/auth_layout.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({super.key});
@@ -29,7 +29,7 @@ class _TelaLoginState extends State<TelaLogin> {
 
   Future<void> _entrar() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthProvider>();
+    final auth = context.read<ProvedorAuth>();
     final ok = await auth.login(_emailCtrl.text, _senhaCtrl.text);
     if (!mounted) return;
     if (ok) {
@@ -39,7 +39,7 @@ class _TelaLoginState extends State<TelaLogin> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    final auth = context.watch<ProvedorAuth>();
     final carregando = auth.estado == EstadoCarregamento.carregando;
 
     return AuthLayout(

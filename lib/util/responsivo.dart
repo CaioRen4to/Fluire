@@ -4,12 +4,19 @@ class Responsivo {
   static const double tablet = 600;
   static const double desktop = 900;
 
-  static bool isMobile(BuildContext context) =>
-      MediaQuery.sizeOf(context).width < tablet;
+  static bool isMobile(BuildContext context) {
+    final w = MediaQuery.sizeOf(context).width;
+    return w < tablet;
+  }
 
   static bool isTablet(BuildContext context) {
     final w = MediaQuery.sizeOf(context).width;
     return w >= tablet && w < desktop;
+  }
+
+  static bool isDesktop(BuildContext context) {
+    final w = MediaQuery.sizeOf(context).width;
+    return w >= desktop;
   }
 
   static double larguraConteudo(BuildContext context) {

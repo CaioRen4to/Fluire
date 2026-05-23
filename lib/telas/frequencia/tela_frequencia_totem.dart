@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/models/aula.dart';
-import 'package:fluire/models/registro_frequencia.dart';
-import 'package:fluire/providers/aluno_provider.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_espacamento.dart';
-import 'package:fluire/tema/app_bordas.dart';
-import 'package:fluire/tema/app_tipografia.dart';
-import 'package:fluire/core/animacoes.dart';
-import 'package:fluire/repositories/mock/registros_frequencia_mock.dart';
+import 'package:fluire/modelos/aula.dart';
+import 'package:fluire/modelos/registro_frequencia.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/tema/tema.dart';
+import 'package:fluire/util/animacoes.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
   final Aula? aula;
@@ -37,48 +33,19 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           horarioFim: '09:00',
           frequencia: 'Semanal',
         );
-    final mockLista = RegistrosFrequenciaMock.porNomeAula[_aula.nome];
-    if (mockLista != null && mockLista.isNotEmpty) {
-      _registros = _registrosDeMock(mockLista);
-    } else {
-      _registros = [];
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.read<AlunoProvider>().alunos.isEmpty) {
-          context.read<AlunoProvider>().carregar().then((_) => _montarRegistrosComProvider());
-        } else {
-          _montarRegistrosComProvider();
-        }
-      });
-    }
-  }
-
-  List<RegistroFrequencia> _registrosDeMock(List<Map<String, dynamic>> lista) {
-    return lista
-        .map(
-          (m) => RegistroFrequencia(
-            alunoId: m['alunoId'] as String,
-            alunoNome: m['nome'] as String,
-            inicial: m['inicial'] as String,
-            status: _statusDe(m['status'] as String),
-          ),
-        )
-        .toList();
-  }
-
-  StatusPresenca _statusDe(String valor) {
-    switch (valor) {
-      case 'presente':
-        return StatusPresenca.presente;
-      case 'ausente':
-        return StatusPresenca.ausente;
-      default:
-        return StatusPresenca.pendente;
-    }
+    _registros = [];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.read<ProvedorAlunos>().alunos.isEmpty) {
+        context.read<ProvedorAlunos>().carregar().then((_) => _montarRegistrosComProvider());
+      } else {
+        _montarRegistrosComProvider();
+      }
+    });
   }
 
   void _montarRegistrosComProvider() {
     if (!mounted) return;
-    final alunos = context.read<AlunoProvider>().alunos;
+    final alunos = context.read<ProvedorAlunos>().alunos;
     final ids = _aula.alunoIds;
     final participantes = ids.isEmpty ? alunos.take(5) : alunos.where((a) => ids.contains(a.id));
     setState(() {

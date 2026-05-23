@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/providers/auth_provider.dart';
+import 'package:fluire/provedores/provedor_auth.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/app_cores.dart';
-import 'package:fluire/tema/app_tipografia.dart';
+import 'package:fluire/tema/tema.dart';
 
 class MenuLateral extends StatelessWidget {
   final String? rotaAtual;
@@ -59,7 +58,7 @@ class MenuLateral extends StatelessWidget {
                 style: TextStyle(color: AppColors.erro, fontWeight: AppTypography.fontWeightSemiBold),
               ),
               onTap: () async {
-                await context.read<AuthProvider>().logout();
+                await context.read<ProvedorAuth>().logout();
                 if (context.mounted) {
                   Navigator.of(context).pop();
                   Navigator.of(context).pushReplacementNamed(Rotas.login);
