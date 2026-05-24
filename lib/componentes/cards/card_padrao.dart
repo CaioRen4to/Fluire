@@ -19,7 +19,27 @@ class CardPadrao extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = Container(
+    if (onTap != null) {
+      return Material(
+        color: Colors.transparent,
+        borderRadius: AppBorders.radiusXLarge,
+        child: InkWell(
+          borderRadius: AppBorders.radiusXLarge,
+          onTap: onTap,
+          child: Container(
+            padding: padding ?? AppSpacing.cardPadding,
+            decoration: BoxDecoration(
+              color: corFundo ?? AppColors.fundoCard,
+              borderRadius: AppBorders.radiusXLarge,
+              boxShadow: comSombra ? AppShadows.cardShadow : null,
+            ),
+            child: child,
+          ),
+        ),
+      );
+    }
+
+    return Container(
       padding: padding ?? AppSpacing.cardPadding,
       decoration: BoxDecoration(
         color: corFundo ?? AppColors.fundoCard,
@@ -28,15 +48,5 @@ class CardPadrao extends StatelessWidget {
       ),
       child: child,
     );
-
-    if (onTap != null) {
-      return InkWell(
-        borderRadius: AppBorders.radiusXLarge,
-        onTap: onTap,
-        child: card,
-      );
-    }
-
-    return card;
   }
 }

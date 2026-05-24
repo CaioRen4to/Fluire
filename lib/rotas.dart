@@ -27,6 +27,7 @@ class Rotas {
   static const String professores = '/professores';
   static const String perfil = '/perfil';
 
+
   static Map<String, WidgetBuilder> get rotas => {
         login: (_) => const TelaLogin(),
         cadastro: (_) => const TelaCadastro(),

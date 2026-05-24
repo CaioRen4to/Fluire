@@ -33,11 +33,12 @@ class ProvedorAlunos extends ChangeNotifier {
     try {
       alunos = await _dados.listar();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      notifyListeners();
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
       estado = EstadoCarregamento.erro;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void definirBusca(String valor) {
@@ -45,19 +46,31 @@ class ProvedorAlunos extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> salvar(Aluno aluno, {bool criando = false}) async {
+  Future<bool> criar(Aluno aluno) async {
     try {
-      final salvo = await _dados.salvar(aluno, criando: criando);
-      if (criando) {
-        alunos = [...alunos, salvo];
-      } else {
-        alunos = alunos.map((a) => a.id == salvo.id ? salvo : a).toList();
-      }
+      final criado = await _dados.criar(aluno);
+      alunos = [...alunos, criado];
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> atualizar(Aluno aluno) async {
+    try {
+      final atualizado = await _dados.atualizar(aluno);
+      alunos = alunos.map((a) => a.id == atualizado.id ? atualizado : a).toList();
+      estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
       notifyListeners();
       return false;
     }

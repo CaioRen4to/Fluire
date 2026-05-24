@@ -105,15 +105,18 @@ class TelaDetalheAula extends StatelessWidget {
               ...participantes.map(
                 (a) => Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: ListTile(
-                    tileColor: AppColors.fundoCard,
-                    shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusLarge),
-                    leading: CircleAvatar(
-                      backgroundColor: AppColors.primaryColor,
-                      child: Text(a.inicial, style: const TextStyle(color: Colors.white)),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: ListTile(
+                      tileColor: AppColors.fundoCard,
+                      shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusLarge),
+                      leading: CircleAvatar(
+                        backgroundColor: AppColors.primaryColor,
+                        child: Text(a.inicial, style: const TextStyle(color: Colors.white)),
+                      ),
+                      title: Text(a.nome),
+                      subtitle: Text(a.modalidade),
                     ),
-                    title: Text(a.nome),
-                    subtitle: Text(a.modalidade),
                   ),
                 ),
               ),
