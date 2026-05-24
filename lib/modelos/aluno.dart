@@ -65,15 +65,32 @@ class Aluno {
         'ultimaAula': ultimaAula,
       };
 
-  factory Aluno.fromJson(Map<String, dynamic> json) => Aluno(
-        id: json['id'] as String,
-        nome: json['nome'] as String,
-        telefone: json['telefone'] as String? ?? '',
-        email: json['email'] as String? ?? '',
-        modalidade: json['modalidade'] as String? ?? '',
-        presencas: json['presencas'] as int? ?? 0,
-        faltas: json['faltas'] as int? ?? 0,
-        ativo: json['ativo'] as bool? ?? true,
-        ultimaAula: json['ultimaAula'] as String?,
+  factory Aluno.fromJson(dynamic json) {
+    // Backend retorna lista: [id, nome, telefone, email, modalidade, presencas, faltas, ativo, ultimaAula]
+    if (json is List) {
+      return Aluno(
+        id: json[0]?.toString() ?? '',
+        nome: json[1] as String? ?? '',
+        telefone: json[2] as String? ?? '',
+        email: json[3] as String? ?? '',
+        modalidade: json[4] as String? ?? '',
+        presencas: json[5] as int? ?? 0,
+        faltas: json[6] as int? ?? 0,
+        ativo: json[7] == 1,
+        ultimaAula: json[8] as String?,
       );
+    }
+    // Fallback para dicionário (caso backend seja modificado no futuro)
+    return Aluno(
+      id: json['id']?.toString() ?? '',
+      nome: json['nome'] as String,
+      telefone: json['telefone'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      modalidade: json['modalidade'] as String? ?? '',
+      presencas: json['presencas'] as int? ?? 0,
+      faltas: json['faltas'] as int? ?? 0,
+      ativo: json['ativo'] == 1 || json['ativo'] == true,
+      ultimaAula: json['ultimaAula'] as String?,
+    );
+  }
 }

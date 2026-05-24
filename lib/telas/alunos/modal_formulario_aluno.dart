@@ -9,7 +9,7 @@ import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/tema/tema.dart';
 
 class ModalFormularioAluno {
-  static Future<void> abrir({
+  static Future<Aluno?> abrir({
     required BuildContext context,
     Aluno? aluno,
   }) {
@@ -37,11 +37,14 @@ class ModalFormularioAluno {
               AppSpacing.gapLg,
               InputPadrao(label: 'Modalidade', hint: 'Ex: Mat Pilates', controller: modalCtrl, icone: Icons.fitness_center_outlined),
               AppSpacing.gapLg,
-              SwitchListTile(
-                value: ativo,
-                onChanged: (v) => setModalState(() => ativo = v),
-                title: const Text('Aluno ativo'),
-                activeThumbColor: Colors.white,
+              Material(
+                color: Colors.transparent,
+                child: SwitchListTile(
+                  value: ativo,
+                  onChanged: (v) => setModalState(() => ativo = v),
+                  title: const Text('Aluno ativo'),
+                  activeThumbColor: Colors.white,
+                ),
               ),
               AppSpacing.gapXl,
               BotaoPrimario(
@@ -63,11 +66,13 @@ class ModalFormularioAluno {
                           ativo: ativo,
                           ultimaAula: aluno?.ultimaAula,
                         );
-                        final ok = await provider.salvar(novo, criando: criando);
+                        final ok = criando
+                            ? await provider.criar(novo)
+                            : await provider.atualizar(novo);
                         if (ctx.mounted) {
                           setModalState(() => salvando = false);
                           if (ok) {
-                            Navigator.pop(ctx);
+                            Navigator.pop(ctx, criando ? null : novo);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(criando ? 'Aluno cadastrado!' : 'Aluno atualizado!'),

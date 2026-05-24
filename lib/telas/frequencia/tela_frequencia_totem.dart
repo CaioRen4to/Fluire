@@ -251,26 +251,29 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           color: corFundo,
           boxShadow: [BoxShadow(color: AppColors.sombra, blurRadius: 6, offset: const Offset(0, 2))],
         ),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: AppColors.primaryColor,
-            child: Text(r.inicial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          ),
-          title: Text(r.alunoNome, style: const TextStyle(fontWeight: FontWeight.w600)),
-          subtitle: Text(
-            presente ? 'Presente ✓' : ausente ? 'Ausente ✗' : 'Aguardando',
-            style: TextStyle(
-              color: presente ? AppColors.sucesso : ausente ? AppColors.erro : AppColors.textoSecundario,
-              fontWeight: FontWeight.w500,
+        child: Material(
+          color: Colors.transparent,
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: AppColors.primaryColor,
+              child: Text(r.inicial, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _acao(Icons.check_rounded, AppColors.botaoPresente, !presente, () => _setStatus(i, StatusPresenca.presente)),
-              AppSpacing.gapSmHorizontal,
-              _acao(Icons.close_rounded, AppColors.botaoFalta, !ausente, () => _setStatus(i, StatusPresenca.ausente)),
-            ],
+            title: Text(r.alunoNome, style: const TextStyle(fontWeight: FontWeight.w600)),
+            subtitle: Text(
+              presente ? 'Presente ✓' : ausente ? 'Ausente ✗' : 'Aguardando',
+              style: TextStyle(
+                color: presente ? AppColors.sucesso : ausente ? AppColors.erro : AppColors.textoSecundario,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _acao(Icons.check_rounded, AppColors.botaoPresente, !presente, () => _setStatus(i, StatusPresenca.presente)),
+                AppSpacing.gapSmHorizontal,
+                _acao(Icons.close_rounded, AppColors.botaoFalta, !ausente, () => _setStatus(i, StatusPresenca.ausente)),
+              ],
+            ),
           ),
         ),
       ),

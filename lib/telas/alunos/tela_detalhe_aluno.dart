@@ -6,11 +6,43 @@ import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/telas/alunos/modal_formulario_aluno.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/provedores/provedor_alunos.dart';
 
-class TelaDetalheAluno extends StatelessWidget {
+class TelaDetalheAluno extends StatefulWidget {
   final Aluno aluno;
 
   const TelaDetalheAluno({super.key, required this.aluno});
+
+  @override
+  State<TelaDetalheAluno> createState() => _TelaDetalheAlunoState();
+}
+
+class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
+  late Aluno _alunoAtual;
+
+  @override
+  void initState() {
+    super.initState();
+    _alunoAtual = widget.aluno;
+  }
+
+  // Cria um AppBar customizado com botão de voltar
+  static PreferredSizeWidget _appBarComVoltar(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.backgroundColor,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: AppColors.textoPrimario),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        'Detalhes',
+        style: AppTypography.displaySmall.copyWith(color: AppColors.textoPrimario),
+      ),
+      centerTitle: true,
+    );
+  }
 
   static const _historico = [
     {'aula': 'Mat Pilates', 'data': '20/05/2026', 'presente': true},
@@ -21,12 +53,14 @@ class TelaDetalheAluno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ativo = aluno.ativo;
+    final ativo = _alunoAtual.ativo;
     final corStatus = ativo ? AppColors.sucesso : AppColors.erro;
 
     return LayoutTela(
       titulo: 'Detalhes',
       rotaAtual: Rotas.alunos,
+      mostrarMenu: false,
+      appBarCustom: _appBarComVoltar(context),
       centralizarConteudo: false,
       child: SingleChildScrollView(
         child: Column(
@@ -46,12 +80,12 @@ class TelaDetalheAluno extends StatelessWidget {
                     CircleAvatar(
                       radius: 38,
                       backgroundColor: Colors.white.withValues(alpha: 0.2),
-                      child: Text(aluno.inicial, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
+                      child: Text(_alunoAtual.inicial, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                     AppSpacing.gapLg,
-                    Text(aluno.nome, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(_alunoAtual.nome, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                     AppSpacing.gapXs,
-                    Text(aluno.modalidade, style: TextStyle(color: AppColors.primariaClara)),
+                    Text(_alunoAtual.modalidade, style: TextStyle(color: AppColors.primariaClara)),
                     AppSpacing.gapLg,
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
@@ -75,32 +109,71 @@ class TelaDetalheAluno extends StatelessWidget {
             AppSpacing.gapLg,
             Row(
               children: [
-                Expanded(child: _stat('${aluno.presencas}', 'Presenças', AppColors.sucesso)),
+                Expanded(child: _stat('${_alunoAtual.presencas}', 'Presenças', AppColors.sucesso)),
                 AppSpacing.gapSmHorizontal,
-                Expanded(child: _stat('${aluno.faltas}', 'Faltas', AppColors.erro)),
+                Expanded(child: _stat('${_alunoAtual.faltas}', 'Faltas', AppColors.erro)),
                 AppSpacing.gapSmHorizontal,
-                Expanded(child: _stat('${aluno.frequenciaPercentual}%', 'Frequência', AppColors.primaryColor)),
+                Expanded(child: _stat('${_alunoAtual.frequenciaPercentual}%', 'Frequência', AppColors.primaryColor)),
               ],
             ),
             AppSpacing.gapLg,
             BotaoPrimario(
               texto: 'Editar aluno',
               icone: Icons.edit_outlined,
-              onPressed: () => ModalFormularioAluno.abrir(context: context, aluno: aluno),
+              onPressed: () async {
+                final resultado = await ModalFormularioAluno.abrir(context: context, aluno: _alunoAtual);
+                if (resultado != null && mounted) {
+                  setState(() {
+                    _alunoAtual = resultado;
+                  });
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Aluno atualizado com sucesso')),
+                    );
+                  }
+                }
+              },
+            ),
+            AppSpacing.gapMd,
+            Container(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () => _confirmarRemocao(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.erro,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  shape: AppBorders.buttonShape,
+                  textStyle: AppTypography.titleLarge,
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outline, size: 20),
+                    SizedBox(width: AppSpacing.sm),
+                    Text('Remover aluno'),
+                  ],
+                ),
+              ),
             ),
             AppSpacing.gapLg,
             _bloco(
               'Informações',
               Column(
                 children: [
-                  _info(Icons.phone, 'Telefone', aluno.telefone),
+                  _info(Icons.phone, 'Telefone', _alunoAtual.telefone),
                   Divider(color: AppColors.divisor),
-                  _info(Icons.mail_outline, 'E-mail', aluno.email),
+                  _info(Icons.mail_outline, 'E-mail', _alunoAtual.email),
                   Divider(color: AppColors.divisor),
-                  _info(Icons.fitness_center, 'Modalidade', aluno.modalidade),
-                  if (aluno.ultimaAula != null) ...[
+                  _info(Icons.fitness_center, 'Modalidade', _alunoAtual.modalidade),
+                  if (_alunoAtual.ultimaAula != null) ...[
                     Divider(color: AppColors.divisor),
-                    _info(Icons.calendar_month, 'Última aula', aluno.ultimaAula!),
+                    _info(Icons.calendar_month, 'Última aula', _alunoAtual.ultimaAula!),
                   ],
                 ],
               ),
@@ -145,6 +218,38 @@ class TelaDetalheAluno extends StatelessWidget {
             AppSpacing.gapXxl,
           ],
         ),
+      ),
+    );
+  }
+
+  // Mostra diálogo de confirmação antes de remover
+  void _confirmarRemocao(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar remoção'),
+        content: Text('Deseja realmente remover o aluno ${_alunoAtual.nome}?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final provider = context.read<ProvedorAlunos>();
+              await provider.remover(_alunoAtual.id);
+              if (context.mounted) {
+                Navigator.pop(context, true); // Retorna true para indicar que houve alteração
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Aluno removido com sucesso')),
+                );
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.erro),
+            child: const Text('Remover'),
+          ),
+        ],
       ),
     );
   }

@@ -111,20 +111,23 @@ class ModalFormularioAula {
               AppSpacing.gapSm,
               ...alunoProv.alunos.map((aluno) {
                 final selecionado = alunoIds.contains(aluno.id);
-                return CheckboxListTile(
-                  value: selecionado,
-                  onChanged: (v) {
-                    setModalState(() {
-                      if (v == true) {
-                        alunoIds.add(aluno.id);
-                      } else {
-                        alunoIds.remove(aluno.id);
-                      }
-                    });
-                  },
-                  title: Text(aluno.nome, style: const TextStyle(fontSize: 14)),
-                  dense: true,
-                  controlAffinity: ListTileControlAffinity.leading,
+                return Material(
+                  color: Colors.transparent,
+                  child: CheckboxListTile(
+                    value: selecionado,
+                    onChanged: (v) {
+                      setModalState(() {
+                        if (v == true) {
+                          alunoIds.add(aluno.id);
+                        } else {
+                          alunoIds.remove(aluno.id);
+                        }
+                      });
+                    },
+                    title: Text(aluno.nome, style: const TextStyle(fontSize: 14)),
+                    dense: true,
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
                 );
               }),
               AppSpacing.gapXl,

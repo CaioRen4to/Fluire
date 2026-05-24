@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/modelos/aluno.dart';
 import 'package:fluire/rotas.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
@@ -21,9 +22,22 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
   @override
   void initState() {
     super.initState();
+    // Carrega alunos ao iniciar a tela
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProvedorAlunos>().carregar();
     });
+  }
+
+  Future<void> _navegarParaDetalhes(Aluno aluno) async {
+    final resultado = await Navigator.pushNamed(
+      context,
+      Rotas.detalheAluno,
+      arguments: aluno,
+    );
+    // Recarrega a lista se voltou da tela de detalhes com alteração (resultado == true)
+    if (resultado == true && mounted) {
+      context.read<ProvedorAlunos>().carregar();
+    }
   }
 
   @override
@@ -104,11 +118,7 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
               delay: Duration(milliseconds: 30 * i),
               child: CardAluno(
                 aluno: aluno,
-                onTap: () => Navigator.pushNamed(
-                  context,
-                  Rotas.detalheAluno,
-                  arguments: aluno,
-                ),
+                onTap: () => _navegarParaDetalhes(aluno),
               ),
             );
           },

@@ -3,8 +3,12 @@ import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 
+
 class TelaPerfil extends StatelessWidget {
   const TelaPerfil({super.key});
+
+
+
 
   @override
   Widget build(BuildContext context) {

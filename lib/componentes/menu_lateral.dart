@@ -51,19 +51,22 @@ class MenuLateral extends StatelessWidget {
             _item(context, Icons.school_outlined, 'Professores', Rotas.professores),
             const Spacer(),
             const Divider(height: 1),
-            ListTile(
-              leading: const Icon(Icons.logout, color: AppColors.erro),
-              title: Text(
-                'Sair',
-                style: TextStyle(color: AppColors.erro, fontWeight: AppTypography.fontWeightSemiBold),
+            Material(
+              color: Colors.transparent,
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: AppColors.erro),
+                title: Text(
+                  'Sair',
+                  style: TextStyle(color: AppColors.erro, fontWeight: AppTypography.fontWeightSemiBold),
+                ),
+                onTap: () async {
+                  await context.read<ProvedorAuth>().logout();
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacementNamed(Rotas.login);
+                  }
+                },
               ),
-              onTap: () async {
-                await context.read<ProvedorAuth>().logout();
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pushReplacementNamed(Rotas.login);
-                }
-              },
             ),
           ],
         ),
@@ -73,26 +76,29 @@ class MenuLateral extends StatelessWidget {
 
   Widget _item(BuildContext context, IconData icon, String titulo, String rota, {bool push = false}) {
     final ativo = rotaAtual == rota;
-    return ListTile(
-      leading: Icon(icon, color: ativo ? AppColors.primaryColor : AppColors.textoSecundario),
-      title: Text(
-        titulo,
-        style: TextStyle(
-          fontWeight: ativo ? FontWeight.bold : FontWeight.w500,
-          color: ativo ? AppColors.primaryColor : AppColors.textoPrimario,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        leading: Icon(icon, color: ativo ? AppColors.primaryColor : AppColors.textoSecundario),
+        title: Text(
+          titulo,
+          style: TextStyle(
+            fontWeight: ativo ? FontWeight.bold : FontWeight.w500,
+            color: ativo ? AppColors.primaryColor : AppColors.textoPrimario,
+          ),
         ),
-      ),
-      selected: ativo,
-      onTap: () {
-        Navigator.pop(context);
-        if (push) {
-          Navigator.pushNamed(context, rota);
-        } else {
-          if (ModalRoute.of(context)?.settings.name != rota) {
-            Navigator.pushReplacementNamed(context, rota);
+        selected: ativo,
+        onTap: () {
+          Navigator.pop(context);
+          if (push) {
+            Navigator.pushNamed(context, rota);
+          } else {
+            if (ModalRoute.of(context)?.settings.name != rota) {
+              Navigator.pushReplacementNamed(context, rota);
+            }
           }
-        }
-      },
+        },
+      ),
     );
   }
 }
