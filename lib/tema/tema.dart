@@ -41,6 +41,11 @@ class AppColors {
   static const Color sucesso = Color(0xFF6DB89A);
   static const Color alerta = Color(0xFFE8C57A);
   static const Color erro = Color(0xFFE87A7A);
+
+  //Status Aula
+  static const Color ativo = Color.fromARGB(255, 53, 182, 66);
+  static const Color em_andamento = Color.fromARGB(255, 237, 195, 7);
+  static const Color lotado = Color.fromARGB(151, 255, 0, 0);
 }
 
 /// Espaçamentos da aplicação

@@ -1,12 +1,11 @@
+import 'package:fluire/tema/tema.dart';
 import 'package:flutter/material.dart';
+import 'package:fluire/componentes/menu_lateral.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/rotas.dart';
-import 'package:fluire/tema/tema.dart';
-import 'package:fluire/componentes/layout_tela.dart';
-import 'package:fluire/componentes/cards/card_padrao.dart';
+import 'package:fluire/service/PainelService.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -18,28 +17,68 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int selectedDayIndex = 3;
 
-  final List<Map<String, dynamic>> weeklyFrequency = [
-    {'day': 'Seg', 'value': 40},
-    {'day': 'Ter', 'value': 55},
-    {'day': 'Qua', 'value': 35},
-    {'day': 'Qui', 'value': 70},
-    {'day': 'Sex', 'value': 50},
-    {'day': 'Sáb', 'value': 25},
-  ];
+  Map<String, dynamic>? dashboard;
+  bool loading = true;
+  List<dynamic> frequenciaSemana = [];
+  List<dynamic> salaDia = [];
+
+  void _showMessage(String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(text),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.primaryColor,
+      ),
+    );
+  }
+
+  Color statusColor(String? status) {
+    switch (status) {
+      case 'ativa':
+        return AppColors.sucesso;
+
+      case 'andamento':
+        return AppColors.em_andamento;
+
+      case 'lotada':
+        return AppColors.lotado;
+
+      default:
+        return AppColors.primaryColor;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+
+    buscarPainel();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProvedorAlunos>().carregar();
       context.read<ProvedorAulas>().carregar();
     });
   }
 
-  void _showMessage(String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
-    );
+  Future<void> buscarPainel() async {
+    try {
+      final response = await PainelService.buscarPainel();
+
+      setState(() {
+        dashboard = response;
+
+        frequenciaSemana = response['weekly_frequency'] ?? [];
+
+        salaDia = response['today_classes'] ?? [];
+
+        loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+
+      _showMessage('Erro ao carregar painel');
+    }
   }
 
   @override
@@ -48,21 +87,58 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final aulas = context.watch<ProvedorAulas>();
     final hoje = aulas.aulas.take(3).toList();
 
-    return LayoutTela(
-      titulo: 'Painel',
-      rotaAtual: Rotas.painel,
-      centralizarConteudo: false,
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Animacoes.fadeSlide(
-              child: Row(
+    if (loading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      drawer: const MenuLateral(rotaAtual: Rotas.painel),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: AppSpacing.screenPadding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const BotaoMenu(),
+                  Text(
+                    "Painel",
+                    style: AppTypography.displayLarge.copyWith(
+                      color: AppColors.textoPrimario,
+                    ),
+                  ),
+                  Stack(
+                    children: [
+                      _circleButton(Icons.notifications_none_rounded),
+                      Positioned(
+                        right: 12,
+                        top: 12,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              AppSpacing.gapXl,
+
+              // CARDS
+              Row(
                 children: [
                   Expanded(
                     child: _infoCard(
-                      title: 'Total de alunos',
-                      value: '${alunos.total}',
+                      title: "Alunos Presentes",
+                      value: dashboard?['alunos_presentes']?.toString() ?? '0',
                       icon: Icons.people_outline,
                       iconColor: AppColors.primaryColor,
                     ),
@@ -70,125 +146,236 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   AppSpacing.gapMdHorizontal,
                   Expanded(
                     child: _infoCard(
-                      title: 'Aulas cadastradas',
-                      value: '${aulas.aulas.length}',
+                      title: "Aulas Hoje",
+                      value: dashboard?['aulas_hoje']?.toString() ?? '0',
                       icon: Icons.calendar_today_outlined,
                       iconColor: AppColors.sucesso,
                     ),
                   ),
                 ],
               ),
-            ),
-            AppSpacing.gapMd,
-            Animacoes.fadeSlide(
-              delay: const Duration(milliseconds: 50),
-              child: Row(
+
+              AppSpacing.gapMd,
+
+              Row(
                 children: [
                   Expanded(
                     child: _infoCard(
-                      title: 'Alunos ativos',
-                      value: '${alunos.ativos}',
-                      icon: Icons.check_circle_outline,
-                      iconColor: AppColors.sucesso,
+                      title: "Em Andamento",
+                      value: dashboard?['em_andamento']?.toString() ?? '0',
+                      icon: Icons.play_arrow_rounded,
+                      iconColor: AppColors.alerta,
                     ),
                   ),
                   AppSpacing.gapMdHorizontal,
                   Expanded(
                     child: _infoCard(
-                      title: 'Freq. média',
-                      value: '87%',
+                      title: "Freq. Média",
+                      value: '${dashboard?['frequencia_media'] ?? 0}%',
                       icon: Icons.trending_up,
                       iconColor: AppColors.primaryColor,
                     ),
                   ),
                 ],
               ),
-            ),
-            AppSpacing.gapXl,
-            CardPadrao(
-              padding: AppSpacing.cardPaddingLarge,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        'Frequência semanal',
-                        style: TextStyle(
-                          fontSize: AppTypography.fontSizeH4,
-                          fontWeight: AppTypography.fontWeightBold,
-                          color: AppColors.textoPrimario,
+
+              AppSpacing.gapXl,
+
+              // GRAFICO
+              Container(
+                padding: AppSpacing.cardPaddingLarge,
+                decoration: BoxDecoration(
+                  color: AppColors.fundoCard,
+                  borderRadius: AppBorders.radiusXXLarge,
+                  boxShadow: AppShadows.cardShadow,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Frequência Semanal",
+                          style: AppTypography.headline.copyWith(
+                            color: AppColors.textoPrimario,
+                          ),
                         ),
-                      ),
-                      Text('Mai 2026', style: TextStyle(color: AppColors.textoSecundario)),
-                    ],
-                  ),
-                  AppSpacing.gapXxl,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: List.generate(weeklyFrequency.length, (index) {
-                      final item = weeklyFrequency[index];
-                      final isSelected = index == selectedDayIndex;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() => selectedDayIndex = index);
-                          _showMessage('Frequência de ${item['day']}');
-                        },
-                        child: Column(
-                          children: [
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              width: 40,
-                              height: (item['value'] as num).toDouble(),
-                              decoration: BoxDecoration(
-                                color: isSelected ? AppColors.primaryColor : AppColors.primariaClara,
-                                borderRadius: BorderRadius.circular(10),
+                        Text(
+                          "Mai 2026",
+                          style: AppTypography.titleSmall.copyWith(
+                            color: AppColors.textoSecundario,
+                          ),
+                        ),
+                      ],
+                    ),
+                    AppSpacing.gapXl,
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: List.generate(frequenciaSemana.length, (index) {
+                        final item = frequenciaSemana[index];
+                        final isSelected = index == selectedDayIndex;
+
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedDayIndex = index;
+                            });
+
+                            _showMessage("Frequência de ${item["day"]}");
+                          },
+                          child: Column(
+                            children: [
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 250),
+                                width: 40,
+                                height: (item["value"] ?? 0).toDouble(),
+
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? AppColors.primaryColor
+                                      : AppColors.primariaClara,
+
+                                  borderRadius: AppBorders.radiusMedium,
+                                ),
                               ),
-                            ),
-                            AppSpacing.gapSm,
-                            Text(item['day'] as String, style: const TextStyle(color: AppColors.textoSecundario)),
-                          ],
-                        ),
-                      );
-                    }),
+
+                              AppSpacing.gapSm,
+                              Text(
+                                item["day"],
+                                style: AppTypography.titleSmall.copyWith(
+                                  color: AppColors.textoSecundario,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+
+              AppSpacing.gapXxl,
+
+              // AULAS DE HOJE
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Aulas de Hoje",
+                    style: AppTypography.displaySmall.copyWith(
+                      color: AppColors.textoPrimario,
+                    ),
+                  ),
+
+                  TextButton(
+                    onPressed: () {
+                      _showMessage("Abrindo todas as aulas...");
+                    },
+                    child: Text(
+                      "Ver todas",
+                      style: AppTypography.titleMedium.copyWith(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            AppSpacing.gapXxl,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Próximas aulas', style: AppTypography.displaySmall),
-                TextButton(
-                  onPressed: () => Navigator.pushReplacementNamed(context, Rotas.agenda),
-                  child: const Text('Ver todas', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.w600)),
+
+              AppSpacing.gapMd,
+
+              Column(
+                children: salaDia.map<Widget>((item) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: _classCard(item),
+                  );
+                }).toList(),
+              ),
+
+              AppSpacing.gapLg,
+
+              Text(
+                "Ações Rápidas",
+                style: AppTypography.displaySmall.copyWith(
+                  color: AppColors.textoPrimario,
                 ),
-              ],
-            ),
-            AppSpacing.gapMd,
-            ...hoje.map((aula) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                  child: _classCard(context, aula),
-                )),
-            AppSpacing.gapXl,
-            Text('Ações rápidas', style: AppTypography.displaySmall),
-            AppSpacing.gapLg,
-            Row(
-              children: [
-                Expanded(child: _quickAction(context, 'Frequência', Icons.analytics_rounded, Rotas.frequenciaTotem, push: true)),
-                const SizedBox(width: 14),
-                Expanded(child: _quickAction(context, 'Alunos', Icons.groups_rounded, Rotas.alunos)),
-                const SizedBox(width: 14),
-                Expanded(child: _quickAction(context, 'Agenda', Icons.event_note_rounded, Rotas.agenda)),
-              ],
-            ),
-            AppSpacing.gapXxl,
-          ],
+              ),
+
+              AppSpacing.gapLg,
+
+              Row(
+                children: [
+                  Expanded(
+                    child: _quickAction(
+                      title: "Frequência",
+                      icon: Icons.analytics_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Rotas.frequenciaTotem,
+                        ).then((_) {
+                          // Recarrega dados após voltar da tela de frequência
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                  ),
+                  AppSpacing.gapMdHorizontal,
+                  Expanded(
+                    child: _quickAction(
+                      title: "Alunos",
+                      icon: Icons.groups_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Rotas.alunos,
+                        ).then((_) {
+                          // Recarrega dados após voltar da tela de alunos
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                  ),
+                  AppSpacing.gapMdHorizontal,
+                  Expanded(
+                    child: _quickAction(
+                      title: "Agenda",
+                      icon: Icons.event_note_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          Rotas.agenda,
+                        ).then((_) {
+                          // Recarrega dados após voltar da tela de agenda
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  // ================= COMPONENTES =================
+
+  Widget _circleButton(IconData icon) {
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: AppColors.fundoCard,
+        borderRadius: AppBorders.radiusLarge,
+      ),
+      child: Icon(icon, color: AppColors.textoPrimario),
     );
   }
 
@@ -198,22 +385,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required IconData icon,
     required Color iconColor,
   }) {
-    return CardPadrao(
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.fundoCard,
+        borderRadius: AppBorders.radiusXXLarge,
+        boxShadow: AppShadows.cardShadowSmall,
+      ),
       child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(color: AppColors.textoSecundario)),
+                Text(
+                  title,
+                  style: AppTypography.titleMedium.copyWith(
+                    color: AppColors.textoSecundario,
+                  ),
+                ),
                 AppSpacing.gapMd,
-                Text(value, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: AppTypography.fontSizeH2,
+                    fontWeight: AppTypography.fontWeightBold,
+                    color: AppColors.textoPrimario,
+                  ),
+                ),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.all(AppSpacing.md),
-            decoration: BoxDecoration(color: iconColor.withValues(alpha: 0.12), shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
             child: Icon(icon, color: iconColor),
           ),
         ],
@@ -221,64 +429,121 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _classCard(BuildContext context, dynamic aula) {
-    return CardPadrao(
-      onTap: () => Navigator.pushNamed(context, Rotas.frequenciaTotem, arguments: aula),
-      child: Row(
-        children: [
-          Container(
-            width: 52,
-            height: 52,
-            decoration: BoxDecoration(
-              color: AppColors.primaryColor.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.access_time_rounded, color: AppColors.primaryColor),
+  Widget _classCard(Map<String, dynamic> item) {
+    return InkWell(
+      borderRadius: AppBorders.radiusXXLarge,
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Abrindo ${item["title"]}"),
+            behavior: SnackBarBehavior.floating,
           ),
-          AppSpacing.gapMdHorizontal,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.fundoCard,
+          borderRadius: AppBorders.radiusXXLarge,
+          boxShadow: AppShadows.cardShadowSmall,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: statusColor(item["status"]).withOpacity(0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.access_time_rounded,
+                color: statusColor(item["status"]),
+              ),
+            ),
+            AppSpacing.gapMdHorizontal,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item["title"],
+                    style: AppTypography.headline.copyWith(
+                      color: AppColors.textoPrimario,
+                    ),
+                  ),
+                  AppSpacing.gapXs,
+                  Text(
+                    "${item["teacher"]} • ${item["time"]}",
+                    style: AppTypography.bodyMedium.copyWith(
+                      color: AppColors.textoSecundario,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(aula.nome, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text('${aula.professorNome} · ${aula.horarioInicio}', style: const TextStyle(color: AppColors.textoSecundario)),
+                Text(
+                  item["students"],
+                  style: AppTypography.headline.copyWith(
+                    color: AppColors.textoPrimario,
+                  ),
+                ),
+                AppSpacing.gapSm,
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: statusColor(item["status"]),
+                    shape: BoxShape.circle,
+                  ),
+                ),
               ],
             ),
-          ),
-          Text('${aula.alunoIds.length} alunos', style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _quickAction(BuildContext context, String title, IconData icon, String rota, {bool push = false}) {
+  Widget _quickAction({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
     return InkWell(
-      borderRadius: AppBorders.radiusXLarge,
-      onTap: () {
-        if (push) {
-          Navigator.pushNamed(context, rota);
-        } else {
-          Navigator.pushReplacementNamed(context, rota);
-        }
-      },
+      borderRadius: AppBorders.radiusXXLarge,
+      onTap: onTap,
       child: Container(
-        height: 110,
+        height: 120,
         decoration: BoxDecoration(
           color: AppColors.fundoCard,
-          borderRadius: AppBorders.radiusXLarge,
-          boxShadow: AppShadows.cardShadow,
+          borderRadius: AppBorders.radiusXXLarge,
+          boxShadow: AppShadows.cardShadowSmall,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 48,
-              height: 48,
-              decoration: const BoxDecoration(color: AppColors.primariaClara, shape: BoxShape.circle),
-              child: Icon(icon, color: AppColors.primaryColor),
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: AppColors.primariaClara,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: AppColors.primaryColor, size: 26),
             ),
-            AppSpacing.gapSm,
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            AppSpacing.gapMd,
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: AppTypography.titleMedium.copyWith(
+                fontWeight: AppTypography.fontWeightBold,
+                color: AppColors.textoPrimario,
+              ),
+            ),
           ],
         ),
       ),
