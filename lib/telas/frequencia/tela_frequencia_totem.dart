@@ -27,6 +27,7 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
         const Aula(
           id: 'default',
           nome: 'Mat Pilates',
+          usuarioId: 'u1',
           professorId: 'p1',
           professorNome: 'Ana Silva',
           horarioInicio: '08:00',
