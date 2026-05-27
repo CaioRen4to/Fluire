@@ -151,6 +151,7 @@ class ModalFormularioAula {
                         final nova = Aula(
                           id: aula?.id ?? const Uuid().v4(),
                           nome: nomeCtrl.text.trim(),
+                          usuarioId: prof.id,
                           professorId: prof.id,
                           professorNome: prof.nome,
                           horarioInicio: inicioCtrl.text.trim(),

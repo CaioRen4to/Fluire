@@ -56,21 +56,41 @@ class ProvedorAulas extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> salvar(Aula aula, {bool criando = false}) async {
+  Future<bool> criar(Aula aula) async {
     try {
-      final salva = await _dadosAulas.salvar(aula, criando: criando);
-      if (criando) {
-        aulas = [...aulas, salva];
-      } else {
-        aulas = aulas.map((a) => a.id == salva.id ? salva : a).toList();
-      }
+      final criada = await _dadosAulas.criar(aula);
+      aulas = [...aulas, criada];
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
       notifyListeners();
       return false;
+    }
+  }
+
+  Future<bool> atualizar(Aula aula) async {
+    try {
+      final atualizada = await _dadosAulas.atualizar(aula);
+      aulas = aulas.map((a) => a.id == atualizada.id ? atualizada : a).toList();
+      estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> salvar(Aula aula, {bool criando = false}) async {
+    if (criando) {
+      return criar(aula);
+    } else {
+      return atualizar(aula);
     }
   }
 
