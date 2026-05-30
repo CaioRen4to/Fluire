@@ -2,21 +2,20 @@ import 'package:flutter/foundation.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/modelos/professor.dart';
-import 'package:fluire/dados/dados_aulas.dart';
-import 'package:fluire/dados/dados_professores.dart';
+import 'package:fluire/services/aulas_service.dart';
+import 'package:fluire/services/api_client.dart';
 
 class ProvedorAulas extends ChangeNotifier {
-  final DadosAulas _dadosAulas;
-  final DadosProfessores _dadosProfessores;
+  final AulasService _service;
 
-  ProvedorAulas(this._dadosAulas, this._dadosProfessores);
+  ProvedorAulas(this._service);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   List<Aula> aulas = [];
   List<Professor> professores = [];
   String? mensagemErro;
   String busca = '';
-  int diaSelecionado = 1;
+  int diaSelecionado = DateTime.now().weekday;
 
   List<Aula> get aulasFiltradas {
     var lista = aulas.where((a) => a.diaSemana == diaSelecionado).toList();
@@ -36,14 +35,27 @@ class ProvedorAulas extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      aulas = await _dadosAulas.listar();
-      professores = await _dadosProfessores.listar();
+      aulas = await _service.listar();
+      professores = _extrairProfessores(aulas);
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
       estado = EstadoCarregamento.erro;
     }
     notifyListeners();
+  }
+
+  List<Professor> _extrairProfessores(List<Aula> lista) {
+    final map = <String, Professor>{};
+    for (final aula in lista) {
+      final id = aula.usuarioId.isNotEmpty ? aula.usuarioId : aula.professorId;
+      if (id.isEmpty) continue;
+      map[id] = Professor(
+        id: id,
+        nome: aula.professorNome.isNotEmpty ? aula.professorNome : 'Professor #$id',
+      );
+    }
+    return map.values.toList();
   }
 
   void definirBusca(String valor) {
@@ -58,8 +70,13 @@ class ProvedorAulas extends ChangeNotifier {
 
   Future<bool> criar(Aula aula) async {
     try {
-      final criada = await _dadosAulas.criar(aula);
+      var nova = aula;
+      if (nova.usuarioId.isEmpty && ApiClient.instance.userId != null) {
+        nova = nova.copyWith(usuarioId: ApiClient.instance.userId.toString());
+      }
+      final criada = await _service.criar(nova);
       aulas = [...aulas, criada];
+      professores = _extrairProfessores(aulas);
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
@@ -73,8 +90,9 @@ class ProvedorAulas extends ChangeNotifier {
 
   Future<bool> atualizar(Aula aula) async {
     try {
-      final atualizada = await _dadosAulas.atualizar(aula);
+      final atualizada = await _service.atualizar(aula);
       aulas = aulas.map((a) => a.id == atualizada.id ? atualizada : a).toList();
+      professores = _extrairProfessores(aulas);
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;

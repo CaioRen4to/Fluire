@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
@@ -22,7 +22,7 @@ class TelaDetalheAula extends StatelessWidget {
     if (aula == null) {
       return LayoutTela(
         titulo: 'Aula',
-        rotaAtual: Rotas.agenda,
+        rotaAtual: AppRoutes.agenda,
         child: const Center(child: Text('Aula não encontrada')),
       );
     }
@@ -31,7 +31,7 @@ class TelaDetalheAula extends StatelessWidget {
 
     return LayoutTela(
       titulo: 'Detalhes da aula',
-      rotaAtual: Rotas.agenda,
+      rotaAtual: AppRoutes.agenda,
       centralizarConteudo: false,
       child: SingleChildScrollView(
         child: Column(
@@ -92,7 +92,7 @@ class TelaDetalheAula extends StatelessWidget {
               icone: Icons.fact_check_outlined,
               onPressed: () => Navigator.pushNamed(
                 context,
-                Rotas.frequenciaTotem,
+                AppRoutes.frequenciaTotem,
                 arguments: aula,
               ),
             ),

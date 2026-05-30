@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
@@ -16,8 +16,8 @@ class TelaLogin extends StatefulWidget {
 }
 
 class _TelaLoginState extends State<TelaLogin> {
-  final _emailCtrl = TextEditingController(text: 'admin@fluire.com');
-  final _senhaCtrl = TextEditingController(text: '123456');
+  final _emailCtrl = TextEditingController();
+  final _senhaCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,12 +28,11 @@ class _TelaLoginState extends State<TelaLogin> {
   }
 
   Future<void> _entrar() async {
-    if (!_formKey.currentState!.validate()) return;
     final auth = context.read<ProvedorAuth>();
     final ok = await auth.login(_emailCtrl.text, _senhaCtrl.text);
     if (!mounted) return;
     if (ok) {
-      Navigator.pushReplacementNamed(context, Rotas.painel);
+      Navigator.pushReplacementNamed(context, AppRoutes.agenda);
     }
   }
 
@@ -46,7 +45,7 @@ class _TelaLoginState extends State<TelaLogin> {
       titulo: 'Bem-vindo ao Fluirê',
       subtitulo: 'Entre para continuar',
       rodape: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, Rotas.cadastro),
+        onTap: () => Navigator.pushNamed(context, AppRoutes.cadastro),
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
@@ -71,7 +70,6 @@ class _TelaLoginState extends State<TelaLogin> {
               controller: _emailCtrl,
               icone: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => v == null || v.isEmpty ? 'Informe o e-mail' : null,
             ),
             AppSpacing.gapLg,
             InputPadrao(
@@ -80,7 +78,6 @@ class _TelaLoginState extends State<TelaLogin> {
               controller: _senhaCtrl,
               icone: Icons.lock_outline,
               obscureText: true,
-              validator: (v) => v == null || v.isEmpty ? 'Informe a senha' : null,
             ),
             if (auth.mensagemErro != null) ...[
               AppSpacing.gapMd,

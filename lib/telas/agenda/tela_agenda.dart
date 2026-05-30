@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/cards/card_aula.dart';
@@ -20,14 +20,19 @@ class TelaAgenda extends StatefulWidget {
 }
 
 class _TelaAgendaState extends State<TelaAgenda> {
-  final List<Map<String, String>> _dias = [
-    {'dia': 'Seg', 'numero': '19', 'idx': '1'},
-    {'dia': 'Ter', 'numero': '20', 'idx': '2'},
-    {'dia': 'Qua', 'numero': '21', 'idx': '3'},
-    {'dia': 'Qui', 'numero': '22', 'idx': '4'},
-    {'dia': 'Sex', 'numero': '23', 'idx': '5'},
-    {'dia': 'Sáb', 'numero': '24', 'idx': '6'},
-  ];
+  List<Map<String, String>> get _dias {
+    final hoje = DateTime.now();
+    final inicio = hoje.subtract(Duration(days: hoje.weekday - 1));
+    const nomes = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+    return List.generate(7, (i) {
+      final data = inicio.add(Duration(days: i));
+      return {
+        'dia': nomes[i],
+        'numero': data.day.toString(),
+        'idx': (i + 1).toString(),
+      };
+    });
+  }
 
   @override
   void initState() {
@@ -44,7 +49,8 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
     return LayoutTela(
       titulo: 'Agenda',
-      rotaAtual: Rotas.agenda,
+      rotaAtual: AppRoutes.agenda,
+      mostrarBottomNav: true,
       centralizarConteudo: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -156,12 +162,12 @@ class _TelaAgendaState extends State<TelaAgenda> {
                 totalAlunos: aula.alunoIds.length,
                 onDetalhes: () => Navigator.pushNamed(
                   context,
-                  Rotas.detalheAula,
+                  AppRoutes.detalheAula,
                   arguments: aula.id,
                 ),
                 onFrequencia: () => Navigator.pushNamed(
                   context,
-                  Rotas.frequenciaTotem,
+                  AppRoutes.frequenciaTotem,
                   arguments: aula,
                 ),
                 onEditar: () => ModalFormularioAula.abrir(context: context, aula: aula),

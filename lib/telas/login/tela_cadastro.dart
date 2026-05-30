@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
@@ -32,19 +32,12 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
   Future<void> _cadastrar() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_senhaCtrl.text != _confirmCtrl.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('As senhas não coincidem.')),
-      );
-      return;
-    }
     final auth = context.read<ProvedorAuth>();
     try {
       final ok = await auth.cadastrar(_nomeCtrl.text, _emailCtrl.text, _senhaCtrl.text);
       if (!mounted) return;
       if (ok) {
-        Navigator.pushReplacementNamed(context, Rotas.painel);
+        Navigator.pushReplacementNamed(context, AppRoutes.agenda);
       }
     } catch (e) {
       if (e is UnimplementedError) {
@@ -68,7 +61,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
       titulo: 'Criar sua conta',
       subtitulo: 'Preencha os dados para começar',
       rodape: GestureDetector(
-        onTap: () => Navigator.pushReplacementNamed(context, Rotas.login),
+        onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
@@ -91,7 +84,6 @@ class _TelaCadastroState extends State<TelaCadastro> {
               label: 'Nome completo',
               controller: _nomeCtrl,
               icone: Icons.person_outline,
-              validator: (v) => v == null || v.isEmpty ? 'Informe o nome' : null,
             ),
             AppSpacing.gapLg,
             InputPadrao(
@@ -99,7 +91,6 @@ class _TelaCadastroState extends State<TelaCadastro> {
               controller: _emailCtrl,
               icone: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
-              validator: (v) => v == null || v.isEmpty ? 'Informe o e-mail' : null,
             ),
             AppSpacing.gapLg,
             InputPadrao(
@@ -107,7 +98,6 @@ class _TelaCadastroState extends State<TelaCadastro> {
               controller: _senhaCtrl,
               icone: Icons.lock_outline,
               obscureText: true,
-              validator: (v) => v == null || v.length < 6 ? 'Mínimo 6 caracteres' : null,
             ),
             AppSpacing.gapLg,
             InputPadrao(
@@ -115,7 +105,6 @@ class _TelaCadastroState extends State<TelaCadastro> {
               controller: _confirmCtrl,
               icone: Icons.lock_outline,
               obscureText: true,
-              validator: (v) => v == null || v.isEmpty ? 'Confirme a senha' : null,
             ),
             if (auth.mensagemErro != null) ...[
               AppSpacing.gapMd,

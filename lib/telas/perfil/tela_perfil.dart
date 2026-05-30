@@ -1,34 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
-
+import 'package:fluire/componentes/estado_visual/estado_visual.dart';
+import 'package:fluire/provedores/provedor_auth.dart';
+import 'package:fluire/modelos/usuario.dart';
 
 class TelaPerfil extends StatelessWidget {
   const TelaPerfil({super.key});
 
-
-
-
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<ProvedorAuth>();
+    final usuario = auth.usuario;
+
+    if (usuario == null) {
+      return LayoutTela(
+        titulo: 'Meu Perfil',
+        rotaAtual: AppRoutes.perfil,
+        mostrarBottomNav: true,
+        child: const EstadoCarregando(mensagem: 'Carregando perfil...'),
+      );
+    }
+
     return LayoutTela(
       titulo: 'Meu Perfil',
-      mostrarMenu: true,
+      rotaAtual: AppRoutes.perfil,
+      mostrarBottomNav: true,
       child: Column(
         children: [
           AppSpacing.gapXl,
-          _buildProfileCard(context),
+          _buildProfileCard(usuario.nome, usuario.email, usuario.rotuloTipo),
           AppSpacing.gapLg,
-          _buildInfoSection(context),
+          _buildInfoSection(context, usuario),
           AppSpacing.gapLg,
-          _buildActionsSection(context),
+          _buildActionsSection(context, auth),
         ],
       ),
     );
   }
 
-  Widget _buildProfileCard(BuildContext context) {
+  Widget _buildProfileCard(String nome, String email, String tipo) {
     return Container(
       width: double.infinity,
       padding: AppSpacing.cardPaddingLarge,
@@ -50,7 +64,7 @@ class TelaPerfil extends StatelessWidget {
           ),
           AppSpacing.gapMd,
           Text(
-            'Nome do Usuário',
+            nome,
             style: AppTypography.titleLarge.copyWith(
               color: AppColors.textoPrimario,
               fontWeight: AppTypography.fontWeightSemiBold,
@@ -58,7 +72,7 @@ class TelaPerfil extends StatelessWidget {
           ),
           AppSpacing.gapSm,
           Text(
-            'usuario@email.com',
+            email,
             style: AppTypography.bodyMedium.copyWith(
               color: AppColors.textoSecundario,
             ),
@@ -74,7 +88,7 @@ class TelaPerfil extends StatelessWidget {
               borderRadius: AppBorders.radiusMedium,
             ),
             child: Text(
-              'Professor',
+              tipo,
               style: AppTypography.bodySmall.copyWith(
                 color: AppColors.textoPrimario,
                 fontWeight: AppTypography.fontWeightMedium,
@@ -86,7 +100,7 @@ class TelaPerfil extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context) {
+  Widget _buildInfoSection(BuildContext context, Usuario usuario) {
     return Container(
       width: double.infinity,
       padding: AppSpacing.cardPadding,
@@ -99,18 +113,18 @@ class TelaPerfil extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Informações Pessoais',
+            'Informações da Conta',
             style: AppTypography.titleMedium.copyWith(
               color: AppColors.textoPrimario,
               fontWeight: AppTypography.fontWeightSemiBold,
             ),
           ),
           AppSpacing.gapMd,
-          _buildInfoRow(Icons.phone, 'Telefone', '(00) 00000-0000'),
+          _buildInfoRow(Icons.badge_outlined, 'ID', usuario.id),
           AppSpacing.gapMd,
-          _buildInfoRow(Icons.calendar_today, 'Data de Nascimento', '01/01/1990'),
+          _buildInfoRow(Icons.mail_outline, 'E-mail', usuario.email),
           AppSpacing.gapMd,
-          _buildInfoRow(Icons.location_on, 'Localização', 'São Paulo, SP'),
+          _buildInfoRow(Icons.person_outline, 'Nome', usuario.nome),
         ],
       ),
     );
@@ -119,11 +133,7 @@ class TelaPerfil extends StatelessWidget {
   Widget _buildInfoRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: AppColors.primaryColor,
-        ),
+        Icon(icon, size: 20, color: AppColors.primaryColor),
         AppSpacing.gapSmHorizontal,
         Expanded(
           child: Column(
@@ -148,7 +158,7 @@ class TelaPerfil extends StatelessWidget {
     );
   }
 
-  Widget _buildActionsSection(BuildContext context) {
+  Widget _buildActionsSection(BuildContext context, ProvedorAuth auth) {
     return Container(
       width: double.infinity,
       padding: AppSpacing.cardPadding,
@@ -160,26 +170,34 @@ class TelaPerfil extends StatelessWidget {
       child: Column(
         children: [
           BotaoPrimario(
-            texto: 'Editar Perfil',
-            icone: Icons.edit,
-            onPressed: () {
-              // TODO: Implementar edição de perfil
-            },
+            texto: 'Ver Painel',
+            icone: Icons.dashboard_outlined,
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.painel),
           ),
           AppSpacing.gapMd,
           BotaoSecundario(
-            texto: 'Alterar Senha',
-            icone: Icons.lock,
-            onPressed: () {
-              // TODO: Implementar alteração de senha
-            },
+            texto: 'Frequência',
+            icone: Icons.fact_check_outlined,
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.frequenciaTotem),
+          ),
+          AppSpacing.gapMd,
+          BotaoSecundario(
+            texto: 'Professores',
+            icone: Icons.school_outlined,
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.professores),
           ),
           AppSpacing.gapMd,
           BotaoTexto(
             texto: 'Sair',
             cor: AppColors.erro,
-            onPressed: () {
-              // TODO: Implementar logout
+            onPressed: () async {
+              await auth.logout();
+              if (context.mounted) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.login,
+                  (_) => false,
+                );
+              }
             },
           ),
         ],

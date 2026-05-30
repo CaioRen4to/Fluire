@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema_app.dart';
-import 'package:fluire/rotas.dart';
 import 'package:fluire/provedores/provedores_app.dart';
+import 'package:fluire/provedores/provedor_auth.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
   runApp(
     MultiProvider(
       providers: ProvedoresApp.providers,
@@ -30,10 +24,45 @@ class FluireApp extends StatelessWidget {
       title: 'Fluirê',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      initialRoute: Rotas.login,
-      routes: Rotas.rotas,
-      onGenerateRoute: Rotas.onGenerateRoute,
-      builder: (context, child) => child ?? const SizedBox.shrink(),
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.rotas,
+      onGenerateRoute: AppRoutes.onGenerateRoute,
+      builder: (context, child) {
+        return _AuthGuard(child: child ?? const SizedBox.shrink());
+      },
     );
+  }
+}
+
+class _AuthGuard extends StatelessWidget {
+  final Widget child;
+
+  const _AuthGuard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final rota = ModalRoute.of(context)?.settings.name;
+    if (rota == null) return child;
+
+    if (AppRoutes.rotasPublicas.contains(rota)) {
+      return child;
+    }
+
+    final autenticado = context.watch<ProvedorAuth>().autenticado;
+    if (!autenticado) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRoutes.login,
+            (_) => false,
+          );
+        }
+      });
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return child;
   }
 }

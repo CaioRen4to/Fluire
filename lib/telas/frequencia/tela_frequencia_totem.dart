@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/modelos/registro_frequencia.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
+import 'package:fluire/services/frequencia_service.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/util/animacoes.dart';
 
@@ -16,13 +17,18 @@ class TelaFrequenciaTotem extends StatefulWidget {
 }
 
 class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
+  final _frequenciaService = FrequenciaService();
   late Aula _aula;
   late List<RegistroFrequencia> _registros;
-  final _hora = '08:00:00';
+  bool _salvando = false;
+  late String _hora;
 
   @override
   void initState() {
     super.initState();
+    final agora = DateTime.now();
+    _hora =
+        '${agora.hour.toString().padLeft(2, '0')}:${agora.minute.toString().padLeft(2, '0')}:${agora.second.toString().padLeft(2, '0')}';
     _aula = widget.aula ??
         const Aula(
           id: 'default',
@@ -72,6 +78,56 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           r.status = status;
         }
       });
+
+  Future<void> _salvarFrequencia() async {
+    final aulaId = int.tryParse(_aula.id);
+    if (aulaId == null) {
+      _mostrarMensagem('Selecione uma aula válida para salvar a frequência.');
+      return;
+    }
+
+    setState(() => _salvando = true);
+    final hoje = DateTime.now();
+    final data =
+        '${hoje.year}-${hoje.month.toString().padLeft(2, '0')}-${hoje.day.toString().padLeft(2, '0')}';
+
+    try {
+      for (final registro in _registros) {
+        if (registro.status == StatusPresenca.pendente) continue;
+        final alunoId = int.tryParse(registro.alunoId);
+        if (alunoId == null) continue;
+
+        await _frequenciaService.registrar(
+          aulaId: aulaId,
+          alunoId: alunoId,
+          presente: registro.status == StatusPresenca.presente ? 1 : 0,
+          dataPresenca: data,
+        );
+      }
+
+      if (mounted) {
+        _mostrarMensagem('Frequência salva com sucesso!');
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      if (mounted) {
+        _mostrarMensagem(e.toString().replaceFirst('Exception: ', ''));
+      }
+    } finally {
+      if (mounted) setState(() => _salvando = false);
+    }
+  }
+
+  void _mostrarMensagem(String texto) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(texto),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.primaryColor,
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -202,6 +258,26 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
+                      onPressed: _salvando ? null : _salvarFrequencia,
+                      icon: _salvando
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Icon(Icons.save_outlined),
+                      label: Text(_salvando ? 'Salvando...' : 'Salvar'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
+                      ),
+                    ),
+                  ),
+                  AppSpacing.gapMdHorizontal,
+                  Expanded(
+                    child: ElevatedButton.icon(
                       onPressed: () => _marcarTodos(StatusPresenca.presente),
                       icon: const Icon(Icons.check_rounded),
                       label: const Text('Marcar todos'),
@@ -214,15 +290,13 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                     ),
                   ),
                   AppSpacing.gapMdHorizontal,
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => _marcarTodos(StatusPresenca.pendente),
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: const Text('Resetar'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
-                      ),
+                  OutlinedButton.icon(
+                    onPressed: () => _marcarTodos(StatusPresenca.pendente),
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: const Text('Resetar'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+                      shape: RoundedRectangleBorder(borderRadius: AppBorders.radiusMedium),
                     ),
                   ),
                 ],

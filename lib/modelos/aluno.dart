@@ -8,6 +8,10 @@ class Aluno {
   final int faltas;
   final bool ativo;
   final String? ultimaAula;
+  final int? createdBy;
+  final int? updatedBy;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const Aluno({
     required this.id,
@@ -19,6 +23,10 @@ class Aluno {
     this.faltas = 0,
     this.ativo = true,
     this.ultimaAula,
+    this.createdBy,
+    this.updatedBy,
+    this.createdAt,
+    this.updatedAt,
   });
 
   String get inicial => nome.isNotEmpty ? nome[0].toUpperCase() : '?';
@@ -39,6 +47,10 @@ class Aluno {
     int? faltas,
     bool? ativo,
     String? ultimaAula,
+    int? createdBy,
+    int? updatedBy,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Aluno(
       id: id ?? this.id,
@@ -50,6 +62,10 @@ class Aluno {
       faltas: faltas ?? this.faltas,
       ativo: ativo ?? this.ativo,
       ultimaAula: ultimaAula ?? this.ultimaAula,
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -65,8 +81,23 @@ class Aluno {
         'ultimaAula': ultimaAula,
       };
 
+  static DateTime? _parseData(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    try {
+      return DateTime.parse(value.toString());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    return int.tryParse(value.toString());
+  }
+
   factory Aluno.fromJson(dynamic json) {
-    // Backend retorna lista: [id, nome, telefone, email, modalidade, presencas, faltas, ativo, ultimaAula]
     if (json is List) {
       return Aluno(
         id: json[0]?.toString() ?? '',
@@ -80,17 +111,22 @@ class Aluno {
         ultimaAula: json[8] as String?,
       );
     }
-    // Fallback para dicionário (caso backend seja modificado no futuro)
+
+    final map = json as Map<String, dynamic>;
     return Aluno(
-      id: json['id']?.toString() ?? '',
-      nome: json['nome'] as String,
-      telefone: json['telefone'] as String? ?? '',
-      email: json['email'] as String? ?? '',
-      modalidade: json['modalidade'] as String? ?? '',
-      presencas: json['presencas'] as int? ?? 0,
-      faltas: json['faltas'] as int? ?? 0,
-      ativo: json['ativo'] == 1 || json['ativo'] == true,
-      ultimaAula: json['ultimaAula'] as String?,
+      id: map['id']?.toString() ?? '',
+      nome: map['nome'] as String? ?? '',
+      telefone: map['telefone'] as String? ?? '',
+      email: map['email'] as String? ?? '',
+      modalidade: map['modalidade'] as String? ?? '',
+      presencas: map['presencas'] as int? ?? 0,
+      faltas: map['faltas'] as int? ?? 0,
+      ativo: map['ativo'] == 1 || map['ativo'] == true,
+      ultimaAula: map['ultimaAula'] as String?,
+      createdBy: _parseInt(map['created_by']),
+      updatedBy: _parseInt(map['updated_by']),
+      createdAt: _parseData(map['created_at']),
+      updatedAt: _parseData(map['updated_at']),
     );
   }
 }

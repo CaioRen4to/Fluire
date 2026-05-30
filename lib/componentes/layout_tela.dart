@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/util/responsivo.dart';
-import 'package:fluire/componentes/menu_lateral.dart';
 import 'package:fluire/componentes/cabecalho/cabecalho_tela.dart';
+import 'package:fluire/widgets/app_bottom_nav.dart';
 
 class LayoutTela extends StatelessWidget {
   final String titulo;
   final Widget child;
   final String? rotaAtual;
-  final bool mostrarMenu;
+  final bool mostrarBottomNav;
   final Widget? acaoFlutuante;
   final bool centralizarConteudo;
   final PreferredSizeWidget? appBarCustom;
@@ -18,7 +18,7 @@ class LayoutTela extends StatelessWidget {
     required this.titulo,
     required this.child,
     this.rotaAtual,
-    this.mostrarMenu = true,
+    this.mostrarBottomNav = false,
     this.acaoFlutuante,
     this.centralizarConteudo = true,
     this.appBarCustom,
@@ -36,12 +36,15 @@ class LayoutTela extends StatelessWidget {
           )
         : child;
 
+    final indiceBottomNav =
+        mostrarBottomNav && rotaAtual != null ? AppBottomNav.indiceDaRota(rotaAtual) : null;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      drawer: mostrarMenu && rotaAtual != null
-          ? MenuLateral(rotaAtual: rotaAtual)
-          : null,
       floatingActionButton: acaoFlutuante,
+      bottomNavigationBar: indiceBottomNav != null
+          ? AppBottomNav(indiceAtual: indiceBottomNav)
+          : null,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,7 +54,7 @@ class LayoutTela extends StatelessWidget {
             else
               CabecalhoTela(
                 titulo: titulo,
-                mostrarMenu: mostrarMenu,
+                mostrarMenu: false,
               ),
             Expanded(
               child: Padding(

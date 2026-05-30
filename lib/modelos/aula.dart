@@ -12,6 +12,10 @@ class Aula {
   final List<String> alunoIds;
   final StatusAula status;
   final int diaSemana;
+  final int? createdBy;
+  final int? updatedBy;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const Aula({
     required this.id,
@@ -25,6 +29,10 @@ class Aula {
     this.alunoIds = const [],
     this.status = StatusAula.proxima,
     this.diaSemana = 1,
+    this.createdBy,
+    this.updatedBy,
+    this.createdAt,
+    this.updatedAt,
   });
 
   String get horario => '$horarioInicio - $horarioFim';
@@ -54,6 +62,10 @@ class Aula {
     List<String>? alunoIds,
     StatusAula? status,
     int? diaSemana,
+    int? createdBy,
+    int? updatedBy,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Aula(
       id: id ?? this.id,
@@ -67,25 +79,39 @@ class Aula {
       alunoIds: alunoIds ?? this.alunoIds,
       status: status ?? this.status,
       diaSemana: diaSemana ?? this.diaSemana,
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
         'nome': nome,
         'usuario_id': usuarioId,
-        'professorId': professorId,
-        'professorNome': professorNome,
         'horario_inicio': horarioInicio,
         'horario_fim': horarioFim,
         'frequencia': frequencia,
-        'alunoIds': alunoIds,
-        'status': status.index,
         'dia_semana': diaSemana,
       };
 
+  static DateTime? _parseData(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    try {
+      return DateTime.parse(value.toString());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    return int.tryParse(value.toString());
+  }
+
   factory Aula.fromJson(dynamic json) {
-    // Backend retorna dicionário com campos snake_case
     if (json is Map<String, dynamic>) {
       return Aula(
         id: json['id']?.toString() ?? '',
@@ -93,8 +119,8 @@ class Aula {
         usuarioId: json['usuario_id']?.toString() ?? '',
         professorId: json['professorId']?.toString() ?? '',
         professorNome: json['professorNome'] as String? ?? '',
-        horarioInicio: json['horario_inicio'] as String? ?? '',
-        horarioFim: json['horario_fim'] as String? ?? '',
+        horarioInicio: json['horario_inicio']?.toString() ?? '',
+        horarioFim: json['horario_fim']?.toString() ?? '',
         frequencia: json['frequencia'] as String? ?? 'Semanal',
         alunoIds: (json['alunoIds'] as List<dynamic>?)
                 ?.map((e) => e.toString())
@@ -102,9 +128,13 @@ class Aula {
             [],
         status: StatusAula.values[json['status'] as int? ?? 1],
         diaSemana: json['dia_semana'] as int? ?? 1,
+        createdBy: _parseInt(json['created_by']),
+        updatedBy: _parseInt(json['updated_by']),
+        createdAt: _parseData(json['created_at']),
+        updatedAt: _parseData(json['updated_at']),
       );
     }
-    // Fallback para formato camelCase (compatibilidade)
+
     return Aula(
       id: json['id'] as String,
       nome: json['nome'] as String,

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/modelos/aluno.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/cards/card_aluno.dart';
@@ -31,7 +31,7 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
   Future<void> _navegarParaDetalhes(Aluno aluno) async {
     final resultado = await Navigator.pushNamed(
       context,
-      Rotas.detalheAluno,
+      AppRoutes.detalheAluno,
       arguments: aluno,
     );
     // Recarrega a lista se voltou da tela de detalhes com alteração (resultado == true)
@@ -46,7 +46,8 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
 
     return LayoutTela(
       titulo: 'Alunos',
-      rotaAtual: Rotas.alunos,
+      rotaAtual: AppRoutes.alunos,
+      mostrarBottomNav: true,
       centralizarConteudo: false,
       acaoFlutuante: FloatingActionButton(
         backgroundColor: AppColors.primaryColor,

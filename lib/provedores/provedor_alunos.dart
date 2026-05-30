@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/modelos/aluno.dart';
-import 'package:fluire/dados/dados_alunos.dart';
+import 'package:fluire/services/alunos_service.dart';
 
 class ProvedorAlunos extends ChangeNotifier {
-  final DadosAlunos _dados;
+  final AlunosService _service;
 
-  ProvedorAlunos(this._dados);
+  ProvedorAlunos(this._service);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   List<Aluno> alunos = [];
@@ -31,7 +31,7 @@ class ProvedorAlunos extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      alunos = await _dados.listar();
+      alunos = await _service.listar();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
     } catch (e) {
@@ -48,7 +48,7 @@ class ProvedorAlunos extends ChangeNotifier {
 
   Future<bool> criar(Aluno aluno) async {
     try {
-      final criado = await _dados.criar(aluno);
+      final criado = await _service.criar(aluno);
       alunos = [...alunos, criado];
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
@@ -63,7 +63,7 @@ class ProvedorAlunos extends ChangeNotifier {
 
   Future<bool> atualizar(Aluno aluno) async {
     try {
-      final atualizado = await _dados.atualizar(aluno);
+      final atualizado = await _service.atualizar(aluno);
       alunos = alunos.map((a) => a.id == atualizado.id ? atualizado : a).toList();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
@@ -86,7 +86,7 @@ class ProvedorAlunos extends ChangeNotifier {
 
   Future<void> remover(String id) async {
     try {
-      await _dados.remover(id);
+      await _service.remover(id);
       alunos = alunos.where((a) => a.id != id).toList();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/tema/tema.dart';
 
 class TelaProfessores extends StatefulWidget {
@@ -14,39 +16,32 @@ class _TelaProfessoresState extends State<TelaProfessores> {
   int selectedIndex = -1;
   String search = '';
 
-  final List<Map<String, dynamic>> professores = [
-    {
-      "name": "Ana Silva",
-      "specialties": "Mat Pilates, Pilates Solo",
-      "phone": "(11) 99888-1111",
-      "lessons": 3,
-      "active": true,
-    },
-    {
-      "name": "Carlos Lima",
-      "specialties": "Reformer, Pilates Funcional",
-      "phone": "(11) 99888-2222",
-      "lessons": 2,
-      "active": true,
-    },
-    {
-      "name": "Mariana Costa",
-      "specialties": "Pilates Funcional, Duet",
-      "phone": "(11) 99888-3333",
-      "lessons": 1,
-      "active": true,
-    },
-    {
-      "name": "Rafael Mendes",
-      "specialties": "Mat Pilates, Reformer",
-      "phone": "(11) 99888-4444",
-      "lessons": 0,
-      "active": false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProvedorAulas>().carregar();
+    });
+  }
+
+  List<Map<String, dynamic>> _professoresFromProvider(ProvedorAulas provider) {
+    final hoje = DateTime.now().weekday;
+    return provider.professores.map((p) {
+      final aulasDoProfessor = provider.aulas.where((a) => a.usuarioId == p.id);
+      return {
+        'name': p.nome,
+        'specialties': 'Instrutor de Pilates',
+        'phone': '—',
+        'lessons': aulasDoProfessor.where((a) => a.diaSemana == hoje).length,
+        'active': aulasDoProfessor.isNotEmpty,
+      };
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<ProvedorAulas>();
+    final professores = _professoresFromProvider(provider);
     final activeTeachers =
         professores.where((e) => e['active'] == true).length;
 
@@ -75,8 +70,8 @@ class _TelaProfessoresState extends State<TelaProfessores> {
               child: Row(
                 children: [
                   _circleButton(
-                    icon: Icons.menu_rounded,
-                    onTap: () {},
+                    icon: Icons.arrow_back_rounded,
+                    onTap: () => Navigator.pop(context),
                   ),
                   const Spacer(),
                   Text(

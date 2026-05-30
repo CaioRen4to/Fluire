@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/modelos/usuario.dart';
-import 'package:fluire/dados/dados_auth.dart';
+import 'package:fluire/services/auth_service.dart';
 
 class ProvedorAuth extends ChangeNotifier {
-  final DadosAuth _dados;
+  final AuthService _authService;
 
-  ProvedorAuth(this._dados);
+  ProvedorAuth(this._authService);
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   Usuario? usuario;
@@ -19,13 +19,8 @@ class ProvedorAuth extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      final sucesso = await _dados.login(email, senha);
-      if (sucesso) {
-        usuario = Usuario(id: email, nome: email.split('@')[0], email: email);
-        estado = EstadoCarregamento.sucesso;
-      } else {
-        throw Exception('Email ou senha incorretos.');
-      }
+      usuario = await _authService.login(email, senha);
+      estado = EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
     } catch (e) {
@@ -41,11 +36,29 @@ class ProvedorAuth extends ChangeNotifier {
     mensagemErro = null;
     notifyListeners();
     try {
-      final sucesso = await _dados.cadastro(email, senha);
-      if (sucesso) {
-        usuario = Usuario(id: email, nome: nome, email: email);
-        estado = EstadoCarregamento.sucesso;
-      }
+      usuario = await _authService.cadastrar(
+        nome: nome,
+        email: email,
+        senha: senha,
+      );
+      estado = EstadoCarregamento.sucesso;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> recuperarSenha(String email) async {
+    estado = EstadoCarregamento.carregando;
+    mensagemErro = null;
+    notifyListeners();
+    try {
+      await _authService.recuperarSenha(email);
+      estado = EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
     } catch (e) {
@@ -57,7 +70,7 @@ class ProvedorAuth extends ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await _dados.logout();
+    await _authService.logout();
     usuario = null;
     estado = EstadoCarregamento.inicial;
     notifyListeners();

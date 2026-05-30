@@ -1,11 +1,10 @@
 import 'package:fluire/tema/tema.dart';
 import 'package:flutter/material.dart';
-import 'package:fluire/componentes/menu_lateral.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
-import 'package:fluire/rotas.dart';
-import 'package:fluire/service/PainelService.dart';
+import 'package:fluire/routes/app_routes.dart';
+import 'package:fluire/services/painel_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -15,6 +14,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final _painelService = PainelService();
   int selectedDayIndex = 3;
 
   Map<String, dynamic>? dashboard;
@@ -61,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> buscarPainel() async {
     try {
-      final response = await PainelService.buscarPainel();
+      final response = await _painelService.buscarPainel();
 
       setState(() {
         dashboard = response;
@@ -83,27 +83,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final alunos = context.watch<ProvedorAlunos>();
-    final aulas = context.watch<ProvedorAulas>();
-    final hoje = aulas.aulas.take(3).toList();
+    context.watch<ProvedorAlunos>();
+    context.watch<ProvedorAulas>();
 
     if (loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      drawer: const MenuLateral(rotaAtual: Rotas.painel),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: AppSpacing.screenPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const BotaoMenu(),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.fundoCard,
+                    ),
+                  ),
                   Text(
                     "Painel",
                     style: AppTypography.displayLarge.copyWith(
@@ -273,7 +276,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                   TextButton(
                     onPressed: () {
-                      _showMessage("Abrindo todas as aulas...");
+                      Navigator.pushNamed(context, AppRoutes.agenda);
                     },
                     child: Text(
                       "Ver todas",
@@ -316,7 +319,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          Rotas.frequenciaTotem,
+                          AppRoutes.frequenciaTotem,
                         ).then((_) {
                           // Recarrega dados após voltar da tela de frequência
                           buscarPainel();
@@ -332,7 +335,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          Rotas.alunos,
+                          AppRoutes.alunos,
                         ).then((_) {
                           // Recarrega dados após voltar da tela de alunos
                           buscarPainel();
@@ -348,7 +351,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          Rotas.agenda,
+                          AppRoutes.agenda,
                         ).then((_) {
                           // Recarrega dados após voltar da tela de agenda
                           buscarPainel();

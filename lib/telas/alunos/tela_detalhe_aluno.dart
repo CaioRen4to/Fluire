@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/modelos/aluno.dart';
 import 'package:fluire/tema/tema.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/util/animacoes.dart';
@@ -58,8 +58,7 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
 
     return LayoutTela(
       titulo: 'Detalhes',
-      rotaAtual: Rotas.alunos,
-      mostrarMenu: false,
+      rotaAtual: AppRoutes.alunos,
       appBarCustom: _appBarComVoltar(context),
       centralizarConteudo: false,
       child: SingleChildScrollView(
