@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/routes/app_routes.dart';
+import 'package:fluire/modelos/dashboard.dart';
 import 'package:fluire/services/painel_service.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 
@@ -18,10 +19,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final _painelService = PainelService();
   int selectedDayIndex = 3;
 
-  Map<String, dynamic>? dashboard;
+  DashboardData? dashboard;
   bool loading = true;
-  List<dynamic> frequenciaSemana = [];
-  List<dynamic> salaDia = [];
+  List<Map<String, dynamic>> frequenciaSemana = [];
+  List<Map<String, dynamic>> salaDia = [];
 
   void _showMessage(String text) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -66,11 +67,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       setState(() {
         dashboard = response;
-
-        frequenciaSemana = response['weekly_frequency'] ?? [];
-
-        salaDia = response['today_classes'] ?? [];
-
+        frequenciaSemana = response.weeklyFrequency;
+        salaDia = response.todayClasses;
         loading = false;
       });
     } catch (e) {
@@ -109,7 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: _infoCard(
                     title: 'Alunos Presentes',
-                    value: dashboard?['alunos_presentes']?.toString() ?? '0',
+                    value: dashboard?.alunosPresentes.toString() ?? '0',
                     icon: Icons.people_outline,
                     iconColor: AppColors.primaryColor,
                   ),
@@ -118,7 +116,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: _infoCard(
                     title: 'Aulas Hoje',
-                    value: dashboard?['aulas_hoje']?.toString() ?? '0',
+                    value: dashboard?.aulasHoje.toString() ?? '0',
                     icon: Icons.calendar_today_outlined,
                     iconColor: AppColors.sucesso,
                   ),
@@ -133,7 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: _infoCard(
                     title: 'Em Andamento',
-                    value: dashboard?['em_andamento']?.toString() ?? '0',
+                    value: dashboard?.emAndamento.toString() ?? '0',
                     icon: Icons.play_arrow_rounded,
                     iconColor: AppColors.alerta,
                   ),
@@ -142,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   child: _infoCard(
                     title: 'Freq. Média',
-                    value: '${dashboard?['frequencia_media'] ?? 0}%',
+                    value: '${dashboard?.frequenciaMedia ?? 0}%',
                     icon: Icons.trending_up,
                     iconColor: AppColors.primaryColor,
                   ),

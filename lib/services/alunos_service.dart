@@ -67,7 +67,6 @@ class AlunosService {
       'nome': aluno.nome,
       'email': aluno.email,
       'telefone': aluno.telefone,
-      if (_api.userId != null) 'usuario_logado_id': _api.userId,
     };
 
     final response = await _api.put('/alunos/$idInt', body: body);
@@ -84,8 +83,7 @@ class AlunosService {
     final idInt = int.tryParse(id);
     if (idInt == null) throw Exception('ID inválido: $id');
 
-    final body = _api.userId != null ? {'usuario_logado_id': _api.userId} : null;
-    final response = await _api.delete('/alunos/$idInt', body: body);
+    final response = await _api.delete('/alunos/$idInt');
 
     if (response.statusCode != 200) {
       final jsonData = ApiClient.decodificarCorpo(response);

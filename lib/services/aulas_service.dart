@@ -42,7 +42,7 @@ class AulasService {
   Future<Aula> criar(Aula aula) async {
     final payload = Map<String, dynamic>.from(aula.toJson());
     if (_api.userId != null) {
-      payload['usuario_logado_id'] = _api.userId;
+      payload['usuario_id'] = _api.userId;
     }
 
     final response = await _api.post('/aulas', body: payload);
@@ -62,7 +62,7 @@ class AulasService {
 
     final payload = Map<String, dynamic>.from(aula.toJson());
     if (_api.userId != null) {
-      payload['usuario_logado_id'] = _api.userId;
+      payload['usuario_id'] = _api.userId;
     }
 
     final response = await _api.put('/aulas/$idInt', body: payload);

@@ -1,8 +1,31 @@
+import 'dart:convert';
+
 import 'package:fluire/modelos/usuario.dart';
 import 'package:fluire/services/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
+  AuthService();
+
   final ApiClient _api = ApiClient.instance;
+  Usuario? _usuario;
+
+  static const String _usuarioKey = 'api_usuario';
+
+  Usuario? get usuarioAtual => _usuario;
+
+  Future<void> carregarSessao() async {
+    await _api.carregarSessao();
+    final prefs = await SharedPreferences.getInstance();
+    final usuarioJson = prefs.getString(_usuarioKey);
+    if (usuarioJson != null) {
+      try {
+        _usuario = Usuario.fromJson(json.decode(usuarioJson) as Map<String, dynamic>);
+      } catch (_) {
+        _usuario = null;
+      }
+    }
+  }
 
   Future<Usuario> login(String email, String senha) async {
     final response = await _api.post('/login', body: {
@@ -24,7 +47,11 @@ class AuthService {
     }
 
     final usuario = Usuario.fromJson(usuarioJson);
-    _api.definirSessao(token: token, userId: int.parse(usuario.id));
+    await _api.definirSessao(token: token, userId: int.parse(usuario.id));
+    _usuario = usuario;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_usuarioKey, json.encode(usuarioJson));
 
     return usuario;
   }
@@ -61,11 +88,9 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    _api.limparSessao();
-  }
-
-  Usuario? get usuarioAtual {
-    if (!_api.autenticado) return null;
-    return null;
+    await _api.limparSessao();
+    _usuario = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_usuarioKey);
   }
 }

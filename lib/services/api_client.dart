@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:fluire/config/api_config.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Cliente HTTP compartilhado com token de autenticação.
 class ApiClient {
   ApiClient._();
 
   static final ApiClient instance = ApiClient._();
+
+  static const String _tokenKey = 'api_token';
+  static const String _userIdKey = 'api_user_id';
 
   String? _token;
   int? _userId;
@@ -16,14 +20,30 @@ class ApiClient {
   int? get userId => _userId;
   bool get autenticado => _token != null;
 
-  void definirSessao({required String token, required int userId}) {
+  Future<void> definirSessao({required String token, required int userId}) async {
     _token = token;
     _userId = userId;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, token);
+    await prefs.setInt(_userIdKey, userId);
   }
 
-  void limparSessao() {
+  Future<void> carregarSessao() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString(_tokenKey);
+    final userId = prefs.getInt(_userIdKey);
+    if (token != null && userId != null) {
+      _token = token;
+      _userId = userId;
+    }
+  }
+
+  Future<void> limparSessao() async {
     _token = null;
     _userId = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+    await prefs.remove(_userIdKey);
   }
 
   Map<String, String> headers({bool json = true}) {

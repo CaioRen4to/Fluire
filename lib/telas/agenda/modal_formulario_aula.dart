@@ -54,7 +54,7 @@ class ModalFormularioAula {
               Text('Professor', style: TextStyle(color: AppColors.textoPrimario, fontWeight: FontWeight.w600)),
               AppSpacing.gapSm,
               DropdownButtonFormField<String>(
-                value: professorId.isEmpty ? null : professorId,
+                initialValue: professorId.isEmpty ? null : professorId,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.fundoCard,
@@ -77,7 +77,7 @@ class ModalFormularioAula {
               Text('Frequência', style: TextStyle(color: AppColors.textoPrimario, fontWeight: FontWeight.w600)),
               AppSpacing.gapSm,
               DropdownButtonFormField<String>(
-                value: frequencia,
+                initialValue: frequencia,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.fundoCard,
@@ -90,7 +90,7 @@ class ModalFormularioAula {
               Text('Dia da semana', style: TextStyle(color: AppColors.textoPrimario, fontWeight: FontWeight.w600)),
               AppSpacing.gapSm,
               DropdownButtonFormField<int>(
-                value: diaSemana,
+                initialValue: diaSemana,
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: AppColors.fundoCard,

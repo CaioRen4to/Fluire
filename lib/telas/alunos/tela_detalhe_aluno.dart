@@ -120,16 +120,17 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
               texto: 'Editar aluno',
               icone: Icons.edit_outlined,
               onPressed: () async {
-                final resultado = await ModalFormularioAluno.abrir(context: context, aluno: _alunoAtual);
-                if (resultado != null && mounted) {
+                final currentContext = context;
+                if (!currentContext.mounted) return;
+                final resultado = await ModalFormularioAluno.abrir(context: currentContext, aluno: _alunoAtual);
+                if (!currentContext.mounted) return;
+                if (resultado != null) {
                   setState(() {
                     _alunoAtual = resultado;
                   });
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Aluno atualizado com sucesso')),
-                    );
-                  }
+                  ScaffoldMessenger.of(currentContext).showSnackBar(
+                    const SnackBar(content: Text('Aluno atualizado com sucesso')),
+                  );
                 }
               },
             ),

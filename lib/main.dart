@@ -4,12 +4,17 @@ import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema_app.dart';
 import 'package:fluire/provedores/provedores_app.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
+import 'package:fluire/services/auth_service.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final authService = AuthService();
+  await authService.carregarSessao();
+
   runApp(
     MultiProvider(
-      providers: ProvedoresApp.providers,
+      providers: ProvedoresApp.providers(authService: authService),
       child: const FluireApp(),
     ),
   );

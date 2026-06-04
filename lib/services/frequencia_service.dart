@@ -1,9 +1,10 @@
+import 'package:fluire/modelos/frequencia.dart';
 import 'package:fluire/services/api_client.dart';
 
 class FrequenciaService {
   final ApiClient _api = ApiClient.instance;
 
-  Future<List<Map<String, dynamic>>> listar() async {
+  Future<List<Frequencia>> listar() async {
     final response = await _api.get('/frequencias');
 
     if (response.statusCode != 200) {
@@ -13,10 +14,13 @@ class FrequenciaService {
     final jsonData = ApiClient.decodificarCorpo(response);
     if (jsonData is! List) return [];
 
-    return jsonData.cast<Map<String, dynamic>>();
+    return jsonData
+        .whereType<Map<String, dynamic>>()
+        .map((json) => Frequencia.fromJson(json))
+        .toList();
   }
 
-  Future<List<Map<String, dynamic>>> listarPorAula(int aulaId) async {
+  Future<List<Frequencia>> listarPorAula(int aulaId) async {
     final response = await _api.get('/frequencias/aula/$aulaId');
 
     if (response.statusCode != 200) {
@@ -26,10 +30,13 @@ class FrequenciaService {
     final jsonData = ApiClient.decodificarCorpo(response);
     if (jsonData is! List) return [];
 
-    return jsonData.cast<Map<String, dynamic>>();
+    return jsonData
+        .whereType<Map<String, dynamic>>()
+        .map((json) => Frequencia.fromJson(json))
+        .toList();
   }
 
-  Future<void> registrar({
+  Future<Frequencia> registrar({
     required int aulaId,
     required int alunoId,
     required int presente,
@@ -46,5 +53,16 @@ class FrequenciaService {
       final jsonData = ApiClient.decodificarCorpo(response);
       throw Exception(ApiClient.extrairErro(jsonData, fallback: 'Erro ao registrar frequência'));
     }
+
+    final jsonData = ApiClient.decodificarCorpo(response);
+    if (jsonData is Map<String, dynamic>) {
+      return Frequencia.fromJson(jsonData);
+    }
+    return Frequencia(
+      aulaId: aulaId,
+      alunoId: alunoId,
+      presente: presente,
+      dataPresenca: dataPresenca,
+    );
   }
 }

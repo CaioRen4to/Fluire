@@ -6,7 +6,10 @@ import 'package:fluire/services/auth_service.dart';
 class ProvedorAuth extends ChangeNotifier {
   final AuthService _authService;
 
-  ProvedorAuth(this._authService);
+  ProvedorAuth(this._authService, {Usuario? usuarioInicial}) {
+    usuario = usuarioInicial;
+    estado = usuario != null ? EstadoCarregamento.sucesso : EstadoCarregamento.inicial;
+  }
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   Usuario? usuario;

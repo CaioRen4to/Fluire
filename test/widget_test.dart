@@ -7,7 +7,7 @@ void main() {
   testWidgets('App inicia na tela de login', (WidgetTester tester) async {
     await tester.pumpWidget(
       MultiProvider(
-        providers: ProvedoresApp.providers,
+        providers: ProvedoresApp.providers(),
         child: const FluireApp(),
       ),
     );

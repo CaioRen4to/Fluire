@@ -20,6 +20,15 @@ class Usuario {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nome': nome,
+      'email': email,
+      if (tipoUsuario != null) 'tipo_usuario': tipoUsuario,
+    };
+  }
+
   String get rotuloTipo {
     if (tipoUsuario == null || tipoUsuario!.isEmpty) return 'Usuário';
     return tipoUsuario!;
