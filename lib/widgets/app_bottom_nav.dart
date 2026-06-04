@@ -11,7 +11,7 @@ class AppBottomNav extends StatelessWidget {
   static const rotasPrincipais = [
     AppRoutes.painel,
     AppRoutes.alunos,
-    AppRoutes.agenda,
+    AppRoutes.aulas,
     AppRoutes.historico,
     AppRoutes.perfil,
   ];
@@ -22,7 +22,7 @@ class AppBottomNav extends StatelessWidget {
         return 0;
       case AppRoutes.alunos:
         return 1;
-      case AppRoutes.agenda:
+      case AppRoutes.aulas:
         return 2;
       case AppRoutes.historico:
         return 3;

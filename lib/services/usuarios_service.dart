@@ -14,10 +14,16 @@ class UsuariosService {
     final jsonData = ApiClient.decodificarCorpo(response);
     if (jsonData is! List) return [];
 
-    return jsonData
-        .whereType<Map<String, dynamic>>()
-        .map((json) => Usuario.fromJson(json))
-        .toList();
+    final usuarios = <Usuario>[];
+    for (final item in jsonData) {
+      if (item is! Map) continue;
+      try {
+        usuarios.add(Usuario.fromJson(Map<String, dynamic>.from(item)));
+      } catch (_) {
+        continue;
+      }
+    }
+    return usuarios;
   }
 
   Future<Usuario?> buscarPorNome(String nome) async {

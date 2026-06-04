@@ -31,8 +31,7 @@ class _TelaProfessoresState extends State<TelaProfessores> {
       final aulasDoProfessor = provider.aulas.where((a) => a.usuarioId == p.id);
       return {
         'name': p.nome,
-        'specialties': 'Instrutor de Pilates',
-        'phone': '—',
+        'email': p.email.isNotEmpty ? p.email : '—',
         'lessons': aulasDoProfessor.where((a) => a.diaSemana == hoje).length,
         'active': aulasDoProfessor.isNotEmpty,
       };
@@ -212,15 +211,7 @@ class _TelaProfessoresState extends State<TelaProfessores> {
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
-                                      professor['specialties'],
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: AppColors.textoSecundario,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      professor['phone'],
+                                      professor['email'],
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: AppColors.textoSecundario,
@@ -265,7 +256,7 @@ class _TelaProfessoresState extends State<TelaProfessores> {
                               ),
                               const SizedBox(width: 12),
                               _ActionChip(
-                                label: 'Ver agenda',
+                                label: 'Ver aulas',
                                 icon: Icons.arrow_forward_ios_rounded,
                                 reverse: true,
                                 onTap: () {},

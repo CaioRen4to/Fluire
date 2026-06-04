@@ -121,7 +121,7 @@ class Aula {
         professorNome: json['professorNome'] as String? ?? '',
         horarioInicio: json['horario_inicio']?.toString() ?? '',
         horarioFim: json['horario_fim']?.toString() ?? '',
-        frequencia: json['frequencia'] as String? ?? 'Semanal',
+        frequencia: (json['frequencia'] ?? json['frequencias'])?.toString() ?? 'Semanal',
         alunoIds: (json['alunoIds'] as List<dynamic>?)
                 ?.map((e) => e.toString())
                 .toList() ??

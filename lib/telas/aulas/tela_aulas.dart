@@ -10,16 +10,16 @@ import 'package:fluire/componentes/cards/card_aula.dart';
 import 'package:fluire/componentes/estado_visual/estado_visual.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/util/animacoes.dart';
-import 'package:fluire/telas/agenda/modal_formulario_aula.dart';
+import 'package:fluire/telas/aulas/modal_formulario_aulas.dart';
 
-class TelaAgenda extends StatefulWidget {
-  const TelaAgenda({super.key});
+class TelaAulas extends StatefulWidget {
+  const TelaAulas({super.key});
 
   @override
-  State<TelaAgenda> createState() => _TelaAgendaState();
+  State<TelaAulas> createState() => _TelaAulasState();
 }
 
-class _TelaAgendaState extends State<TelaAgenda> {
+class _TelaAulasState extends State<TelaAulas> {
   List<Map<String, String>> get _dias {
     final hoje = DateTime.now();
     final inicio = hoje.subtract(Duration(days: hoje.weekday - 1));
@@ -49,7 +49,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
 
     return LayoutTela(
       titulo: 'Aulas',
-      rotaAtual: AppRoutes.agenda,
+      rotaAtual: AppRoutes.aulas,
       mostrarBottomNav: true,
       centralizarConteudo: false,
       child: Column(
@@ -116,7 +116,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
           BotaoPrimario(
             texto: 'Nova aula',
             icone: Icons.add,
-            onPressed: () => ModalFormularioAula.abrir(context: context),
+            onPressed: () => ModalFormularioAulas.abrir(context: context),
           ),
         ],
       ),
@@ -127,7 +127,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
     switch (provider.estado) {
       case EstadoCarregamento.carregando:
       case EstadoCarregamento.inicial:
-        return const EstadoCarregando(mensagem: 'Carregando agenda...');
+        return const EstadoCarregando(mensagem: 'Carregando aulas...');
       case EstadoCarregamento.erro:
         return EstadoErro(
           mensagem: provider.mensagemErro ?? 'Erro',
@@ -138,7 +138,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
           titulo: 'Nenhuma aula neste dia',
           subtitulo: 'Crie uma nova aula para começar',
           icone: Icons.event_busy,
-          onAcao: () => ModalFormularioAula.abrir(context: context),
+          onAcao: () => ModalFormularioAulas.abrir(context: context),
           textoAcao: 'Nova aula',
         );
       case EstadoCarregamento.sucesso:
@@ -170,7 +170,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
                   AppRoutes.frequenciaTotem,
                   arguments: aula,
                 ),
-                onEditar: () => ModalFormularioAula.abrir(context: context, aula: aula),
+                onEditar: () => ModalFormularioAulas.abrir(context: context, aula: aula),
               ),
             );
           },

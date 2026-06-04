@@ -238,7 +238,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.agenda);
+                    Navigator.pushNamed(context, AppRoutes.aulas);
                   },
                   child: Text(
                     'Ver todas',
@@ -303,10 +303,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 AppSpacing.gapMdHorizontal,
                 Expanded(
                   child: _quickAction(
-                    title: 'Agenda',
+                    title: 'aulas',
                     icon: Icons.event_note_rounded,
                     onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.agenda).then((_) {
+                      Navigator.pushNamed(context, AppRoutes.aulas).then((_) {
                         buscarPainel();
                       });
                     },
