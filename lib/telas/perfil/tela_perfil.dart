@@ -172,7 +172,7 @@ class TelaPerfil extends StatelessWidget {
           BotaoPrimario(
             texto: 'Ver Painel',
             icone: Icons.dashboard_outlined,
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.painel),
+            onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.painel),
           ),
           AppSpacing.gapMd,
           BotaoSecundario(

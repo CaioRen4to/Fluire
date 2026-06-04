@@ -32,7 +32,7 @@ class _TelaLoginState extends State<TelaLogin> {
     final ok = await auth.login(_emailCtrl.text, _senhaCtrl.text);
     if (!mounted) return;
     if (ok) {
-      Navigator.pushReplacementNamed(context, AppRoutes.agenda);
+      Navigator.pushReplacementNamed(context, AppRoutes.painel);
     }
   }
 

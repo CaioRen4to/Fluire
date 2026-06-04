@@ -6,28 +6,28 @@ import 'package:fluire/tema/tema.dart';
 class AppBottomNav extends StatelessWidget {
   final int indiceAtual;
 
-  const AppBottomNav({
-    super.key,
-    required this.indiceAtual,
-  });
+  const AppBottomNav({super.key, required this.indiceAtual});
 
   static const rotasPrincipais = [
-    AppRoutes.agenda,
+    AppRoutes.painel,
     AppRoutes.alunos,
+    AppRoutes.agenda,
     AppRoutes.historico,
     AppRoutes.perfil,
   ];
 
   static int indiceDaRota(String? rota) {
     switch (rota) {
-      case AppRoutes.agenda:
+      case AppRoutes.painel:
         return 0;
       case AppRoutes.alunos:
         return 1;
-      case AppRoutes.historico:
+      case AppRoutes.agenda:
         return 2;
-      case AppRoutes.perfil:
+      case AppRoutes.historico:
         return 3;
+      case AppRoutes.perfil:
+        return 4;
       default:
         return 0;
     }
@@ -43,10 +43,16 @@ class AppBottomNav extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.fundoBottomBar,
+        border: Border(
+          top: BorderSide(
+            color: AppColors.divisor.withValues(alpha: 230),
+            width: 1,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 14,
             offset: const Offset(0, -2),
           ),
         ],
@@ -58,22 +64,29 @@ class AppBottomNav extends StatelessWidget {
           onTap: (i) => _navegar(context, i),
           type: BottomNavigationBarType.fixed,
           backgroundColor: AppColors.fundoBottomBar,
-          selectedItemColor: AppColors.iconsAtivosColor,
-          unselectedItemColor: AppColors.iconsInativosColor,
+          selectedItemColor: AppColors.primaryColor,
+          unselectedItemColor: AppColors.textoSecundario,
+          selectedIconTheme: const IconThemeData(size: 24),
+          unselectedIconTheme: const IconThemeData(size: 22),
           selectedLabelStyle: AppTypography.bodySmall.copyWith(
             fontWeight: AppTypography.fontWeightSemiBold,
           ),
           unselectedLabelStyle: AppTypography.bodySmall,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.event_note_outlined),
-              activeIcon: Icon(Icons.event_note),
-              label: 'Agenda',
+              icon: Icon(Icons.dashboard_outlined),
+              activeIcon: Icon(Icons.dashboard),
+              label: 'Painel',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people_outline),
               activeIcon: Icon(Icons.people),
               label: 'Alunos',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.event_note_outlined),
+              activeIcon: Icon(Icons.event_note),
+              label: 'Aulas',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.history),

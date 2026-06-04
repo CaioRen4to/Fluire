@@ -30,7 +30,7 @@ class AppRoutes {
 
   static const rotasPublicas = {login, cadastro};
 
-  static const rotasComBottomNav = {agenda, alunos, historico, perfil};
+  static const rotasComBottomNav = {painel, agenda, alunos, historico, perfil};
 
   static Map<String, WidgetBuilder> get rotas => {
         login: (_) => const TelaLogin(),

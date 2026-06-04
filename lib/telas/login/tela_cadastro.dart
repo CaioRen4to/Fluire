@@ -37,7 +37,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
       final ok = await auth.cadastrar(_nomeCtrl.text, _emailCtrl.text, _senhaCtrl.text);
       if (!mounted) return;
       if (ok) {
-        Navigator.pushReplacementNamed(context, AppRoutes.agenda);
+        Navigator.pushReplacementNamed(context, AppRoutes.login);
       }
     } catch (e) {
       if (e is UnimplementedError) {

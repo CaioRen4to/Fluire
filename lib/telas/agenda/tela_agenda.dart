@@ -48,7 +48,7 @@ class _TelaAgendaState extends State<TelaAgenda> {
     final provider = context.watch<ProvedorAulas>();
 
     return LayoutTela(
-      titulo: 'Agenda',
+      titulo: 'Aulas',
       rotaAtual: AppRoutes.agenda,
       mostrarBottomNav: true,
       centralizarConteudo: false,

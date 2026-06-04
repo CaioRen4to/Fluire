@@ -15,7 +15,7 @@ class AppColors {
   static const Color fundoCard = Color.fromARGB(202, 243, 242, 242);
 
   // Fundo da bottom bar
-  static const Color fundoBottomBar = Color.fromARGB(110, 238, 208, 132);
+  static const Color fundoBottomBar = Color.fromARGB(255, 248, 232, 185);
 
   // Textos
   static const Color textoPrimario = Color.fromARGB(255, 48, 44, 29);
@@ -30,8 +30,8 @@ class AppColors {
   static const Color sombra = Color.fromARGB(42, 48, 48, 39);
 
   // Ícones bottom navigation
-  static const Color iconsAtivosColor = Color.fromARGB(172, 231, 201, 94);
-  static const Color iconsInativosColor = Color.fromARGB(172, 237, 233, 220);
+  static const Color iconsAtivosColor = Color.fromARGB(255, 163, 115, 21);
+  static const Color iconsInativosColor = Color.fromARGB(255, 119, 101, 64);
 
   // Botões específicos
   static const Color botaoPresente = Color.fromARGB(219, 131, 185, 5);
@@ -69,7 +69,9 @@ class AppSpacing {
   static const EdgeInsets cardPadding = EdgeInsets.all(lg);
   static const EdgeInsets cardPaddingLarge = EdgeInsets.all(xl);
   static const EdgeInsets screenPadding = EdgeInsets.all(lg);
-  static const EdgeInsets screenPaddingHorizontal = EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets screenPaddingHorizontal = EdgeInsets.symmetric(
+    horizontal: lg,
+  );
 
   // Widget-based horizontal spacing
   static Widget get gapSmHorizontal => SizedBox(width: sm);
@@ -97,7 +99,8 @@ class AppBorders {
   static BorderRadius get radiusMedium => BorderRadius.circular(_radiusMedium);
   static BorderRadius get radiusLarge => BorderRadius.circular(_radiusLarge);
   static BorderRadius get radiusXLarge => BorderRadius.circular(_radiusXLarge);
-  static BorderRadius get radiusXXLarge => BorderRadius.circular(_radiusXXLarge);
+  static BorderRadius get radiusXXLarge =>
+      BorderRadius.circular(_radiusXXLarge);
 
   static final RoundedRectangleBorder cardShape = RoundedRectangleBorder(
     borderRadius: radiusLarge,
