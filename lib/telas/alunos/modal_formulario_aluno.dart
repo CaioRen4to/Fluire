@@ -54,7 +54,7 @@ class ModalFormularioAluno {
                     ? null
                     : () async {
                         setModalState(() => salvando = true);
-                        final provider = context.read<ProvedorAlunos>();
+                        final provider = ctx.read<ProvedorAlunos>();
                         final novo = Aluno(
                           id: aluno?.id ?? const Uuid().v4(),
                           nome: nomeCtrl.text.trim(),
@@ -69,17 +69,26 @@ class ModalFormularioAluno {
                         final ok = criando
                             ? await provider.criar(novo)
                             : await provider.atualizar(novo);
-                        if (ctx.mounted) {
-                          setModalState(() => salvando = false);
-                          if (ok) {
-                            Navigator.pop(ctx, criando ? null : novo);
+                        if (!ctx.mounted) return;
+
+                        if (ok) {
+                          if (criando) {
+                            Navigator.pop(ctx, novo);
+                          } else {
+                            final alunoAtualizado = provider.buscarLocal(novo.id);
+                            Navigator.pop(ctx, alunoAtualizado ?? novo);
+                          }
+                          if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(criando ? 'Aluno cadastrado!' : 'Aluno atualizado!'),
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
-                          } else if (provider.mensagemErro != null) {
+                          }
+                        } else {
+                          setModalState(() => salvando = false);
+                          if (provider.mensagemErro != null) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(provider.mensagemErro!)),
                             );

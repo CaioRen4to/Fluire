@@ -40,37 +40,58 @@ class LayoutTela extends StatelessWidget {
     final indiceBottomNav =
         mostrarBottomNav && rotaAtual != null ? AppBottomNav.indiceDaRota(rotaAtual) : null;
 
+    final isWide = Responsivo.isDesktop(context);
+
+    Widget bodyContent = SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (appBarCustom != null)
+            appBarCustom!
+          else
+            CabecalhoTela(
+              titulo: titulo,
+              mostrarMenu: !isWide && rotaAtual != null && mostrarBottomNav,
+            ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: padding.left,
+                right: padding.right,
+                bottom: padding.bottom,
+              ),
+              child: conteudo,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (isWide && rotaAtual != null && mostrarBottomNav) {
+      return Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        floatingActionButton: acaoFlutuante,
+        body: Row(
+          children: [
+            SizedBox(
+              width: 280,
+              child: MenuLateral(rotaAtual: rotaAtual, permanente: true),
+            ),
+            const VerticalDivider(width: 1, thickness: 1, color: AppColors.divisor),
+            Expanded(child: bodyContent),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       drawer: rotaAtual != null && mostrarBottomNav ? MenuLateral(rotaAtual: rotaAtual) : null,
       floatingActionButton: acaoFlutuante,
-      bottomNavigationBar: indiceBottomNav != null
+      bottomNavigationBar: indiceBottomNav != null && !isWide
           ? AppBottomNav(indiceAtual: indiceBottomNav)
           : null,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (appBarCustom != null)
-              appBarCustom!
-            else
-              CabecalhoTela(
-                titulo: titulo,
-                mostrarMenu: true,
-              ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: padding.left,
-                  right: padding.right,
-                  bottom: padding.bottom,
-                ),
-                child: conteudo,
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: bodyContent,
     );
   }
 }

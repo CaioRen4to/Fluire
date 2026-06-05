@@ -29,15 +29,18 @@ class TelaPerfil extends StatelessWidget {
       titulo: 'Meu Perfil',
       rotaAtual: AppRoutes.perfil,
       mostrarBottomNav: true,
-      child: Column(
-        children: [
-          AppSpacing.gapXl,
-          _buildProfileCard(usuario.nome, usuario.email, usuario.rotuloTipo),
-          AppSpacing.gapLg,
-          _buildInfoSection(context, usuario),
-          AppSpacing.gapLg,
-          _buildActionsSection(context, auth),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            AppSpacing.gapXl,
+            _buildProfileCard(usuario.nome, usuario.email, usuario.rotuloTipo),
+            AppSpacing.gapLg,
+            _buildInfoSection(context, usuario),
+            AppSpacing.gapLg,
+            _buildActionsSection(context, auth),
+            AppSpacing.gapLg,
+          ],
+        ),
       ),
     );
   }

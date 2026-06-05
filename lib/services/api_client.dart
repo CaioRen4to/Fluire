@@ -97,13 +97,31 @@ class ApiClient {
 
   static dynamic decodificarCorpo(http.Response response) {
     if (response.body.isEmpty) return null;
-    return json.decode(response.body);
+    try {
+      return json.decode(response.body);
+    } catch (_) {
+      final body = response.body.trim();
+      if (body.isEmpty) return null;
+      if (body.contains('<html') || body.contains('<HTML')) {
+        final textoSemTags = body.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+        return textoSemTags.isNotEmpty ? textoSemTags : body;
+      }
+      return body;
+    }
   }
 
   static String extrairErro(dynamic jsonData, {String fallback = 'Erro na requisição'}) {
     if (jsonData is Map) {
-      return (jsonData['erro'] ?? jsonData['message'] ?? jsonData['mensagem'] ?? fallback)
+      return (jsonData['erro'] ?? jsonData['error'] ?? jsonData['message'] ?? jsonData['mensagem'] ?? fallback)
           .toString();
+    }
+    if (jsonData is String && jsonData.trim().isNotEmpty) {
+      final texto = jsonData.trim();
+      if (texto.contains('<html') || texto.contains('<HTML')) {
+        final textoSemTags = texto.replaceAll(RegExp(r'<[^>]*>'), '').trim();
+        return textoSemTags.isNotEmpty ? textoSemTags : fallback;
+      }
+      return texto;
     }
     return fallback;
   }

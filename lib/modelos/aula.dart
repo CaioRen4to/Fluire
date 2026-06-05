@@ -98,11 +98,51 @@ class Aula {
   static DateTime? _parseData(dynamic value) {
     if (value == null) return null;
     if (value is DateTime) return value;
+    final str = value.toString().trim();
+    if (str.isEmpty) return null;
+
+    final parsed = DateTime.tryParse(str);
+    if (parsed != null) return parsed;
+
     try {
-      return DateTime.parse(value.toString());
+      final parts = str.split(RegExp(r'\s+'));
+      if (parts.length >= 5) {
+        int dayIdx = 1;
+        if (!parts[0].contains(',')) {
+          dayIdx = 0;
+        }
+        final dayStr = parts[dayIdx].replaceAll(RegExp(r'[^0-9]'), '');
+        final day = int.parse(dayStr);
+
+        final monthStr = parts[dayIdx + 1].toLowerCase().substring(0, 3);
+        final year = int.parse(parts[dayIdx + 2]);
+
+        final timeParts = parts[dayIdx + 3].split(':');
+        final hour = int.parse(timeParts[0]);
+        final minute = int.parse(timeParts[1]);
+        final second = timeParts.length > 2 ? int.parse(timeParts[2]) : 0;
+
+        final months = {
+          'jan': 1, 'feb': 1, 'fev': 2, 'mar': 3, 'apr': 4, 'abr': 4,
+          'may': 5, 'mai': 5, 'jun': 6, 'jul': 7, 'aug': 8, 'ago': 8,
+          'sep': 9, 'set': 9, 'oct': 10, 'out': 10, 'nov': 11, 'dec': 12, 'dez': 12
+        };
+
+        final month = months[monthStr] ?? 1;
+
+        final isUtc = str.toUpperCase().contains('GMT') || str.toUpperCase().contains('UTC');
+
+        if (isUtc) {
+          return DateTime.utc(year, month, day, hour, minute, second).toLocal();
+        } else {
+          return DateTime(year, month, day, hour, minute, second);
+        }
+      }
     } catch (_) {
-      return null;
+      // Retorna null em caso de erro de parsing
     }
+
+    return null;
   }
 
   static int? _parseInt(dynamic value) {

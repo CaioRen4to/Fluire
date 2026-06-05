@@ -6,13 +6,16 @@ import 'package:fluire/tema/tema.dart';
 
 class MenuLateral extends StatelessWidget {
   final String? rotaAtual;
+  final bool permanente;
 
-  const MenuLateral({super.key, this.rotaAtual});
+  const MenuLateral({super.key, this.rotaAtual, this.permanente = false});
 
-  static void ir(BuildContext context, String rota) {
+  static void ir(BuildContext context, String rota, {bool permanente = false}) {
     final navigator = Navigator.of(context);
     final atual = ModalRoute.of(context)?.settings.name;
-    navigator.pop();
+    if (!permanente) {
+      navigator.pop();
+    }
     if (atual != rota) {
       navigator.pushReplacementNamed(rota);
     }
@@ -22,6 +25,7 @@ class MenuLateral extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: AppColors.fundoCard,
+      elevation: permanente ? 0 : null,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +65,9 @@ class MenuLateral extends StatelessWidget {
                 onTap: () async {
                   await context.read<ProvedorAuth>().logout();
                   if (context.mounted) {
-                    Navigator.of(context).pop();
+                    if (!permanente) {
+                      Navigator.of(context).pop();
+                    }
                     Navigator.of(context).pushReplacementNamed(Rotas.login);
                   }
                 },
@@ -88,7 +94,9 @@ class MenuLateral extends StatelessWidget {
         ),
         selected: ativo,
         onTap: () {
-          Navigator.pop(context);
+          if (!permanente) {
+            Navigator.pop(context);
+          }
           if (push) {
             Navigator.pushNamed(context, rota);
           } else {

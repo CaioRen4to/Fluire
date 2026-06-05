@@ -102,50 +102,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
             AppSpacing.gapXl,
 
             // CARDS
-            Row(
-              children: [
-                Expanded(
-                  child: _infoCard(
-                    title: 'Alunos Presentes',
-                    value: dashboard?.alunosPresentes.toString() ?? '0',
-                    icon: Icons.people_outline,
-                    iconColor: AppColors.primaryColor,
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                Expanded(
-                  child: _infoCard(
-                    title: 'Aulas Hoje',
-                    value: dashboard?.aulasHoje.toString() ?? '0',
-                    icon: Icons.calendar_today_outlined,
-                    iconColor: AppColors.sucesso,
-                  ),
-                ),
-              ],
-            ),
-
-            AppSpacing.gapMd,
-
-            Row(
-              children: [
-                Expanded(
-                  child: _infoCard(
-                    title: 'Em Andamento',
-                    value: dashboard?.emAndamento.toString() ?? '0',
-                    icon: Icons.play_arrow_rounded,
-                    iconColor: AppColors.alerta,
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                Expanded(
-                  child: _infoCard(
-                    title: 'Freq. Média',
-                    value: '${dashboard?.frequenciaMedia ?? 0}%',
-                    icon: Icons.trending_up,
-                    iconColor: AppColors.primaryColor,
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final largura = constraints.maxWidth;
+                int colunas = 2;
+                if (largura > 900) {
+                  colunas = 4;
+                } else if (largura < 450) {
+                  colunas = 1;
+                }
+                
+                return GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: colunas,
+                  crossAxisSpacing: AppSpacing.md,
+                  mainAxisSpacing: AppSpacing.md,
+                  childAspectRatio: colunas == 1 ? 3.0 : (colunas == 4 ? 1.4 : 1.7),
+                  children: [
+                    _infoCard(
+                      title: 'Alunos Presentes',
+                      value: dashboard?.alunosPresentes.toString() ?? '0',
+                      icon: Icons.people_outline,
+                      iconColor: AppColors.primaryColor,
+                    ),
+                    _infoCard(
+                      title: 'Aulas Hoje',
+                      value: dashboard?.aulasHoje.toString() ?? '0',
+                      icon: Icons.calendar_today_outlined,
+                      iconColor: AppColors.sucesso,
+                    ),
+                    _infoCard(
+                      title: 'Em Andamento',
+                      value: dashboard?.emAndamento.toString() ?? '0',
+                      icon: Icons.play_arrow_rounded,
+                      iconColor: AppColors.alerta,
+                    ),
+                    _infoCard(
+                      title: 'Freq. Média',
+                      value: '${dashboard?.frequenciaMedia ?? 0}%',
+                      icon: Icons.trending_up,
+                      iconColor: AppColors.primaryColor,
+                    ),
+                  ],
+                );
+              }
             ),
 
             AppSpacing.gapXl,
@@ -187,35 +188,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       final item = frequenciaSemana[index];
                       final isSelected = index == selectedDayIndex;
 
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedDayIndex = index;
-                          });
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedDayIndex = index;
+                            });
 
-                          _showMessage('Frequência de ${item['day']}');
-                        },
-                        child: Column(
-                          children: [
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              width: 40,
-                              height: (item['value'] ?? 0).toDouble(),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? AppColors.primaryColor
-                                    : AppColors.primariaClara,
-                                borderRadius: AppBorders.radiusMedium,
+                            _showMessage('Frequência de ${item['day']}');
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Center(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 250),
+                                  width: 28,
+                                  height: (item['value'] ?? 0).toDouble(),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? AppColors.primaryColor
+                                        : AppColors.primariaClara,
+                                    borderRadius: AppBorders.radiusMedium,
+                                  ),
+                                ),
                               ),
-                            ),
-                            AppSpacing.gapSm,
-                            Text(
-                              item['day'],
-                              style: AppTypography.titleSmall.copyWith(
-                                color: AppColors.textoSecundario,
+                              AppSpacing.gapSm,
+                              Text(
+                                item['day'],
+                                style: AppTypography.titleSmall.copyWith(
+                                  color: AppColors.textoSecundario,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     }),
@@ -272,47 +278,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             AppSpacing.gapLg,
 
-            Row(
-              children: [
-                Expanded(
-                  child: _quickAction(
-                    title: 'Frequência',
-                    icon: Icons.analytics_rounded,
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.frequenciaTotem,
-                      ).then((_) {
-                        buscarPainel();
-                      });
-                    },
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                Expanded(
-                  child: _quickAction(
-                    title: 'Alunos',
-                    icon: Icons.groups_rounded,
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.alunos).then((_) {
-                        buscarPainel();
-                      });
-                    },
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                Expanded(
-                  child: _quickAction(
-                    title: 'Agenda',
-                    icon: Icons.event_note_rounded,
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.agenda).then((_) {
-                        buscarPainel();
-                      });
-                    },
-                  ),
-                ),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final largura = constraints.maxWidth;
+                int colunas = 3;
+                if (largura < 500) {
+                  colunas = 1;
+                }
+                
+                return GridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: colunas,
+                  crossAxisSpacing: AppSpacing.md,
+                  mainAxisSpacing: AppSpacing.md,
+                  childAspectRatio: colunas == 1 ? 3.5 : 1.1,
+                  children: [
+                    _quickAction(
+                      title: 'Frequência',
+                      icon: Icons.analytics_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.frequenciaTotem,
+                        ).then((_) {
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                    _quickAction(
+                      title: 'Alunos',
+                      icon: Icons.groups_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.alunos).then((_) {
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                    _quickAction(
+                      title: 'Agenda',
+                      icon: Icons.event_note_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.agenda).then((_) {
+                          buscarPainel();
+                        });
+                      },
+                    ),
+                  ],
+                );
+              }
             ),
           ],
         ),
@@ -460,34 +474,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
       borderRadius: AppBorders.radiusXXLarge,
       onTap: onTap,
       child: Container(
-        height: 120,
         decoration: BoxDecoration(
           color: AppColors.fundoCard,
           borderRadius: AppBorders.radiusXXLarge,
           boxShadow: AppShadows.cardShadowSmall,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: AppColors.primariaClara,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: AppColors.primaryColor, size: 26),
-            ),
-            AppSpacing.gapMd,
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTypography.titleMedium.copyWith(
-                fontWeight: AppTypography.fontWeightBold,
-                color: AppColors.textoPrimario,
-              ),
-            ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final useRow = constraints.maxWidth / constraints.maxHeight > 1.5;
+
+            if (useRow) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primariaClara,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, color: AppColors.primaryColor, size: 24),
+                    ),
+                    AppSpacing.gapMdHorizontal,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: AppTypography.titleMedium.copyWith(
+                          fontWeight: AppTypography.fontWeightBold,
+                          color: AppColors.textoPrimario,
+                        ),
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.textoSecundario),
+                  ],
+                ),
+              );
+            }
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primariaClara,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: AppColors.primaryColor, size: 26),
+                ),
+                AppSpacing.gapMd,
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTypography.titleMedium.copyWith(
+                    fontWeight: AppTypography.fontWeightBold,
+                    color: AppColors.textoPrimario,
+                  ),
+                ),
+              ],
+            );
+          }
         ),
       ),
     );
