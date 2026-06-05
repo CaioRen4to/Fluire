@@ -20,6 +20,7 @@ class TelaDetalheAluno extends StatefulWidget {
 
 class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
   late Aluno _alunoAtual;
+  bool _alterado = false;
 
   @override
   void initState() {
@@ -28,13 +29,13 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
   }
 
   // Cria um AppBar customizado com botão de voltar
-  static PreferredSizeWidget _appBarComVoltar(BuildContext context) {
+  PreferredSizeWidget _appBarComVoltar(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.backgroundColor,
       elevation: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: AppColors.textoPrimario),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Navigator.pop(context, _alterado),
       ),
       title: Text(
         'Detalhes',
@@ -56,16 +57,21 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
     final ativo = _alunoAtual.ativo;
     final corStatus = ativo ? AppColors.sucesso : AppColors.erro;
 
-    return LayoutTela(
-      titulo: 'Detalhes',
-      rotaAtual: AppRoutes.alunos,
-      appBarCustom: _appBarComVoltar(context),
-      centralizarConteudo: false,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Animacoes.fadeSlide(
-              child: Container(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, _alterado);
+        return false;
+      },
+      child: LayoutTela(
+        titulo: 'Detalhes',
+        rotaAtual: AppRoutes.alunos,
+        appBarCustom: _appBarComVoltar(context),
+        centralizarConteudo: false,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Animacoes.fadeSlide(
+                child: Container(
                 width: double.infinity,
                 padding: AppSpacing.cardPaddingLarge,
                 decoration: BoxDecoration(
@@ -82,7 +88,7 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
                       child: Text(_alunoAtual.inicial, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                     AppSpacing.gapLg,
-                    Text(_alunoAtual.nome, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                    Text(_alunoAtual.nome, textAlign: TextAlign.center, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                     AppSpacing.gapXs,
                     Text(_alunoAtual.modalidade, style: TextStyle(color: AppColors.primariaClara)),
                     AppSpacing.gapLg,
@@ -106,14 +112,30 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
               ),
             ),
             AppSpacing.gapLg,
-            Row(
-              children: [
-                Expanded(child: _stat('${_alunoAtual.presencas}', 'Presenças', AppColors.sucesso)),
-                AppSpacing.gapSmHorizontal,
-                Expanded(child: _stat('${_alunoAtual.faltas}', 'Faltas', AppColors.erro)),
-                AppSpacing.gapSmHorizontal,
-                Expanded(child: _stat('${_alunoAtual.frequenciaPercentual}%', 'Frequência', AppColors.primaryColor)),
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final colunas = constraints.maxWidth < 450 ? 1 : 3;
+                if (colunas == 1) {
+                  return Column(
+                    children: [
+                      _statRow('${_alunoAtual.presencas}', 'Presenças', AppColors.sucesso),
+                      AppSpacing.gapSm,
+                      _statRow('${_alunoAtual.faltas}', 'Faltas', AppColors.erro),
+                      AppSpacing.gapSm,
+                      _statRow('${_alunoAtual.frequenciaPercentual}%', 'Frequência', AppColors.primaryColor),
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(child: _stat('${_alunoAtual.presencas}', 'Presenças', AppColors.sucesso)),
+                    AppSpacing.gapSmHorizontal,
+                    Expanded(child: _stat('${_alunoAtual.faltas}', 'Faltas', AppColors.erro)),
+                    AppSpacing.gapSmHorizontal,
+                    Expanded(child: _stat('${_alunoAtual.frequenciaPercentual}%', 'Frequência', AppColors.primaryColor)),
+                  ],
+                );
+              }
             ),
             AppSpacing.gapLg,
             BotaoPrimario(
@@ -125,12 +147,10 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
                 final resultado = await ModalFormularioAluno.abrir(context: currentContext, aluno: _alunoAtual);
                 if (!currentContext.mounted) return;
                 if (resultado != null) {
-                  setState(() {
-                    _alunoAtual = resultado;
-                  });
-                  ScaffoldMessenger.of(currentContext).showSnackBar(
-                    const SnackBar(content: Text('Aluno atualizado com sucesso')),
-                  );
+                  _alterado = true;
+                  if (context.mounted) {
+                    Navigator.pop(context, true);
+                  }
                 }
               },
             ),
@@ -219,7 +239,8 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 
   // Mostra diálogo de confirmação antes de remover
@@ -262,6 +283,18 @@ class _TelaDetalheAlunoState extends State<TelaDetalheAluno> {
             Text(valor, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: cor)),
             AppSpacing.gapXs,
             Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
+          ],
+        ),
+      );
+
+  Widget _statRow(String valor, String titulo, Color cor) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(titulo, style: AppTypography.bodyMedium.copyWith(color: AppColors.textoSecundario, fontWeight: FontWeight.w600)),
+            Text(valor, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: cor)),
           ],
         ),
       );

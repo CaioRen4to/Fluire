@@ -48,15 +48,23 @@ class AlunosService {
     };
 
     final response = await _api.post('/alunos', body: body);
+    print('POST => ${_api.uri('/alunos')}');
+    print('Payload => $body');
+    print('Status => ${response.statusCode}');
+    print('Body => ${response.body}');
 
-    if (response.statusCode != 201) {
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       final jsonData = ApiClient.decodificarCorpo(response);
       throw Exception(ApiClient.extrairErro(jsonData, fallback: 'Erro ao criar aluno'));
     }
 
     final jsonData = ApiClient.decodificarCorpo(response);
-    final alunoId = jsonData['id']?.toString() ?? aluno.id;
-    return aluno.copyWith(id: alunoId);
+    if (jsonData is Map<String, dynamic>) {
+      final alunoId = jsonData['id']?.toString() ?? aluno.id;
+      return aluno.copyWith(id: alunoId);
+    }
+
+    return aluno;
   }
 
   Future<Aluno> atualizar(Aluno aluno) async {
@@ -64,16 +72,37 @@ class AlunosService {
     if (idInt == null) throw Exception('ID inválido: ${aluno.id}');
 
     final body = {
+      'id': idInt,
       'nome': aluno.nome,
       'email': aluno.email,
       'telefone': aluno.telefone,
+      'modalidade': aluno.modalidade,
+      'ativo': aluno.ativo,
+      'presencas': aluno.presencas,
+      'faltas': aluno.faltas,
+      if (aluno.ultimaAula != null) 'ultima_aula': aluno.ultimaAula,
+      if (_api.userId != null) 'usuario_logado_id': _api.userId,
     };
 
+    final url = _api.uri('/alunos/$idInt');
+    print('PUT => $url');
+    print('Payload => $body');
     final response = await _api.put('/alunos/$idInt', body: body);
+    print('Status => ${response.statusCode}');
+    print('Body => ${response.body}');
 
-    if (response.statusCode != 200) {
+    if (response.statusCode < 200 || response.statusCode >= 300) {
       final jsonData = ApiClient.decodificarCorpo(response);
       throw Exception(ApiClient.extrairErro(jsonData, fallback: 'Erro ao atualizar aluno'));
+    }
+
+    final jsonData = ApiClient.decodificarCorpo(response);
+    if (jsonData is Map<String, dynamic>) {
+      try {
+        return Aluno.fromJson(jsonData);
+      } catch (_) {
+        // Caso o backend retorne um JSON com formato inesperado, retorna o objeto enviado
+      }
     }
 
     return aluno;

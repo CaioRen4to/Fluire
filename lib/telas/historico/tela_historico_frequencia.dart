@@ -218,6 +218,8 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
         ? AppColors.sucesso
         : AppColors.alerta;
 
+    final isCriacao = registro.acao == TipoAcaoAuditoria.criacao;
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -276,10 +278,14 @@ class _TelaHistoricoFrequenciaState extends State<TelaHistoricoFrequencia> {
             ],
           ),
           AppSpacing.gapMd,
-          _linhaInfo('Criado por', registro.criadoPor ?? '—'),
-          _linhaInfo('Atualizado por', registro.atualizadoPor ?? '—'),
+          _linhaInfo('Criado por', registro.criadoPor ?? 'Não informado'),
           _linhaInfo('Criado em', registro.formatarData(registro.dataCriacao)),
-          _linhaInfo('Atualizado em', registro.formatarData(registro.dataAtualizacao)),
+          if (!isCriacao) ...[
+            _linhaInfo('Alterado por', registro.atualizadoPor ?? 'Sem alterações'),
+            _linhaInfo('Alterado em', registro.dataAtualizacao != null
+                ? registro.formatarData(registro.dataAtualizacao)
+                : 'Sem alterações'),
+          ],
         ],
       ),
     );

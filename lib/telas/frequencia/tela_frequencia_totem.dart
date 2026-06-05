@@ -284,64 +284,136 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
                 ),
               ],
             ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _salvando ? null : _salvarFrequencia,
-                    icon: _salvando
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isNarrow = constraints.maxWidth < 450;
+                if (isNarrow) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: _salvando ? null : _salvarFrequencia,
+                              icon: _salvando
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Icon(Icons.save_outlined),
+                              label: Text(_salvando ? 'Salvando...' : 'Salvar'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: AppBorders.radiusMedium,
+                                ),
+                              ),
                             ),
-                          )
-                        : const Icon(Icons.save_outlined),
-                    label: Text(_salvando ? 'Salvando...' : 'Salvar'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorders.radiusMedium,
+                          ),
+                          AppSpacing.gapSmHorizontal,
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () => _marcarTodos(StatusPresenca.presente),
+                              icon: const Icon(Icons.check_rounded),
+                              label: const Text('Marcar todos'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.sucesso,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: AppBorders.radiusMedium,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _marcarTodos(StatusPresenca.presente),
-                    icon: const Icon(Icons.check_rounded),
-                    label: const Text('Marcar todos'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.sucesso,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: AppBorders.radiusMedium,
+                      AppSpacing.gapSm,
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _marcarTodos(StatusPresenca.pendente),
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Resetar'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppBorders.radiusMedium,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                AppSpacing.gapMdHorizontal,
-                OutlinedButton.icon(
-                  onPressed: () => _marcarTodos(StatusPresenca.pendente),
-                  icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Resetar'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: AppBorders.radiusMedium,
-                    ),
-                  ),
-                ),
-              ],
+                    ],
+                  );
+                } else {
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: _salvando ? null : _salvarFrequencia,
+                          icon: _salvando
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.save_outlined),
+                          label: Text(_salvando ? 'Salvando...' : 'Salvar'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppBorders.radiusMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                      AppSpacing.gapMdHorizontal,
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () => _marcarTodos(StatusPresenca.presente),
+                          icon: const Icon(Icons.check_rounded),
+                          label: const Text('Marcar todos'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.sucesso,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppBorders.radiusMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                      AppSpacing.gapMdHorizontal,
+                      OutlinedButton.icon(
+                        onPressed: () => _marcarTodos(StatusPresenca.pendente),
+                        icon: const Icon(Icons.refresh_rounded),
+                        label: const Text('Resetar'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppBorders.radiusMedium,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
           ),
         ],

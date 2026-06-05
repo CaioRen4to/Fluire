@@ -57,14 +57,30 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              _resumo('${provider.total}', 'Total', AppColors.primaryColor),
-              AppSpacing.gapSmHorizontal,
-              _resumo('${provider.ativos}', 'Ativos', AppColors.sucesso),
-              AppSpacing.gapSmHorizontal,
-              _resumo('${provider.total - provider.ativos}', 'Inativos', AppColors.erro),
-            ],
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final colunas = constraints.maxWidth < 450 ? 1 : 3;
+              if (colunas == 1) {
+                return Column(
+                  children: [
+                    _resumoRow('${provider.total}', 'Total de Alunos', AppColors.primaryColor),
+                    AppSpacing.gapSm,
+                    _resumoRow('${provider.ativos}', 'Alunos Ativos', AppColors.sucesso),
+                    AppSpacing.gapSm,
+                    _resumoRow('${provider.total - provider.ativos}', 'Alunos Inativos', AppColors.erro),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  _resumo('${provider.total}', 'Total', AppColors.primaryColor),
+                  AppSpacing.gapSmHorizontal,
+                  _resumo('${provider.ativos}', 'Ativos', AppColors.sucesso),
+                  AppSpacing.gapSmHorizontal,
+                  _resumo('${provider.total - provider.ativos}', 'Inativos', AppColors.erro),
+                ],
+              );
+            }
           ),
           AppSpacing.gapLg,
           TextField(
@@ -138,6 +154,18 @@ class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
               Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
             ],
           ),
+        ),
+      );
+
+  Widget _resumoRow(String valor, String titulo, Color cor) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(titulo, style: AppTypography.bodyMedium.copyWith(color: AppColors.textoSecundario, fontWeight: FontWeight.w600)),
+            Text(valor, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: cor)),
+          ],
         ),
       );
 }

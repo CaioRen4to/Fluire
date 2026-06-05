@@ -83,32 +83,60 @@ class _TelaProfessoresState extends State<TelaProfessores> {
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    value: professores.length.toString(),
-                    label: 'Total',
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: _StatCard(
-                    value: activeTeachers.toString(),
-                    label: 'Ativos',
-                    color: AppColors.sucesso,
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: _StatCard(
-                    value: totalLessons.toString(),
-                    label: 'Aulas Hoje',
-                    color: AppColors.popUp,
-                  ),
-                ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final colunas = constraints.maxWidth < 450 ? 1 : 3;
+                if (colunas == 1) {
+                  return Column(
+                    children: [
+                      _StatCardRow(
+                        value: professores.length.toString(),
+                        label: 'Total de Professores',
+                        color: AppColors.primaryColor,
+                      ),
+                      const SizedBox(height: 10),
+                      _StatCardRow(
+                        value: activeTeachers.toString(),
+                        label: 'Professores Ativos',
+                        color: AppColors.sucesso,
+                      ),
+                      const SizedBox(height: 10),
+                      _StatCardRow(
+                        value: totalLessons.toString(),
+                        label: 'Aulas Ministradas Hoje',
+                        color: AppColors.popUp,
+                      ),
+                    ],
+                  );
+                }
+                return Row(
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        value: professores.length.toString(),
+                        label: 'Total',
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: _StatCard(
+                        value: activeTeachers.toString(),
+                        label: 'Ativos',
+                        color: AppColors.sucesso,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: _StatCard(
+                        value: totalLessons.toString(),
+                        label: 'Aulas Hoje',
+                        color: AppColors.popUp,
+                      ),
+                    ),
+                  ],
+                );
+              }
             ),
           ),
           const SizedBox(height: 24),
@@ -247,14 +275,15 @@ class _TelaProfessoresState extends State<TelaProfessores> {
                             ],
                           ),
                           const SizedBox(height: 20),
-                          Row(
+                          Wrap(
+                            spacing: 12,
+                            runSpacing: 8,
                             children: [
                               _ActionChip(
                                 icon: Icons.calendar_today_rounded,
                                 label: '${professor['lessons']} aulas hoje',
                                 onTap: () {},
                               ),
-                              const SizedBox(width: 12),
                               _ActionChip(
                                 label: 'Ver aulas',
                                 icon: Icons.arrow_forward_ios_rounded,
@@ -296,6 +325,51 @@ class _TelaProfessoresState extends State<TelaProfessores> {
                   ),
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+class _StatCardRow extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color color;
+
+  const _StatCardRow({
+    required this.value,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.fundoCard,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: AppColors.textoSecundario,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: color,
             ),
           ),
         ],

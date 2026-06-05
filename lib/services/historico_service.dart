@@ -1,14 +1,25 @@
 import 'package:fluire/modelos/registro_auditoria.dart';
 import 'package:fluire/services/alunos_service.dart';
 import 'package:fluire/services/aulas_service.dart';
+import 'package:fluire/services/usuarios_service.dart';
 
 class HistoricoService {
   final AlunosService _alunosService = AlunosService();
   final AulasService _aulasService = AulasService();
+  final UsuariosService _usuariosService = UsuariosService();
 
   Future<List<RegistroAuditoria>> listarAtividades({int limite = 50}) async {
-    final alunos = await _alunosService.listar();
-    final aulas = await _aulasService.listar();
+    // Busca alunos, aulas e usuários em paralelo
+    final resultados = await Future.wait([
+      _alunosService.listar(),
+      _aulasService.listar(),
+      _carregarUsuarios(),
+    ]);
+
+    final alunos = resultados[0] as List;
+    final aulas = resultados[1] as List;
+    final mapaUsuarios = resultados[2] as Map<int, String>;
+
     final registros = <RegistroAuditoria>[];
 
     for (final aluno in alunos) {
@@ -19,7 +30,7 @@ class HistoricoService {
             acao: TipoAcaoAuditoria.criacao,
             titulo: aluno.nome,
             subtitulo: aluno.email.isNotEmpty ? aluno.email : aluno.telefone,
-            criadoPor: _nomeUsuario(aluno.createdBy),
+            criadoPor: _nomeUsuario(aluno.createdBy, mapaUsuarios),
             dataCriacao: aluno.createdAt,
           ),
         );
@@ -32,8 +43,8 @@ class HistoricoService {
             acao: TipoAcaoAuditoria.atualizacao,
             titulo: aluno.nome,
             subtitulo: aluno.email.isNotEmpty ? aluno.email : aluno.telefone,
-            criadoPor: _nomeUsuario(aluno.createdBy),
-            atualizadoPor: _nomeUsuario(aluno.updatedBy),
+            criadoPor: _nomeUsuario(aluno.createdBy, mapaUsuarios),
+            atualizadoPor: _nomeUsuario(aluno.updatedBy, mapaUsuarios),
             dataCriacao: aluno.createdAt,
             dataAtualizacao: aluno.updatedAt,
           ),
@@ -49,7 +60,7 @@ class HistoricoService {
             acao: TipoAcaoAuditoria.criacao,
             titulo: aula.nome,
             subtitulo: aula.horario,
-            criadoPor: _nomeUsuario(aula.createdBy),
+            criadoPor: _nomeUsuario(aula.createdBy, mapaUsuarios),
             dataCriacao: aula.createdAt,
           ),
         );
@@ -62,8 +73,8 @@ class HistoricoService {
             acao: TipoAcaoAuditoria.atualizacao,
             titulo: aula.nome,
             subtitulo: aula.horario,
-            criadoPor: _nomeUsuario(aula.createdBy),
-            atualizadoPor: _nomeUsuario(aula.updatedBy),
+            criadoPor: _nomeUsuario(aula.createdBy, mapaUsuarios),
+            atualizadoPor: _nomeUsuario(aula.updatedBy, mapaUsuarios),
             dataCriacao: aula.createdAt,
             dataAtualizacao: aula.updatedAt,
           ),
@@ -83,8 +94,30 @@ class HistoricoService {
     return registros;
   }
 
-  String _nomeUsuario(dynamic id) {
-    if (id == null) return '—';
-    return 'Usuário #$id';
+  /// Carrega a lista de usuários e retorna um mapa ID → Nome.
+  /// Em caso de falha, retorna mapa vazio para não quebrar a tela.
+  Future<Map<int, String>> _carregarUsuarios() async {
+    try {
+      final usuarios = await _usuariosService.listar();
+      final mapa = <int, String>{};
+      for (final usuario in usuarios) {
+        final idInt = int.tryParse(usuario.id);
+        if (idInt != null && usuario.nome.isNotEmpty) {
+          mapa[idInt] = usuario.nome;
+        }
+      }
+      return mapa;
+    } catch (_) {
+      return <int, String>{};
+    }
+  }
+
+  /// Resolve o ID de usuário para o nome real.
+  /// Retorna null se o ID for nulo (campo não preenchido).
+  String? _nomeUsuario(dynamic id, Map<int, String> mapa) {
+    if (id == null) return null;
+    final idInt = id is int ? id : int.tryParse(id.toString());
+    if (idInt == null) return null;
+    return mapa[idInt] ?? 'Usuário desconhecido';
   }
 }

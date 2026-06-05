@@ -47,30 +47,34 @@ class ProvedorAlunos extends ChangeNotifier {
   }
 
   Future<bool> criar(Aluno aluno) async {
+    final estadoAnterior = estado;
     try {
       final criado = await _service.criar(aluno);
       alunos = [...alunos, criado];
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      mensagemErro = null;
       notifyListeners();
       return true;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
-      estado = EstadoCarregamento.erro;
+      estado = estadoAnterior;
       notifyListeners();
       return false;
     }
   }
 
   Future<bool> atualizar(Aluno aluno) async {
+    final estadoAnterior = estado;
     try {
       final atualizado = await _service.atualizar(aluno);
       alunos = alunos.map((a) => a.id == atualizado.id ? atualizado : a).toList();
       estado = alunos.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      mensagemErro = null;
       notifyListeners();
       return true;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
-      estado = EstadoCarregamento.erro;
+      estado = estadoAnterior;
       notifyListeners();
       return false;
     }
