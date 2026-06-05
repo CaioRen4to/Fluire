@@ -11,7 +11,7 @@ class Aula {
   final String frequencia;
   final List<String> alunoIds;
   final StatusAula status;
-  final int diaSemana;
+  final String diaSemana;
   final int? createdBy;
   final int? updatedBy;
   final DateTime? createdAt;
@@ -28,7 +28,7 @@ class Aula {
     required this.frequencia,
     this.alunoIds = const [],
     this.status = StatusAula.proxima,
-    this.diaSemana = 1,
+    this.diaSemana = 'segunda-feira',
     this.createdBy,
     this.updatedBy,
     this.createdAt,
@@ -61,7 +61,7 @@ class Aula {
     String? frequencia,
     List<String>? alunoIds,
     StatusAula? status,
-    int? diaSemana,
+    String? diaSemana,
     int? createdBy,
     int? updatedBy,
     DateTime? createdAt,
@@ -111,6 +111,39 @@ class Aula {
     return int.tryParse(value.toString());
   }
 
+  static String _converterDiaSemana(dynamic diaSemana) {
+    if (diaSemana == null) return 'segunda-feira';
+
+    // Se já for string, retorna direto
+    if (diaSemana is String) {
+      return diaSemana;
+    }
+
+    // Se for número, converte para string
+    if (diaSemana is int) {
+      switch (diaSemana) {
+        case 1:
+          return 'segunda-feira';
+        case 2:
+          return 'terça-feira';
+        case 3:
+          return 'quarta-feira';
+        case 4:
+          return 'quinta-feira';
+        case 5:
+          return 'sexta-feira';
+        case 6:
+          return 'sábado';
+        case 7:
+          return 'domingo';
+        default:
+          return 'segunda-feira';
+      }
+    }
+
+    return 'segunda-feira'; // Padrão
+  }
+
   factory Aula.fromJson(dynamic json) {
     if (json is Map<String, dynamic>) {
       return Aula(
@@ -127,7 +160,7 @@ class Aula {
                 .toList() ??
             [],
         status: StatusAula.values[json['status'] as int? ?? 1],
-        diaSemana: json['dia_semana'] as int? ?? 1,
+        diaSemana: _converterDiaSemana(json['dia_semana']),
         createdBy: _parseInt(json['created_by']),
         updatedBy: _parseInt(json['updated_by']),
         createdAt: _parseData(json['created_at']),
@@ -149,7 +182,7 @@ class Aula {
               .toList() ??
           [],
       status: StatusAula.values[json['status'] as int? ?? 1],
-      diaSemana: json['diaSemana'] as int? ?? 1,
+      diaSemana: _converterDiaSemana(json['diaSemana']),
     );
   }
 }

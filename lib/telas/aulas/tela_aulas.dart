@@ -21,15 +21,23 @@ class TelaAulas extends StatefulWidget {
 
 class _TelaAulasState extends State<TelaAulas> {
   List<Map<String, String>> get _dias {
+    const dias = [
+      {'dia': 'Seg', 'nome': 'segunda-feira'},
+      {'dia': 'Ter', 'nome': 'terça-feira'},
+      {'dia': 'Qua', 'nome': 'quarta-feira'},
+      {'dia': 'Qui', 'nome': 'quinta-feira'},
+      {'dia': 'Sex', 'nome': 'sexta-feira'},
+      {'dia': 'Sáb', 'nome': 'sábado'},
+      {'dia': 'Dom', 'nome': 'domingo'},
+    ];
     final hoje = DateTime.now();
     final inicio = hoje.subtract(Duration(days: hoje.weekday - 1));
-    const nomes = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
     return List.generate(7, (i) {
       final data = inicio.add(Duration(days: i));
       return {
-        'dia': nomes[i],
+        'dia': dias[i]['dia']!,
+        'nome': dias[i]['nome']!,
         'numero': data.day.toString(),
-        'idx': (i + 1).toString(),
       };
     });
   }
@@ -62,10 +70,9 @@ class _TelaAulasState extends State<TelaAulas> {
               itemCount: _dias.length,
               itemBuilder: (context, index) {
                 final item = _dias[index];
-                final diaIdx = int.parse(item['idx']!);
-                final selecionado = provider.diaSelecionado == diaIdx;
+                final selecionado = provider.diaSelecionado == item['nome']!;
                 return GestureDetector(
-                  onTap: () => provider.definirDia(diaIdx),
+                  onTap: () => provider.definirDia(item['nome']!),
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     width: 68,

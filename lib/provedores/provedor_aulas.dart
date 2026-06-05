@@ -20,10 +20,14 @@ class ProvedorAulas extends ChangeNotifier {
   String? mensagemErroProfessores;
   String? mensagemErro;
   String busca = '';
-  int diaSelecionado = DateTime.now().weekday;
+  String diaSelecionado = 'segunda-feira';
+
+  String _normalizarDia(String dia) {
+    return dia.toLowerCase().trim();
+  }
 
   List<Aula> get aulasFiltradas {
-    var lista = aulas.where((a) => a.diaSemana == diaSelecionado).toList();
+    var lista = aulas.where((a) => _normalizarDia(a.diaSemana) == _normalizarDia(diaSelecionado)).toList();
     if (busca.trim().isNotEmpty) {
       final q = busca.toLowerCase();
       lista = lista
@@ -103,7 +107,7 @@ class ProvedorAulas extends ChangeNotifier {
     notifyListeners();
   }
 
-  void definirDia(int dia) {
+  void definirDia(String dia) {
     diaSelecionado = dia;
     notifyListeners();
   }
