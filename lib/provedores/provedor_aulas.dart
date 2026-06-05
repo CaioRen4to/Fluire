@@ -3,22 +3,31 @@ import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/modelos/professor.dart';
 import 'package:fluire/services/aulas_service.dart';
+import 'package:fluire/services/usuarios_service.dart';
 import 'package:fluire/services/api_client.dart';
 
 class ProvedorAulas extends ChangeNotifier {
   final AulasService _service;
+  final UsuariosService _usuariosService;
 
-  ProvedorAulas(this._service);
+  ProvedorAulas(this._service, [UsuariosService? usuariosService])
+      : _usuariosService = usuariosService ?? UsuariosService();
 
   EstadoCarregamento estado = EstadoCarregamento.inicial;
   List<Aula> aulas = [];
   List<Professor> professores = [];
+  bool carregandoProfessores = false;
+  String? mensagemErroProfessores;
   String? mensagemErro;
   String busca = '';
-  int diaSelecionado = DateTime.now().weekday;
+  String diaSelecionado = 'segunda-feira';
+
+  String _normalizarDia(String dia) {
+    return dia.toLowerCase().trim();
+  }
 
   List<Aula> get aulasFiltradas {
-    var lista = aulas.where((a) => a.diaSemana == diaSelecionado).toList();
+    var lista = aulas.where((a) => _normalizarDia(a.diaSemana) == _normalizarDia(diaSelecionado)).toList();
     if (busca.trim().isNotEmpty) {
       final q = busca.toLowerCase();
       lista = lista
@@ -34,15 +43,50 @@ class ProvedorAulas extends ChangeNotifier {
     estado = EstadoCarregamento.carregando;
     mensagemErro = null;
     notifyListeners();
+
+    await carregarProfessores();
+
     try {
       aulas = await _service.listar();
-      professores = _extrairProfessores(aulas);
-      estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
+      if (professores.isEmpty) {
+        professores = _extrairProfessores(aulas);
+        notifyListeners();
+      }
+      estado = aulas.isEmpty && professores.isEmpty
+          ? EstadoCarregamento.vazio
+          : EstadoCarregamento.sucesso;
     } catch (e) {
       mensagemErro = e.toString().replaceFirst('Exception: ', '');
-      estado = EstadoCarregamento.erro;
+      estado = professores.isEmpty ? EstadoCarregamento.erro : EstadoCarregamento.sucesso;
     }
     notifyListeners();
+  }
+
+  /// Carrega professores de GET /usuarios (tabela `usuarios`).
+  /// Independente de /aulas — o dropdown Nova Aula depende deste método.
+  Future<void> carregarProfessores() async {
+    carregandoProfessores = true;
+    mensagemErroProfessores = null;
+    notifyListeners();
+    try {
+      professores = await _buscarProfessoresDaApi();
+      if (professores.isEmpty) {
+        professores = _extrairProfessores(aulas);
+      }
+    } catch (e) {
+      mensagemErroProfessores = e.toString().replaceFirst('Exception: ', '');
+      professores = _extrairProfessores(aulas);
+    }
+    carregandoProfessores = false;
+    notifyListeners();
+  }
+
+  Future<List<Professor>> _buscarProfessoresDaApi() async {
+    final usuarios = await _usuariosService.listar();
+    return usuarios
+        .where((u) => u.id.isNotEmpty && u.nome.isNotEmpty)
+        .map(Professor.fromUsuario)
+        .toList();
   }
 
   List<Professor> _extrairProfessores(List<Aula> lista) {
@@ -63,7 +107,7 @@ class ProvedorAulas extends ChangeNotifier {
     notifyListeners();
   }
 
-  void definirDia(int dia) {
+  void definirDia(String dia) {
     diaSelecionado = dia;
     notifyListeners();
   }
@@ -76,7 +120,7 @@ class ProvedorAulas extends ChangeNotifier {
       }
       final criada = await _service.criar(nova);
       aulas = [...aulas, criada];
-      professores = _extrairProfessores(aulas);
+      await carregarProfessores();
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;
@@ -92,7 +136,7 @@ class ProvedorAulas extends ChangeNotifier {
     try {
       final atualizada = await _service.atualizar(aula);
       aulas = aulas.map((a) => a.id == atualizada.id ? atualizada : a).toList();
-      professores = _extrairProfessores(aulas);
+      await carregarProfessores();
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
       return true;

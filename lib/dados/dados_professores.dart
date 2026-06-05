@@ -1,25 +1,22 @@
 import 'package:fluire/modelos/professor.dart';
+import 'package:fluire/services/usuarios_service.dart';
 
-/// Dados de professores - Preparado para integração com backend
-/// Implementar chamadas de API real nos métodos abaixo
+/// Professores são usuários da tabela `usuarios` (GET /usuarios).
 class DadosProfessores {
-  final List<Professor> _professores = [];
+  final UsuariosService _usuariosService;
 
-  Future<void> _aguardar() => Future.delayed(const Duration(milliseconds: 300));
+  DadosProfessores([UsuariosService? usuariosService])
+      : _usuariosService = usuariosService ?? UsuariosService();
 
-  /// Lista todos os professores
-  /// TODO: Implementar chamada GET para API de professores
   Future<List<Professor>> listar() async {
-    await _aguardar();
-    return List.unmodifiable(_professores);
+    final usuarios = await _usuariosService.listar();
+    return usuarios.map(Professor.fromUsuario).toList();
   }
 
-  /// Busca professor por ID
-  /// TODO: Implementar chamada GET para API de professores/{id}
   Future<Professor?> buscarPorId(String id) async {
-    await _aguardar();
+    final professores = await listar();
     try {
-      return _professores.firstWhere((p) => p.id == id);
+      return professores.firstWhere((p) => p.id == id);
     } catch (_) {
       return null;
     }

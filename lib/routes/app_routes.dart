@@ -8,8 +8,8 @@ import 'package:fluire/telas/painel/tela_painel.dart';
 import 'package:fluire/telas/alunos/tela_gestao_alunos.dart';
 import 'package:fluire/telas/alunos/tela_detalhe_aluno.dart';
 import 'package:fluire/telas/frequencia/tela_frequencia_totem.dart';
-import 'package:fluire/telas/agenda/tela_agenda.dart';
-import 'package:fluire/telas/agenda/tela_detalhe_aula.dart';
+import 'package:fluire/telas/aulas/tela_aulas.dart';
+import 'package:fluire/telas/aulas/tela_detalhe_aulas.dart';
 import 'package:fluire/telas/historico/tela_historico_frequencia.dart';
 import 'package:fluire/telas/professores/tela_gestao_professores.dart';
 import 'package:fluire/telas/perfil/tela_perfil.dart';
@@ -20,7 +20,7 @@ class AppRoutes {
   static const String cadastro = '/cadastro';
   static const String painel = '/painel';
   static const String alunos = '/alunos';
-  static const String agenda = '/agenda';
+  static const String aulas = '/aulas';
   static const String detalheAluno = '/detalhe_aluno';
   static const String detalheAula = '/detalhe_aula';
   static const String frequenciaTotem = '/frequencia_totem';
@@ -30,14 +30,14 @@ class AppRoutes {
 
   static const rotasPublicas = {login, cadastro};
 
-  static const rotasComBottomNav = {painel, agenda, alunos, historico, perfil};
+  static const rotasComBottomNav = {painel, aulas, alunos, historico, perfil};
 
   static Map<String, WidgetBuilder> get rotas => {
         login: (_) => const TelaLogin(),
         cadastro: (_) => const TelaCadastro(),
         painel: (_) => const DashboardScreen(),
         alunos: (_) => const TelaGestaoAlunos(),
-        agenda: (_) => const TelaAgenda(),
+        aulas: (_) => const TelaAulas(),
         historico: (_) => const TelaHistoricoFrequencia(),
         professores: (_) => const TelaProfessores(),
         perfil: (_) => const TelaPerfil(),
@@ -54,9 +54,9 @@ class AppRoutes {
       case detalheAula:
         final id = settings.arguments;
         if (id is String) {
-          return rotaComFade(TelaDetalheAula(aulaId: id));
+          return rotaComFade(TelaDetalheAulas(aulaId: id));
         }
-        return rotaComFade(const TelaAgenda());
+        return rotaComFade(const TelaDetalheAulas(aulaId: ''));
       case frequenciaTotem:
         final arg = settings.arguments;
         return rotaComFade(

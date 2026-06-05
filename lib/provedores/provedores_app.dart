@@ -5,6 +5,7 @@ import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/services/auth_service.dart';
 import 'package:fluire/services/alunos_service.dart';
 import 'package:fluire/services/aulas_service.dart';
+import 'package:fluire/services/usuarios_service.dart';
 
 class ProvedoresApp {
   static List<ChangeNotifierProvider> providers({AuthService? authService}) {
@@ -17,7 +18,7 @@ class ProvedoresApp {
         create: (_) => ProvedorAlunos(AlunosService()),
       ),
       ChangeNotifierProvider<ProvedorAulas>(
-        create: (_) => ProvedorAulas(AulasService()),
+        create: (_) => ProvedorAulas(AulasService(), UsuariosService()),
       ),
     ];
   }

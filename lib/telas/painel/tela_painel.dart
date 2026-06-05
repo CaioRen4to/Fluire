@@ -244,7 +244,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.agenda);
+                    Navigator.pushNamed(context, AppRoutes.aulas);
                   },
                   child: Text(
                     'Ver todas',

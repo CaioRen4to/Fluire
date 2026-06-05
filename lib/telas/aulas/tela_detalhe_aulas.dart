@@ -7,12 +7,12 @@ import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/util/animacoes.dart';
-import 'package:fluire/telas/agenda/modal_formulario_aula.dart';
+import 'package:fluire/telas/aulas/modal_formulario_aulas.dart';
 
-class TelaDetalheAula extends StatelessWidget {
+class TelaDetalheAulas extends StatelessWidget {
   final String aulaId;
 
-  const TelaDetalheAula({super.key, required this.aulaId});
+  const TelaDetalheAulas({super.key, required this.aulaId});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class TelaDetalheAula extends StatelessWidget {
     if (aula == null) {
       return LayoutTela(
         titulo: 'Aula',
-        rotaAtual: AppRoutes.agenda,
+        rotaAtual: AppRoutes.aulas,
         child: const Center(child: Text('Aula não encontrada')),
       );
     }
@@ -31,7 +31,7 @@ class TelaDetalheAula extends StatelessWidget {
 
     return LayoutTela(
       titulo: 'Detalhes da aula',
-      rotaAtual: AppRoutes.agenda,
+      rotaAtual: AppRoutes.aulas,
       centralizarConteudo: false,
       child: SingleChildScrollView(
         child: Column(
@@ -84,7 +84,7 @@ class TelaDetalheAula extends StatelessWidget {
             BotaoPrimario(
               texto: 'Editar aula',
               icone: Icons.edit_outlined,
-              onPressed: () => ModalFormularioAula.abrir(context: context, aula: aula),
+              onPressed: () => ModalFormularioAulas.abrir(context: context, aula: aula),
             ),
             AppSpacing.gapMd,
             BotaoSecundario(
