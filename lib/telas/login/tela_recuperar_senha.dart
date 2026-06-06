@@ -2,37 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
-import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/componentes/auth_layout.dart';
 
-class TelaLogin extends StatefulWidget {
-  const TelaLogin({super.key});
+class TelaRecuperarSenha extends StatefulWidget {
+  const TelaRecuperarSenha({super.key});
 
   @override
-  State<TelaLogin> createState() => _TelaLoginState();
+  State<TelaRecuperarSenha> createState() => _TelaRecuperarSenhaState();
 }
 
-class _TelaLoginState extends State<TelaLogin> {
+class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
   final _emailCtrl = TextEditingController();
-  final _senhaCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _emailCtrl.dispose();
-    _senhaCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _entrar() async {
+  Future<void> _recuperar() async {
+    if (!_formKey.currentState!.validate()) return;
     final auth = context.read<ProvedorAuth>();
-    final ok = await auth.login(_emailCtrl.text, _senhaCtrl.text);
+    final ok = await auth.recuperarSenha(_emailCtrl.text);
     if (!mounted) return;
     if (ok) {
-      Navigator.pushReplacementNamed(context, AppRoutes.painel);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Código de recuperação enviado para seu e-mail'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      Navigator.pop(context);
     }
   }
 
@@ -42,18 +47,18 @@ class _TelaLoginState extends State<TelaLogin> {
     final carregando = auth.estado == EstadoCarregamento.carregando;
 
     return AuthLayout(
-      titulo: 'Bem-vindo ao Fluirê',
-      subtitulo: 'Entre para continuar',
+      titulo: 'Recuperar senha',
+      subtitulo: 'Digite seu e-mail para receber o código',
       rodape: GestureDetector(
-        onTap: () => Navigator.pushNamed(context, AppRoutes.cadastro),
+        onTap: () => Navigator.pop(context),
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            text: 'Não tem conta? ',
+            text: 'Lembrou sua senha? ',
             style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
             children: const [
               TextSpan(
-                text: 'Cadastre-se',
+                text: 'Voltar ao login',
                 style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF302C1D)),
               ),
             ],
@@ -70,29 +75,7 @@ class _TelaLoginState extends State<TelaLogin> {
               controller: _emailCtrl,
               icone: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
-            ),
-            AppSpacing.gapLg,
-            InputPadrao(
-              label: 'Senha',
-              hint: '••••••••',
-              controller: _senhaCtrl,
-              icone: Icons.lock_outline,
-              obscureText: true,
-            ),
-            AppSpacing.gapSm,
-            Align(
-              alignment: Alignment.centerRight,
-              child: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, AppRoutes.recuperarSenha),
-                child: Text(
-                  'Esqueceu a senha?',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+              validator: (v) => v == null || v.isEmpty ? 'Informe o e-mail' : null,
             ),
             if (auth.mensagemErro != null) ...[
               AppSpacing.gapMd,
@@ -103,9 +86,9 @@ class _TelaLoginState extends State<TelaLogin> {
             ],
             AppSpacing.gapXl,
             BotaoPrimario(
-              texto: 'Entrar',
+              texto: 'Enviar código',
               carregando: carregando,
-              onPressed: carregando ? null : _entrar,
+              onPressed: carregando ? null : _recuperar,
             ),
           ],
         ),
