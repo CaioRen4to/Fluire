@@ -4,6 +4,7 @@ import 'package:fluire/modelos/aluno.dart';
 import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/telas/login/tela_login.dart';
 import 'package:fluire/telas/login/tela_cadastro.dart';
+import 'package:fluire/telas/login/tela_recuperar_senha.dart';
 import 'package:fluire/telas/painel/tela_painel.dart';
 import 'package:fluire/telas/alunos/tela_gestao_alunos.dart';
 import 'package:fluire/telas/alunos/tela_detalhe_aluno.dart';
@@ -18,6 +19,7 @@ import 'package:fluire/telas/perfil/tela_perfil.dart';
 class AppRoutes {
   static const String login = '/login';
   static const String cadastro = '/cadastro';
+  static const String recuperarSenha = '/recuperar_senha';
   static const String painel = '/painel';
   static const String alunos = '/alunos';
   static const String aulas = '/aulas';
@@ -27,14 +29,16 @@ class AppRoutes {
   static const String historico = '/historico';
   static const String professores = '/professores';
   static const String perfil = '/perfil';
+  static const String agenda = '/agenda';
 
-  static const rotasPublicas = {login, cadastro};
+  static const rotasPublicas = {login, cadastro, recuperarSenha};
 
   static const rotasComBottomNav = {painel, aulas, alunos, historico, perfil};
 
   static Map<String, WidgetBuilder> get rotas => {
         login: (_) => const TelaLogin(),
         cadastro: (_) => const TelaCadastro(),
+        recuperarSenha: (_) => const TelaRecuperarSenha(),
         painel: (_) => const DashboardScreen(),
         alunos: (_) => const TelaGestaoAlunos(),
         aulas: (_) => const TelaAulas(),
