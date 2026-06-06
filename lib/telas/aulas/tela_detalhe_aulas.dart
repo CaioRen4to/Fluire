@@ -8,11 +8,75 @@ import 'package:fluire/componentes/layout_tela.dart';
 import 'package:fluire/componentes/botao/botao.dart';
 import 'package:fluire/util/animacoes.dart';
 import 'package:fluire/telas/aulas/modal_formulario_aulas.dart';
+import 'package:fluire/componentes/menu_lateral.dart';
+import 'package:fluire/modelos/aula.dart';
 
 class TelaDetalheAulas extends StatelessWidget {
   final String aulaId;
 
   const TelaDetalheAulas({super.key, required this.aulaId});
+
+  PreferredSizeWidget _appBarComVoltar(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.backgroundColor,
+      elevation: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: AppColors.textoPrimario),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: Text(
+        'Detalhes da aula',
+        style: AppTypography.displaySmall.copyWith(
+          color: AppColors.textoPrimario,
+          fontSize: 24,
+        ),
+      ),
+      centerTitle: true,
+      actions: const [
+        Padding(
+          padding: EdgeInsets.only(right: 16.0),
+          child: BotaoMenu(),
+        ),
+      ],
+    );
+  }
+
+  void _confirmarRemocao(BuildContext context, Aula aula) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirmar exclusão'),
+        content: const Text('Tem certeza que deseja excluir esta aula?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final provider = context.read<ProvedorAulas>();
+              final exito = await provider.remover(aula.id);
+              if (context.mounted) {
+                if (exito) {
+                  Navigator.pop(context); // Voltar para a tela anterior
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Aula excluída com sucesso')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(provider.mensagemErro ?? 'Erro ao excluir aula')),
+                  );
+                }
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.erro),
+            child: const Text('Excluir'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +87,7 @@ class TelaDetalheAulas extends StatelessWidget {
       return LayoutTela(
         titulo: 'Aula',
         rotaAtual: AppRoutes.aulas,
+        mostrarBottomNav: true,
         child: const Center(child: Text('Aula não encontrada')),
       );
     }
@@ -32,6 +97,8 @@ class TelaDetalheAulas extends StatelessWidget {
     return LayoutTela(
       titulo: 'Detalhes da aula',
       rotaAtual: AppRoutes.aulas,
+      mostrarBottomNav: true,
+      appBarCustom: _appBarComVoltar(context),
       centralizarConteudo: false,
       child: SingleChildScrollView(
         child: Column(
@@ -94,6 +161,33 @@ class TelaDetalheAulas extends StatelessWidget {
                 context,
                 AppRoutes.frequenciaTotem,
                 arguments: aula,
+              ),
+            ),
+            AppSpacing.gapMd,
+            Container(
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () => _confirmarRemocao(context, aula),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.erro,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.md,
+                  ),
+                  shape: AppBorders.buttonShape,
+                  textStyle: AppTypography.titleLarge,
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outline, size: 20),
+                    SizedBox(width: AppSpacing.sm),
+                    Text('Remover aula'),
+                  ],
+                ),
               ),
             ),
             AppSpacing.gapXl,

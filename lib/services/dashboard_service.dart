@@ -5,13 +5,13 @@ import 'package:fluire/services/api_client.dart';
 import 'package:fluire/services/aulas_service.dart';
 import 'package:fluire/services/frequencia_service.dart';
 
-class PainelService {
+class DashboardService {
   final ApiClient _api = ApiClient.instance;
   final AlunosService _alunosService = AlunosService();
   final AulasService _aulasService = AulasService();
   final FrequenciaService _frequenciaService = FrequenciaService();
 
-  Future<DashboardData> buscarPainel() async {
+  Future<DashboardData> buscarDashboard() async {
     try {
       final response = await _api.get('/dashboard');
       if (response.statusCode == 200) {
@@ -27,10 +27,31 @@ class PainelService {
       // fallback abaixo
     }
 
-    return await _montarPainelLocal();
+    return await _montarDashboardLocal();
   }
 
-  Future<DashboardData> _montarPainelLocal() async {
+  String _converterDiaSemanaInt(int dia) {
+    switch (dia) {
+      case 1:
+        return 'segunda-feira';
+      case 2:
+        return 'terça-feira';
+      case 3:
+        return 'quarta-feira';
+      case 4:
+        return 'quinta-feira';
+      case 5:
+        return 'sexta-feira';
+      case 6:
+        return 'sábado';
+      case 7:
+        return 'domingo';
+      default:
+        return 'segunda-feira';
+    }
+  }
+
+  Future<DashboardData> _montarDashboardLocal() async {
     final alunos = await _alunosService.listar();
     final aulas = await _aulasService.listar();
     List<Frequencia> frequencias = [];
@@ -40,8 +61,8 @@ class PainelService {
     } catch (_) {}
 
     final hoje = DateTime.now();
-    final diaSemana = hoje.weekday;
-    final aulasHoje = aulas.where((a) => a.diaSemana == diaSemana).toList();
+    final diaSemanaTexto = _converterDiaSemanaInt(hoje.weekday);
+    final aulasHoje = aulas.where((a) => a.diaSemana.toLowerCase().trim() == diaSemanaTexto).toList();
 
     final hojeStr =
         '${hoje.year}-${hoje.month.toString().padLeft(2, '0')}-${hoje.day.toString().padLeft(2, '0')}';

@@ -47,7 +47,7 @@ class MenuLateral extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            _item(context, Icons.dashboard_outlined, 'Painel', Rotas.painel),
+            _item(context, Icons.dashboard_outlined, 'Dashboard', Rotas.dashboard),
             _item(context, Icons.people_outline, 'Alunos', Rotas.alunos),
             _item(context, Icons.event_note_outlined, 'Aulas', Rotas.aulas),
             _item(context, Icons.history, 'Histórico', Rotas.historico),

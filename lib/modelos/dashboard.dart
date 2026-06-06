@@ -22,14 +22,18 @@ class DashboardData {
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
-    final totalAlunos = _parseInt(json['total_alunos'] ?? json['totalAlunos'] ?? 0);
-    final totalAulas = _parseInt(json['total_aulas'] ?? json['totalAulas'] ?? 0);
-    final alunosComFalta = _parseInt(json['alunos_com_falta'] ?? json['alunosComFalta'] ?? json['faltas'] ?? 0);
-    final alunosPresentes = _parseInt(json['alunos_presentes'] ?? json['alunosPresentes']);
+    final data = json.containsKey('data') && json['data'] is Map
+        ? Map<String, dynamic>.from(json['data'] as Map)
+        : json;
+
+    final totalAlunos = _parseInt(data['total_alunos'] ?? data['totalAlunos'] ?? 0);
+    final totalAulas = _parseInt(data['total_aulas'] ?? data['totalAulas'] ?? 0);
+    final alunosComFalta = _parseInt(data['total_alunos_com_falta'] ?? data['alunos_com_falta'] ?? data['alunosComFalta'] ?? data['faltas'] ?? 0);
+    final alunosPresentes = _parseInt(data['alunos_presentes'] ?? data['alunosPresentes'] ?? 0);
     final alunosPresentesCalculados = alunosPresentes > 0 ? alunosPresentes : (totalAlunos - alunosComFalta).clamp(0, totalAlunos);
-    final aulasHoje = _parseInt(json['aulas_hoje'] ?? json['aulasHoje'] ?? json['total_aulas'] ?? json['totalAulas'] ?? 0);
-    final emAndamento = _parseInt(json['em_andamento'] ?? json['emAndamento'] ?? 0);
-    final frequenciaMedia = _parseInt(json['frequencia_media'] ?? json['frequenciaMedia'] ?? json['media_frequencia'] ?? 0);
+    final aulasHoje = _parseInt(data['aulas_hoje'] ?? data['aulasHoje'] ?? 0);
+    final emAndamento = _parseInt(data['em_andamento'] ?? data['emAndamento'] ?? 0);
+    final frequenciaMedia = _parseInt(data['frequencia_media'] ?? data['frequenciaMedia'] ?? data['media_frequencia'] ?? 0);
     return DashboardData(
       totalAlunos: totalAlunos,
       totalAulas: totalAulas,
@@ -37,8 +41,8 @@ class DashboardData {
       aulasHoje: aulasHoje,
       emAndamento: emAndamento,
       frequenciaMedia: frequenciaMedia,
-      weeklyFrequency: _parseWeeklyFrequency(json['weekly_frequency'] ?? json['estatisticas_semanais'] ?? json['estatisticasSemanais'] ?? []),
-      todayClasses: _parseTodayClasses(json['today_classes'] ?? json['proximas_aulas'] ?? json['proximasAulas'] ?? []),
+      weeklyFrequency: _parseWeeklyFrequency(data['semana_frequencia'] ?? data['weekly_frequency'] ?? data['weeklyFrequency'] ?? data['estatisticas_semanais'] ?? data['estatisticasSemanais'] ?? []),
+      todayClasses: _parseTodayClasses(data['today_classes'] ?? data['todayClasses'] ?? data['proximas_aulas'] ?? data['proximasAulas'] ?? []),
       alunosComFalta: alunosComFalta,
     );
   }

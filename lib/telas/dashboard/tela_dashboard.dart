@@ -1,11 +1,10 @@
 import 'package:fluire/tema/tema.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/provedores/provedor_alunos.dart';
-import 'package:fluire/provedores/provedor_aulas.dart';
+import 'package:fluire/provedores/provedor_dashboard.dart';
+import 'package:fluire/util/estado_carregamento.dart';
+import 'package:fluire/componentes/estado_visual/estado_visual.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/modelos/dashboard.dart';
-import 'package:fluire/services/painel_service.dart';
 import 'package:fluire/componentes/layout_tela.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,13 +15,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final _painelService = PainelService();
-  int selectedDayIndex = 3;
-
-  DashboardData? dashboard;
-  bool loading = true;
-  List<Map<String, dynamic>> frequenciaSemana = [];
-  List<Map<String, dynamic>> salaDia = [];
+  int selectedDayIndex = DateTime.now().weekday - 1;
 
   void _showMessage(String text) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -50,48 +43,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  String _obterMesAnoAtual() {
+    final meses = [
+      'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+      'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+    ];
+    final agora = DateTime.now();
+    return '${meses[agora.month - 1]} ${agora.year}';
+  }
+
   @override
   void initState() {
     super.initState();
 
-    buscarPainel();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ProvedorAlunos>().carregar();
-      context.read<ProvedorAulas>().carregar();
+      context.read<ProvedorDashboard>().carregar();
     });
-  }
-
-  Future<void> buscarPainel() async {
-    try {
-      final response = await _painelService.buscarPainel();
-
-      setState(() {
-        dashboard = response;
-        frequenciaSemana = response.weeklyFrequency;
-        salaDia = response.todayClasses;
-        loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        loading = false;
-      });
-
-      _showMessage('Erro ao carregar painel');
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    context.watch<ProvedorAlunos>();
-    context.watch<ProvedorAulas>();
+    final provider = context.watch<ProvedorDashboard>();
 
-    if (loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (provider.estado == EstadoCarregamento.inicial ||
+        provider.estado == EstadoCarregamento.carregando) {
+      return LayoutTela(
+        titulo: 'Dashboard',
+        rotaAtual: AppRoutes.dashboard,
+        mostrarBottomNav: true,
+        centralizarConteudo: true,
+        child: const EstadoCarregando(mensagem: 'Carregando dashboard...'),
+      );
     }
 
+    if (provider.estado == EstadoCarregamento.erro) {
+      return LayoutTela(
+        titulo: 'Dashboard',
+        rotaAtual: AppRoutes.dashboard,
+        mostrarBottomNav: true,
+        centralizarConteudo: true,
+        child: EstadoErro(
+          mensagem: provider.mensagemErro ?? 'Erro ao carregar Dashboard.',
+          onTentarNovamente: () => provider.carregar(),
+        ),
+      );
+    }
+
+    if (provider.estado == EstadoCarregamento.vazio || provider.dashboard == null) {
+      return LayoutTela(
+        titulo: 'Dashboard',
+        rotaAtual: AppRoutes.dashboard,
+        mostrarBottomNav: true,
+        centralizarConteudo: true,
+        child: EstadoVazio(
+          titulo: 'Nenhum dado encontrado.',
+          subtitulo: 'Tente recarregar o dashboard mais tarde.',
+          icone: Icons.dashboard_customize_outlined,
+          onAcao: () => provider.carregar(),
+          textoAcao: 'Recarregar',
+        ),
+      );
+    }
+
+    final dashboard = provider.dashboard!;
+    final frequenciaSemana = provider.frequenciaSemanaCalculada;
+    final salaDia = provider.todayClassesReal;
+
     return LayoutTela(
-      titulo: 'Painel',
-      rotaAtual: AppRoutes.painel,
+      titulo: 'Dashboard',
+      rotaAtual: AppRoutes.dashboard,
       mostrarBottomNav: true,
       centralizarConteudo: false,
       child: SingleChildScrollView(
@@ -122,25 +142,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     _infoCard(
                       title: 'Alunos Presentes',
-                      value: dashboard?.alunosPresentes.toString() ?? '0',
+                      value: provider.alunosPresentesReal.toString(),
                       icon: Icons.people_outline,
                       iconColor: AppColors.primaryColor,
                     ),
                     _infoCard(
                       title: 'Aulas Hoje',
-                      value: dashboard?.aulasHoje.toString() ?? '0',
+                      value: provider.aulasHojeReal.toString(),
                       icon: Icons.calendar_today_outlined,
                       iconColor: AppColors.sucesso,
                     ),
                     _infoCard(
                       title: 'Em Andamento',
-                      value: dashboard?.emAndamento.toString() ?? '0',
+                      value: provider.aulasEmAndamentoCount.toString(),
                       icon: Icons.play_arrow_rounded,
                       iconColor: AppColors.alerta,
                     ),
                     _infoCard(
                       title: 'Freq. Média',
-                      value: '${dashboard?.frequenciaMedia ?? 0}%',
+                      value: '${dashboard.frequenciaMedia}%',
                       icon: Icons.trending_up,
                       iconColor: AppColors.primaryColor,
                     ),
@@ -172,7 +192,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       Text(
-                        'Mai 2026',
+                        _obterMesAnoAtual(),
                         style: AppTypography.titleSmall.copyWith(
                           color: AppColors.textoSecundario,
                         ),
@@ -195,7 +215,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               selectedDayIndex = index;
                             });
 
-                            _showMessage('Frequência de ${item['day']}');
+                            final presencas = item['presencas'] ?? 0;
+                            final percentual = item['percentual'] ?? 0;
+                            _showMessage('${item['fullName']}: $presencas presenças ($percentual% de frequência)');
                           },
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -302,7 +324,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           context,
                           AppRoutes.frequenciaTotem,
                         ).then((_) {
-                          buscarPainel();
+                          provider.carregar();
                         });
                       },
                     ),
@@ -311,16 +333,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       icon: Icons.groups_rounded,
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.alunos).then((_) {
-                          buscarPainel();
+                          provider.carregar();
                         });
                       },
                     ),
                     _quickAction(
-                      title: 'Agenda',
+                      title: 'Aulas',
                       icon: Icons.event_note_rounded,
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.agenda).then((_) {
-                          buscarPainel();
+                        Navigator.pushNamed(context, AppRoutes.aulas).then((_) {
+                          provider.carregar();
                         });
                       },
                     ),
@@ -390,12 +412,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return InkWell(
       borderRadius: AppBorders.radiusXXLarge,
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Abrindo ${item["title"]}"),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        Navigator.pushNamed(
+          context,
+          AppRoutes.detalheAula,
+          arguments: item['id'],
+        ).then((_) {
+          if (mounted) {
+            context.read<ProvedorDashboard>().carregar();
+          }
+        });
       },
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.lg),

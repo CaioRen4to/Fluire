@@ -12,9 +12,14 @@ class AulaAlunoService {
     }
 
     final jsonData = ApiClient.decodificarCorpo(response);
-    if (jsonData is! List) return [];
+    List<dynamic> list = [];
+    if (jsonData is Map) {
+      list = jsonData['dados'] ?? jsonData['data'] ?? [];
+    } else if (jsonData is List) {
+      list = jsonData;
+    }
 
-    return jsonData
+    return list
         .whereType<Map<String, dynamic>>()
         .map((json) => AulaAluno.fromJson(json))
         .toList();
@@ -73,9 +78,16 @@ class AulaAlunoService {
     }
 
     final jsonData = ApiClient.decodificarCorpo(response);
-    if (jsonData is! List) return [];
-
-    return jsonData.cast<Map<String, dynamic>>();
+    if (jsonData is Map) {
+      final list = jsonData['dados'] ?? jsonData['data'];
+      if (list is List) {
+        return list.cast<Map<String, dynamic>>();
+      }
+    }
+    if (jsonData is List) {
+      return jsonData.cast<Map<String, dynamic>>();
+    }
+    return [];
   }
 
   Future<List<Map<String, dynamic>>> obterAulasDeUmAluno(int alunoId) async {
@@ -86,8 +98,15 @@ class AulaAlunoService {
     }
 
     final jsonData = ApiClient.decodificarCorpo(response);
-    if (jsonData is! List) return [];
-
-    return jsonData.cast<Map<String, dynamic>>();
+    if (jsonData is Map) {
+      final list = jsonData['dados'] ?? jsonData['data'];
+      if (list is List) {
+        return list.cast<Map<String, dynamic>>();
+      }
+    }
+    if (jsonData is List) {
+      return jsonData.cast<Map<String, dynamic>>();
+    }
+    return [];
   }
 }

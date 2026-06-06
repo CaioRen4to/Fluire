@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/modelos/aula.dart';
+import 'package:fluire/modelos/aula_aluno.dart';
 import 'package:fluire/modelos/professor.dart';
 import 'package:fluire/services/aulas_service.dart';
 import 'package:fluire/services/usuarios_service.dart';
+import 'package:fluire/services/aula_aluno_service.dart';
 import 'package:fluire/services/api_client.dart';
 
 class ProvedorAulas extends ChangeNotifier {
@@ -47,7 +49,25 @@ class ProvedorAulas extends ChangeNotifier {
     await carregarProfessores();
 
     try {
-      aulas = await _service.listar();
+      final listaAulas = await _service.listar();
+      
+      final _aulaAlunoService = AulaAlunoService();
+      List<AulaAluno> assoc = [];
+      try {
+        assoc = await _aulaAlunoService.listar();
+      } catch (_) {}
+
+      final mapAssoc = <String, List<String>>{};
+      for (final a in assoc) {
+        final aulaKey = a.aulaId.toString();
+        mapAssoc.putIfAbsent(aulaKey, () => []).add(a.alunoId.toString());
+      }
+
+      aulas = listaAulas.map((aula) {
+        final ids = mapAssoc[aula.id] ?? [];
+        return aula.copyWith(alunoIds: ids);
+      }).toList();
+
       if (professores.isEmpty) {
         professores = _extrairProfessores(aulas);
         notifyListeners();
@@ -119,7 +139,19 @@ class ProvedorAulas extends ChangeNotifier {
         nova = nova.copyWith(usuarioId: ApiClient.instance.userId.toString());
       }
       final criada = await _service.criar(nova);
-      aulas = [...aulas, criada];
+      
+      final aulaId = int.tryParse(criada.id);
+      if (aulaId != null) {
+        final _aulaAlunoService = AulaAlunoService();
+        for (final alunoIdStr in aula.alunoIds) {
+          final alunoId = int.tryParse(alunoIdStr);
+          if (alunoId != null) {
+            await _aulaAlunoService.associar(aulaId, alunoId);
+          }
+        }
+      }
+
+      aulas = [...aulas, criada.copyWith(alunoIds: aula.alunoIds)];
       await carregarProfessores();
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
@@ -135,7 +167,38 @@ class ProvedorAulas extends ChangeNotifier {
   Future<bool> atualizar(Aula aula) async {
     try {
       final atualizada = await _service.atualizar(aula);
-      aulas = aulas.map((a) => a.id == atualizada.id ? atualizada : a).toList();
+
+      final aulaId = int.tryParse(aula.id);
+      if (aulaId != null) {
+        final _aulaAlunoService = AulaAlunoService();
+        final alunosExistentes = await _aulaAlunoService.obterAlunosDeUmaAula(aulaId);
+        final alunoIdsExistentes = alunosExistentes
+            .map((e) => e['aluno_id']?.toString() ?? e['id']?.toString() ?? '')
+            .where((id) => id.isNotEmpty)
+            .toSet();
+
+        final novosIds = aula.alunoIds.toSet();
+
+        for (final idExistente in alunoIdsExistentes) {
+          if (!novosIds.contains(idExistente)) {
+            final alunoId = int.tryParse(idExistente);
+            if (alunoId != null) {
+              await _aulaAlunoService.remover(aulaId, alunoId);
+            }
+          }
+        }
+
+        for (final novoId in novosIds) {
+          if (!alunoIdsExistentes.contains(novoId)) {
+            final alunoId = int.tryParse(novoId);
+            if (alunoId != null) {
+              await _aulaAlunoService.associar(aulaId, alunoId);
+            }
+          }
+        }
+      }
+
+      aulas = aulas.map((a) => a.id == atualizada.id ? atualizada.copyWith(alunoIds: aula.alunoIds) : a).toList();
       await carregarProfessores();
       estado = aulas.isEmpty ? EstadoCarregamento.vazio : EstadoCarregamento.sucesso;
       notifyListeners();
@@ -161,6 +224,22 @@ class ProvedorAulas extends ChangeNotifier {
       return aulas.firstWhere((a) => a.id == id);
     } catch (_) {
       return null;
+    }
+  }
+
+  Future<bool> remover(String id) async {
+    try {
+      await _service.remover(id);
+      aulas.removeWhere((a) => a.id == id);
+      estado = aulas.isEmpty && professores.isEmpty
+          ? EstadoCarregamento.vazio
+          : EstadoCarregamento.sucesso;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      notifyListeners();
+      return false;
     }
   }
 }
