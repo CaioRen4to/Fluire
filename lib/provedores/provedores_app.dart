@@ -2,10 +2,12 @@ import 'package:provider/provider.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
 import 'package:fluire/provedores/provedor_alunos.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
+import 'package:fluire/provedores/provedor_dashboard.dart';
 import 'package:fluire/services/auth_service.dart';
 import 'package:fluire/services/alunos_service.dart';
 import 'package:fluire/services/aulas_service.dart';
 import 'package:fluire/services/usuarios_service.dart';
+import 'package:fluire/services/dashboard_service.dart';
 
 class ProvedoresApp {
   static List<ChangeNotifierProvider> providers({AuthService? authService}) {
@@ -19,6 +21,9 @@ class ProvedoresApp {
       ),
       ChangeNotifierProvider<ProvedorAulas>(
         create: (_) => ProvedorAulas(AulasService(), UsuariosService()),
+      ),
+      ChangeNotifierProvider<ProvedorDashboard>(
+        create: (_) => ProvedorDashboard(DashboardService(), AulasService()),
       ),
     ];
   }

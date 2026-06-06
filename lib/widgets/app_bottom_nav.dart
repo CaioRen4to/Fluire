@@ -9,7 +9,7 @@ class AppBottomNav extends StatelessWidget {
   const AppBottomNav({super.key, required this.indiceAtual});
 
   static const rotasPrincipais = [
-    AppRoutes.painel,
+    AppRoutes.dashboard,
     AppRoutes.alunos,
     AppRoutes.aulas,
     AppRoutes.historico,
@@ -18,7 +18,7 @@ class AppBottomNav extends StatelessWidget {
 
   static int indiceDaRota(String? rota) {
     switch (rota) {
-      case AppRoutes.painel:
+      case AppRoutes.dashboard:
         return 0;
       case AppRoutes.alunos:
         return 1;
@@ -76,7 +76,7 @@ class AppBottomNav extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_outlined),
               activeIcon: Icon(Icons.dashboard),
-              label: 'Painel',
+              label: 'Dashboard',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people_outline),
