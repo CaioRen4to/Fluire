@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/tema/tema.dart';
+import 'package:fluire/theme/tema.dart';
 
 /// Bottom Navigation Bar compartilhada entre as telas principais.
 class AppBottomNav extends StatelessWidget {

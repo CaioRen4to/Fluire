@@ -1,5 +1,5 @@
-import 'package:fluire/modelos/dashboard.dart';
-import 'package:fluire/modelos/frequencia.dart';
+import 'package:fluire/models/dashboard.dart';
+import 'package:fluire/models/frequencia.dart';
 import 'package:fluire/services/alunos_service.dart';
 import 'package:fluire/services/api_client.dart';
 import 'package:fluire/services/aulas_service.dart';

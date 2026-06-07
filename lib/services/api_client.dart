@@ -80,10 +80,6 @@ class ApiClient {
     final hdrs = headers();
     final payload = body == null ? null : jsonEncode(body);
 
-    print("PUT => $url");
-    print("Headers => $hdrs");
-    print("Payload => $payload");
-
     final response = await http
         .put(
           url,
@@ -91,9 +87,6 @@ class ApiClient {
           body: payload,
         )
         .timeout(ApiConfig.timeout);
-
-    print("Status => ${response.statusCode}");
-    print("Response => ${response.body}");
 
     return response;
   }

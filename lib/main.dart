@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/tema/tema_app.dart';
-import 'package:fluire/provedores/provedores_app.dart';
-import 'package:fluire/provedores/provedor_auth.dart';
+import 'package:fluire/theme/tema_app.dart';
+import 'package:fluire/providers/provedores_app.dart';
+import 'package:fluire/providers/provedor_auth.dart';
 import 'package:fluire/services/auth_service.dart';
 
 Future<void> main() async {

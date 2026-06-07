@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/util/animacoes.dart';
-import 'package:fluire/modelos/aluno.dart';
-import 'package:fluire/modelos/aula.dart';
-import 'package:fluire/telas/login/tela_login.dart';
-import 'package:fluire/telas/login/tela_cadastro.dart';
-import 'package:fluire/telas/login/tela_recuperar_senha.dart';
-import 'package:fluire/telas/login/tela_validar_codigo_senha.dart';
-import 'package:fluire/telas/painel/tela_painel.dart';
-import 'package:fluire/telas/dashboard/tela_dashboard.dart';
-import 'package:fluire/telas/alunos/tela_gestao_alunos.dart';
-import 'package:fluire/telas/alunos/tela_detalhe_aluno.dart';
-import 'package:fluire/telas/frequencia/tela_frequencia_totem.dart';
-import 'package:fluire/telas/aulas/tela_aulas.dart';
-import 'package:fluire/telas/aulas/tela_detalhe_aulas.dart';
-import 'package:fluire/telas/historico/tela_historico_frequencia.dart';
-import 'package:fluire/telas/professores/tela_gestao_professores.dart';
-import 'package:fluire/telas/perfil/tela_perfil.dart';
+import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/models/aluno.dart';
+import 'package:fluire/models/aula.dart';
+import 'package:fluire/screens/login/tela_login.dart';
+import 'package:fluire/screens/login/tela_cadastro.dart';
+import 'package:fluire/screens/login/tela_recuperar_senha.dart';
+import 'package:fluire/screens/login/tela_validar_codigo_senha.dart';
+import 'package:fluire/screens/dashboard/tela_dashboard.dart';
+import 'package:fluire/screens/alunos/tela_gestao_alunos.dart';
+import 'package:fluire/screens/alunos/tela_detalhe_aluno.dart';
+import 'package:fluire/screens/frequencia/tela_frequencia_totem.dart';
+import 'package:fluire/screens/aulas/tela_aulas.dart';
+import 'package:fluire/screens/aulas/tela_detalhe_aulas.dart';
+import 'package:fluire/screens/historico/tela_historico_frequencia.dart';
+import 'package:fluire/screens/professores/tela_gestao_professores.dart';
+import 'package:fluire/screens/perfil/tela_perfil.dart';
 
 /// Rotas nomeadas do aplicativo.
 class AppRoutes {

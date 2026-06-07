@@ -4,7 +4,7 @@ class ApiConfig {
 
   static const String baseUrl = 'http://127.0.0.1:5000';
 
-  static const Duration timeout = Duration(seconds: 10);
+  static const Duration timeout = Duration(seconds: 30);
 
   static const Map<String, String> jsonHeaders = {
     'Accept': 'application/json',

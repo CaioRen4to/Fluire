@@ -1,4 +1,4 @@
-import 'package:fluire/modelos/registro_auditoria.dart';
+import 'package:fluire/models/registro_auditoria.dart';
 import 'package:fluire/services/alunos_service.dart';
 import 'package:fluire/services/aulas_service.dart';
 import 'package:fluire/services/usuarios_service.dart';

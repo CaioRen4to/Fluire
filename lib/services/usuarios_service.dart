@@ -1,4 +1,4 @@
-import 'package:fluire/modelos/usuario.dart';
+import 'package:fluire/models/usuario.dart';
 import 'package:fluire/services/api_client.dart';
 
 class UsuariosService {

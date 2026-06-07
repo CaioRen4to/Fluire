@@ -1,4 +1,4 @@
-import 'package:fluire/modelos/aula_aluno.dart';
+import 'package:fluire/models/aula_aluno.dart';
 import 'package:fluire/services/api_client.dart';
 
 class AulaAlunoService {

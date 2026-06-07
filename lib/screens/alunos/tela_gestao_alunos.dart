@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fluire/utils/estado_carregamento.dart';
+import 'package:fluire/providers/provedor_alunos.dart';
+import 'package:fluire/models/aluno.dart';
+import 'package:fluire/routes/app_routes.dart';
+import 'package:fluire/theme/tema.dart';
+import 'package:fluire/widgets/layout_tela.dart';
+import 'package:fluire/widgets/cards/card_aluno.dart';
+import 'package:fluire/widgets/estado_visual/estado_visual.dart';
+import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/screens/alunos/modal_formulario_aluno.dart';
+
+class TelaGestaoAlunos extends StatefulWidget {
+  const TelaGestaoAlunos({super.key});
+
+  @override
+  State<TelaGestaoAlunos> createState() => _TelaGestaoAlunosState();
+}
+
+class _TelaGestaoAlunosState extends State<TelaGestaoAlunos> {
+  @override
+  void initState() {
+    super.initState();
+    // Carrega alunos ao iniciar a tela
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProvedorAlunos>().carregar();
+    });
+  }
+
+  Future<void> _navegarParaDetalhes(Aluno aluno) async {
+    final resultado = await Navigator.pushNamed(
+      context,
+      AppRoutes.detalheAluno,
+      arguments: aluno,
+    );
+    // Recarrega a lista se voltou da tela de detalhes com alteração (resultado == true)
+    if (resultado == true && mounted) {
+      context.read<ProvedorAlunos>().carregar();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.watch<ProvedorAlunos>();
+
+    return LayoutTela(
+      titulo: 'Alunos',
+      rotaAtual: AppRoutes.alunos,
+      mostrarBottomNav: true,
+      centralizarConteudo: false,
+      acaoFlutuante: FloatingActionButton(
+        backgroundColor: AppColors.primaryColor,
+        onPressed: () => ModalFormularioAluno.abrir(context: context),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final colunas = constraints.maxWidth < 450 ? 1 : 3;
+              if (colunas == 1) {
+                return Column(
+                  children: [
+                    _resumoRow('${provider.total}', 'Total de Alunos', AppColors.primaryColor),
+                    AppSpacing.gapSm,
+                    _resumoRow('${provider.ativos}', 'Alunos Ativos', AppColors.sucesso),
+                    AppSpacing.gapSm,
+                    _resumoRow('${provider.total - provider.ativos}', 'Alunos Inativos', AppColors.erro),
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  _resumo('${provider.total}', 'Total', AppColors.primaryColor),
+                  AppSpacing.gapSmHorizontal,
+                  _resumo('${provider.ativos}', 'Ativos', AppColors.sucesso),
+                  AppSpacing.gapSmHorizontal,
+                  _resumo('${provider.total - provider.ativos}', 'Inativos', AppColors.erro),
+                ],
+              );
+            }
+          ),
+          AppSpacing.gapLg,
+          TextField(
+            onChanged: provider.definirBusca,
+            decoration: InputDecoration(
+              hintText: 'Buscar aluno...',
+              prefixIcon: const Icon(Icons.search, color: AppColors.popUp),
+              filled: true,
+              fillColor: AppColors.fundoCard,
+              border: OutlineInputBorder(borderRadius: AppBorders.radiusLarge, borderSide: BorderSide.none),
+            ),
+          ),
+          AppSpacing.gapLg,
+          Expanded(child: _conteudo(provider)),
+        ],
+      ),
+    );
+  }
+
+  Widget _conteudo(ProvedorAlunos provider) {
+    switch (provider.estado) {
+      case EstadoCarregamento.carregando:
+      case EstadoCarregamento.inicial:
+        return const EstadoCarregando(mensagem: 'Carregando alunos...');
+      case EstadoCarregamento.erro:
+        return EstadoErro(
+          mensagem: provider.mensagemErro ?? 'Erro ao carregar',
+          onTentarNovamente: provider.carregar,
+        );
+      case EstadoCarregamento.vazio:
+        return EstadoVazio(
+          titulo: 'Nenhum aluno cadastrado',
+          subtitulo: 'Adicione o primeiro aluno pelo botão +',
+          onAcao: () => ModalFormularioAluno.abrir(context: context),
+          textoAcao: 'Novo aluno',
+        );
+      case EstadoCarregamento.sucesso:
+        final lista = provider.alunosFiltrados;
+        if (lista.isEmpty) {
+          return const EstadoVazio(
+            titulo: 'Nenhum resultado',
+            subtitulo: 'Tente outro termo de busca',
+            icone: Icons.search_off,
+          );
+        }
+        return ListView.separated(
+          itemCount: lista.length,
+          separatorBuilder: (_, _) => AppSpacing.gapMd,
+          itemBuilder: (_, i) {
+            final aluno = lista[i];
+            return Animacoes.fadeSlide(
+              delay: Duration(milliseconds: 30 * i),
+              child: CardAluno(
+                aluno: aluno,
+                onTap: () => _navegarParaDetalhes(aluno),
+              ),
+            );
+          },
+        );
+    }
+  }
+
+  Widget _resumo(String valor, String titulo, Color cor) => Expanded(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
+          child: Column(
+            children: [
+              Text(valor, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: cor)),
+              AppSpacing.gapXs,
+              Text(titulo, style: AppTypography.bodySmall.copyWith(color: AppColors.textoSecundario)),
+            ],
+          ),
+        ),
+      );
+
+  Widget _resumoRow(String valor, String titulo, Color cor) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
+        decoration: BoxDecoration(color: AppColors.fundoCard, borderRadius: AppBorders.radiusLarge),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(titulo, style: AppTypography.bodyMedium.copyWith(color: AppColors.textoSecundario, fontWeight: FontWeight.w600)),
+            Text(valor, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: cor)),
+          ],
+        ),
+      );
+}

@@ -1,4 +1,4 @@
-import 'package:fluire/modelos/frequencia.dart';
+import 'package:fluire/models/frequencia.dart';
 import 'package:fluire/services/api_client.dart';
 
 class FrequenciaService {

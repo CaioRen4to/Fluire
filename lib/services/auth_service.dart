@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fluire/modelos/usuario.dart';
+import 'package:fluire/models/usuario.dart';
 import 'package:fluire/services/api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

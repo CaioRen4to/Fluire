@@ -1,4 +1,4 @@
-import 'package:fluire/modelos/aluno.dart';
+import 'package:fluire/models/aluno.dart';
 import 'package:fluire/services/api_client.dart';
 
 class AlunosService {
@@ -48,10 +48,6 @@ class AlunosService {
     };
 
     final response = await _api.post('/alunos', body: body);
-    print('POST => ${_api.uri('/alunos')}');
-    print('Payload => $body');
-    print('Status => ${response.statusCode}');
-    print('Body => ${response.body}');
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final jsonData = ApiClient.decodificarCorpo(response);
@@ -84,12 +80,7 @@ class AlunosService {
       if (_api.userId != null) 'usuario_logado_id': _api.userId,
     };
 
-    final url = _api.uri('/alunos/$idInt');
-    print('PUT => $url');
-    print('Payload => $body');
     final response = await _api.put('/alunos/$idInt', body: body);
-    print('Status => ${response.statusCode}');
-    print('Body => ${response.body}');
 
     if (response.statusCode < 200 || response.statusCode >= 300) {
       final jsonData = ApiClient.decodificarCorpo(response);
