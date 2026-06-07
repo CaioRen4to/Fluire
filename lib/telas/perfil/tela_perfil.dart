@@ -172,24 +172,6 @@ class TelaPerfil extends StatelessWidget {
       ),
       child: Column(
         children: [
-          BotaoPrimario(
-            texto: 'Ver Dashboard',
-            icone: Icons.dashboard_outlined,
-            onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.dashboard),
-          ),
-          AppSpacing.gapMd,
-          BotaoSecundario(
-            texto: 'Frequência',
-            icone: Icons.fact_check_outlined,
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.frequenciaTotem),
-          ),
-          AppSpacing.gapMd,
-          BotaoSecundario(
-            texto: 'Professores',
-            icone: Icons.school_outlined,
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.professores),
-          ),
-          AppSpacing.gapMd,
           BotaoTexto(
             texto: 'Sair',
             cor: AppColors.erro,

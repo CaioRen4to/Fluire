@@ -21,7 +21,7 @@ class FrequenciaService {
   }
 
   Future<List<Frequencia>> listarPorAula(int aulaId) async {
-    final response = await _api.get('/frequencias/aula/$aulaId');
+    final response = await _api.get('/frequencias/aulas/$aulaId');
 
     if (response.statusCode != 200) {
       throw Exception('Erro ao carregar frequências da aula: ${response.statusCode}');
@@ -55,7 +55,7 @@ class FrequenciaService {
     }
 
     final jsonData = ApiClient.decodificarCorpo(response);
-    if (jsonData is Map<String, dynamic>) {
+    if (jsonData is Map<String, dynamic> && (jsonData.containsKey('aula_id') || jsonData.containsKey('id'))) {
       return Frequencia.fromJson(jsonData);
     }
     return Frequencia(

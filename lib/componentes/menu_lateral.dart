@@ -51,6 +51,7 @@ class MenuLateral extends StatelessWidget {
             _item(context, Icons.people_outline, 'Alunos', Rotas.alunos),
             _item(context, Icons.event_note_outlined, 'Aulas', Rotas.aulas),
             _item(context, Icons.history, 'Histórico', Rotas.historico),
+            _item(context, Icons.school_outlined, 'Professores', Rotas.professores),
             _item(context, Icons.person_outline, 'Perfil', Rotas.perfil),
             const Spacer(),
             const Divider(height: 1),

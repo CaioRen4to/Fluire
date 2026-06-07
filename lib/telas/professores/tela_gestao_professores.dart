@@ -4,6 +4,8 @@ import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/provedores/provedor_aulas.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/layout_tela.dart';
+import 'package:fluire/modelos/professor.dart';
+import 'package:fluire/telas/professores/tela_aulas_professor.dart';
 
 class TelaProfessores extends StatefulWidget {
   const TelaProfessores({super.key});
@@ -25,14 +27,38 @@ class _TelaProfessoresState extends State<TelaProfessores> {
     });
   }
 
+  String _converterDiaSemanaInt(int dia) {
+    switch (dia) {
+      case 1:
+        return 'segunda-feira';
+      case 2:
+        return 'terça-feira';
+      case 3:
+        return 'quarta-feira';
+      case 4:
+        return 'quinta-feira';
+      case 5:
+        return 'sexta-feira';
+      case 6:
+        return 'sábado';
+      case 7:
+        return 'domingo';
+      default:
+        return '';
+    }
+  }
+
   List<Map<String, dynamic>> _professoresFromProvider(ProvedorAulas provider) {
-    final hoje = DateTime.now().weekday;
+    final hojeSemana = _converterDiaSemanaInt(DateTime.now().weekday);
     return provider.professores.map((p) {
-      final aulasDoProfessor = provider.aulas.where((a) => a.usuarioId == p.id);
+      final aulasDoProfessor = provider.aulas.where((a) => a.usuarioId == p.id).toList();
       return {
+        'id': p.id,
         'name': p.nome,
         'email': p.email.isNotEmpty ? p.email : '—',
-        'lessons': aulasDoProfessor.where((a) => a.diaSemana == hoje).length,
+        'lessons': aulasDoProfessor
+            .where((a) => a.diaSemana.toLowerCase().trim() == hojeSemana)
+            .length,
         'active': aulasDoProfessor.isNotEmpty,
       };
     }).toList();
@@ -44,10 +70,10 @@ class _TelaProfessoresState extends State<TelaProfessores> {
     final professores = _professoresFromProvider(provider);
     final activeTeachers = professores.where((e) => e['active'] == true).length;
 
-    final totalLessons = professores.fold<int>(
-      0,
-      (sum, item) => sum + (item['lessons'] as int),
-    );
+    final hojeSemana = _converterDiaSemanaInt(DateTime.now().weekday);
+    final totalLessons = provider.aulas
+        .where((a) => a.diaSemana.toLowerCase().trim() == hojeSemana)
+        .length;
 
     final filteredList = professores.where((teacher) {
       return teacher['name'].toString().toLowerCase().contains(
@@ -67,7 +93,13 @@ class _TelaProfessoresState extends State<TelaProfessores> {
             Icons.arrow_back_rounded,
             color: AppColors.textoPrimario,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+            }
+          },
         ),
         title: Text(
           'Professores',
@@ -288,7 +320,20 @@ class _TelaProfessoresState extends State<TelaProfessores> {
                                 label: 'Ver aulas',
                                 icon: Icons.arrow_forward_ios_rounded,
                                 reverse: true,
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TelaAulasProfessor(
+                                        professor: Professor(
+                                          id: professor['id'],
+                                          nome: professor['name'],
+                                          email: professor['email'] == '—' ? '' : professor['email'],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
