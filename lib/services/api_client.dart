@@ -75,14 +75,27 @@ class ApiClient {
         .timeout(ApiConfig.timeout);
   }
 
-  Future<http.Response> put(String path, {Object? body}) {
-    return http
+  Future<http.Response> put(String path, {Object? body}) async {
+    final url = uri(path);
+    final hdrs = headers();
+    final payload = body == null ? null : jsonEncode(body);
+
+    print("PUT => $url");
+    print("Headers => $hdrs");
+    print("Payload => $payload");
+
+    final response = await http
         .put(
-          uri(path),
-          headers: headers(),
-          body: body == null ? null : jsonEncode(body),
+          url,
+          headers: hdrs,
+          body: payload,
         )
         .timeout(ApiConfig.timeout);
+
+    print("Status => ${response.statusCode}");
+    print("Response => ${response.body}");
+
+    return response;
   }
 
   Future<http.Response> delete(String path, {Object? body}) {

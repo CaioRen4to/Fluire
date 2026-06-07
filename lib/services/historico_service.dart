@@ -53,19 +53,20 @@ class HistoricoService {
     }
 
     for (final aula in aulas) {
-      if (aula.createdAt != null || aula.createdBy != null) {
+      if (aula.createdAt != null || aula.createdBy != null || aula.id.isNotEmpty) {
         registros.add(
           RegistroAuditoria(
             entidade: TipoEntidadeAuditoria.aula,
             acao: TipoAcaoAuditoria.criacao,
             titulo: aula.nome,
             subtitulo: aula.horario,
-            criadoPor: _nomeUsuario(aula.createdBy, mapaUsuarios),
-            dataCriacao: aula.createdAt,
+            criadoPor: _nomeUsuario(aula.createdBy, mapaUsuarios) ?? 'Não informado',
+            dataCriacao: aula.createdAt ?? DateTime.now(),
           ),
         );
       }
 
+      // Se temos indicação de alteração ou se pudermos identificar que houve alteração (updatedBy/updatedAt)
       if (aula.updatedAt != null || aula.updatedBy != null) {
         registros.add(
           RegistroAuditoria(
@@ -74,9 +75,9 @@ class HistoricoService {
             titulo: aula.nome,
             subtitulo: aula.horario,
             criadoPor: _nomeUsuario(aula.createdBy, mapaUsuarios),
-            atualizadoPor: _nomeUsuario(aula.updatedBy, mapaUsuarios),
+            atualizadoPor: _nomeUsuario(aula.updatedBy, mapaUsuarios) ?? 'Usuário logado',
             dataCriacao: aula.createdAt,
-            dataAtualizacao: aula.updatedAt,
+            dataAtualizacao: aula.updatedAt ?? DateTime.now(),
           ),
         );
       }

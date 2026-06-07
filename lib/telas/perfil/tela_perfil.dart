@@ -173,9 +173,9 @@ class TelaPerfil extends StatelessWidget {
       child: Column(
         children: [
           BotaoPrimario(
-            texto: 'Ver Painel',
+            texto: 'Ver Dashboard',
             icone: Icons.dashboard_outlined,
-            onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.painel),
+            onPressed: () => Navigator.pushReplacementNamed(context, AppRoutes.dashboard),
           ),
           AppSpacing.gapMd,
           BotaoSecundario(
