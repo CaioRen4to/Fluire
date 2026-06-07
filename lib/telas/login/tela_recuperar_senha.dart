@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/util/estado_carregamento.dart';
 import 'package:fluire/provedores/provedor_auth.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/tema/tema.dart';
 import 'package:fluire/componentes/input_padrao/input_padrao.dart';
 import 'package:fluire/componentes/botao/botao.dart';
@@ -37,7 +38,11 @@ class _TelaRecuperarSenhaState extends State<TelaRecuperarSenha> {
           duration: Duration(seconds: 3),
         ),
       );
-      Navigator.pop(context);
+      Navigator.pushNamed(
+        context,
+        AppRoutes.validarCodigoSenha,
+        arguments: _emailCtrl.text,
+      );
     }
   }
 
