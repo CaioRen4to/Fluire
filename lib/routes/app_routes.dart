@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/utils/animacoes.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/models/aula.dart';
+import 'package:fluire/utils/utils.dart';
+import 'package:fluire/models/models.dart';
 import 'package:fluire/screens/login/tela_login.dart';
 import 'package:fluire/screens/login/tela_cadastro.dart';
 import 'package:fluire/screens/login/tela_recuperar_senha.dart';

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/models/professor.dart';
-import 'package:fluire/providers/provedor_aulas.dart';
+import 'package:fluire/models/models.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
 import 'package:fluire/widgets/cards/card_aula.dart';
 import 'package:fluire/widgets/estado_visual/estado_visual.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/utils/utils.dart';
 
 class TelaAulasProfessor extends StatelessWidget {
   final Professor professor;

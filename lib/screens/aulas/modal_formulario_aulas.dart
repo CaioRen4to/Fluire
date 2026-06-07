@@ -4,13 +4,9 @@ import 'package:provider/provider.dart';
 
 import 'package:uuid/uuid.dart';
 
-import 'package:fluire/models/aula.dart';
+import 'package:fluire/models/models.dart';
 
-import 'package:fluire/models/professor.dart';
-
-import 'package:fluire/providers/provedor_alunos.dart';
-
-import 'package:fluire/providers/provedor_aulas.dart';
+import 'package:fluire/providers/providers.dart';
 
 import 'package:fluire/widgets/input_padrao/input_padrao.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/models/registro_auditoria.dart';
+import 'package:fluire/models/models.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/services/historico_service.dart';
+import 'package:fluire/api/api_services.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
 import 'package:fluire/widgets/estado_visual/estado_visual.dart';

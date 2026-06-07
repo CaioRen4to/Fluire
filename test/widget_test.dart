@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/main.dart';
-import 'package:fluire/providers/provedores_app.dart';
+import 'package:fluire/providers/providers.dart';
 
 void main() {
   testWidgets('App inicia na tela de login', (WidgetTester tester) async {

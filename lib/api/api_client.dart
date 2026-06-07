@@ -1,8 +1,23 @@
 import 'dart:convert';
-
-import 'package:fluire/config/api_config.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+/// Configuração central da API do backend Flask.
+class ApiConfig {
+  ApiConfig._();
+
+  static const String baseUrl = 'http://127.0.0.1:5000';
+
+  static const Duration timeout = Duration(seconds: 30);
+
+  static const Map<String, String> jsonHeaders = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
+}
+
+
+
 
 /// Cliente HTTP compartilhado com token de autenticação.
 class ApiClient {
@@ -132,3 +147,5 @@ class ApiClient {
     return fallback;
   }
 }
+
+

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/providers/provedor_alunos.dart';
-import 'package:fluire/providers/provedor_aulas.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
 import 'package:fluire/widgets/botao/botao.dart';
-import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/utils/utils.dart';
 import 'package:fluire/screens/aulas/modal_formulario_aulas.dart';
 import 'package:fluire/widgets/menu_lateral.dart';
-import 'package:fluire/models/aula.dart';
+import 'package:fluire/models/models.dart';
 
 class TelaDetalheAulas extends StatelessWidget {
   final String aulaId;

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/models/aula.dart';
-import 'package:fluire/models/registro_frequencia.dart';
-import 'package:fluire/providers/provedor_alunos.dart';
+import 'package:fluire/models/models.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/services/frequencia_service.dart';
+import 'package:fluire/api/api_services.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/utils/utils.dart';
 
 class TelaFrequenciaTotem extends StatefulWidget {
   final Aula? aula;
@@ -549,4 +548,21 @@ class _TelaFrequenciaTotemState extends State<TelaFrequenciaTotem> {
           child: Icon(icon, color: Colors.white, size: 22),
         ),
       );
+}
+
+
+enum StatusPresenca { pendente, presente, ausente }
+
+class RegistroFrequencia {
+  final String alunoId;
+  final String alunoNome;
+  final String inicial;
+  StatusPresenca status;
+
+  RegistroFrequencia({
+    required this.alunoId,
+    required this.alunoNome,
+    required this.inicial,
+    this.status = StatusPresenca.pendente,
+  });
 }

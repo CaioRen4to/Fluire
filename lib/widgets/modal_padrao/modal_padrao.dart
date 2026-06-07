@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/theme/tema.dart';
-import 'package:fluire/utils/responsivo.dart';
+import 'package:fluire/utils/utils.dart';
 
 class ModalPadrao {
   static Future<T?> mostrar<T>({

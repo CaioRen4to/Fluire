@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/models/aula.dart';
+import 'package:fluire/models/models.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/botao/botao.dart';
 import 'package:fluire/widgets/cards/card_padrao.dart';

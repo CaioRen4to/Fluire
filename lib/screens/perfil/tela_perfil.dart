@@ -5,8 +5,8 @@ import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
 import 'package:fluire/widgets/botao/botao.dart';
 import 'package:fluire/widgets/estado_visual/estado_visual.dart';
-import 'package:fluire/providers/provedor_auth.dart';
-import 'package:fluire/models/usuario.dart';
+import 'package:fluire/providers/providers.dart';
+import 'package:fluire/models/models.dart';
 
 class TelaPerfil extends StatelessWidget {
   const TelaPerfil({super.key});

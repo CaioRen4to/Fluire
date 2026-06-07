@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/providers/provedor_auth.dart';
-import 'package:fluire/rotas.dart';
+import 'package:fluire/providers/providers.dart';
+import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/theme/tema.dart';
 
 class MenuLateral extends StatelessWidget {
@@ -47,12 +47,12 @@ class MenuLateral extends StatelessWidget {
               ),
             ),
             const Divider(height: 1),
-            _item(context, Icons.dashboard_outlined, 'Dashboard', Rotas.dashboard),
-            _item(context, Icons.people_outline, 'Alunos', Rotas.alunos),
-            _item(context, Icons.event_note_outlined, 'Aulas', Rotas.aulas),
-            _item(context, Icons.history, 'Histórico', Rotas.historico),
-            _item(context, Icons.school_outlined, 'Professores', Rotas.professores),
-            _item(context, Icons.person_outline, 'Perfil', Rotas.perfil),
+            _item(context, Icons.dashboard_outlined, 'Dashboard', AppRoutes.dashboard),
+            _item(context, Icons.people_outline, 'Alunos', AppRoutes.alunos),
+            _item(context, Icons.event_note_outlined, 'Aulas', AppRoutes.aulas),
+            _item(context, Icons.history, 'Histórico', AppRoutes.historico),
+            _item(context, Icons.school_outlined, 'Professores', AppRoutes.professores),
+            _item(context, Icons.person_outline, 'Perfil', AppRoutes.perfil),
             const Spacer(),
             const Divider(height: 1),
             Material(
@@ -69,7 +69,7 @@ class MenuLateral extends StatelessWidget {
                     if (!permanente) {
                       Navigator.of(context).pop();
                     }
-                    Navigator.of(context).pushReplacementNamed(Rotas.login);
+                    Navigator.of(context).pushReplacementNamed(AppRoutes.login);
                   }
                 },
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/utils/estado_carregamento.dart';
-import 'package:fluire/providers/provedor_auth.dart';
+import 'package:fluire/utils/utils.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/input_padrao/input_padrao.dart';

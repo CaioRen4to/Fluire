@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:fluire/models/aluno.dart';
-import 'package:fluire/providers/provedor_alunos.dart';
+import 'package:fluire/models/models.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/widgets/input_padrao/input_padrao.dart';
 import 'package:fluire/widgets/modal_padrao/modal_padrao.dart';
 import 'package:fluire/widgets/botao/botao.dart';

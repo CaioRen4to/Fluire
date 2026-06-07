@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/theme/tema.dart';
-import 'package:fluire/utils/responsivo.dart';
-import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/utils/utils.dart';
 
 class AuthLayout extends StatelessWidget {
   final String titulo;

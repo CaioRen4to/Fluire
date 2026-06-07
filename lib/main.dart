@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/theme/tema_app.dart';
-import 'package:fluire/providers/provedores_app.dart';
-import 'package:fluire/providers/provedor_auth.dart';
-import 'package:fluire/services/auth_service.dart';
+import 'package:fluire/providers/providers.dart';
+import 'package:fluire/api/api_services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fluire/routes/app_routes.dart';
-import 'package:fluire/providers/provedor_aulas.dart';
+import 'package:fluire/providers/providers.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/widgets/layout_tela.dart';
-import 'package:fluire/models/professor.dart';
+import 'package:fluire/models/models.dart';
 import 'package:fluire/screens/professores/tela_aulas_professor.dart';
 
 class TelaProfessores extends StatefulWidget {

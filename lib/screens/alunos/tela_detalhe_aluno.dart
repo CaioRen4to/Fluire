@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fluire/models/aluno.dart';
+import 'package:fluire/models/models.dart';
 import 'package:fluire/theme/tema.dart';
 import 'package:fluire/routes/app_routes.dart';
 import 'package:fluire/widgets/layout_tela.dart';
 import 'package:fluire/widgets/botao/botao.dart';
-import 'package:fluire/utils/animacoes.dart';
+import 'package:fluire/utils/utils.dart';
 import 'package:fluire/screens/alunos/modal_formulario_aluno.dart';
 import 'package:provider/provider.dart';
-import 'package:fluire/providers/provedor_alunos.dart';
+import 'package:fluire/providers/providers.dart';
 
 class TelaDetalheAluno extends StatefulWidget {
   final Aluno aluno;

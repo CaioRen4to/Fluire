@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluire/theme/tema.dart';
-import 'package:fluire/utils/responsivo.dart';
+import 'package:fluire/utils/utils.dart';
 import 'package:fluire/widgets/cabecalho/cabecalho_tela.dart';
 import 'package:fluire/widgets/menu_lateral.dart';
 import 'package:fluire/widgets/app_bottom_nav.dart';
