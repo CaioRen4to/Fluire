@@ -93,4 +93,17 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_usuarioKey);
   }
+
+  Future<void> validarCodigoAlterarSenha(String email, String codigo, String novaSenha) async {
+    final response = await _api.post('/validar-codigo-alterar-senha', body: {
+      'email': email.trim(),
+      'codigo': codigo.trim(),
+      'nova_senha': novaSenha,
+    });
+
+    if (response.statusCode != 200) {
+      final jsonData = ApiClient.decodificarCorpo(response);
+      throw Exception(ApiClient.extrairErro(jsonData, fallback: 'Erro ao alterar senha'));
+    }
+  }
 }

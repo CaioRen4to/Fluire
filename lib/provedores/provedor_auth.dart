@@ -79,6 +79,23 @@ class ProvedorAuth extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> validarCodigoAlterarSenha(String email, String codigo, String novaSenha) async {
+    estado = EstadoCarregamento.carregando;
+    mensagemErro = null;
+    notifyListeners();
+    try {
+      await _authService.validarCodigoAlterarSenha(email, codigo, novaSenha);
+      estado = EstadoCarregamento.sucesso;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      mensagemErro = e.toString().replaceFirst('Exception: ', '');
+      estado = EstadoCarregamento.erro;
+      notifyListeners();
+      return false;
+    }
+  }
+
   void limparErro() {
     mensagemErro = null;
     if (estado == EstadoCarregamento.erro) {

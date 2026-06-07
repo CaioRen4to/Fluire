@@ -5,6 +5,7 @@ import 'package:fluire/modelos/aula.dart';
 import 'package:fluire/telas/login/tela_login.dart';
 import 'package:fluire/telas/login/tela_cadastro.dart';
 import 'package:fluire/telas/login/tela_recuperar_senha.dart';
+import 'package:fluire/telas/login/tela_validar_codigo_senha.dart';
 import 'package:fluire/telas/painel/tela_painel.dart';
 import 'package:fluire/telas/alunos/tela_gestao_alunos.dart';
 import 'package:fluire/telas/alunos/tela_detalhe_aluno.dart';
@@ -30,8 +31,9 @@ class AppRoutes {
   static const String professores = '/professores';
   static const String perfil = '/perfil';
   static const String agenda = '/agenda';
+  static const String validarCodigoSenha = '/validar_codigo_senha';
 
-  static const rotasPublicas = {login, cadastro, recuperarSenha};
+  static const rotasPublicas = {login, cadastro, recuperarSenha, validarCodigoSenha};
 
   static const rotasComBottomNav = {painel, aulas, alunos, historico, perfil};
 
@@ -68,6 +70,12 @@ class AppRoutes {
             aula: arg is Aula ? arg : null,
           ),
         );
+      case validarCodigoSenha:
+        final email = settings.arguments;
+        if (email is String) {
+          return rotaComFade(TelaValidarCodigoSenha(email: email));
+        }
+        return rotaComFade(const TelaValidarCodigoSenha(email: ''));
       default:
         return null;
     }
