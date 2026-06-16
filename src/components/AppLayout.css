@@ -1,0 +1,122 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app-layout--desktop {
+  flex-direction: row;
+}
+
+.app-layout__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.app-layout__header {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-md) var(--sp-lg);
+  padding-top: max(var(--sp-md), env(safe-area-inset-top, 0px));
+  background: var(--color-bg);
+  gap: var(--sp-sm);
+  flex-shrink: 0;
+}
+
+.app-layout__menu-btn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-primary);
+  transition: background 0.15s;
+}
+
+.app-layout__menu-btn:hover {
+  background: var(--color-primary-light);
+}
+
+.app-layout__title {
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  flex: 1;
+}
+
+.app-layout__header-spacer {
+  width: 48px;
+  flex-shrink: 0;
+}
+
+.app-layout__content {
+  flex: 1;
+  padding: 0 var(--sp-lg) var(--sp-lg);
+  padding-bottom: calc(var(--sp-lg) + 72px); /* Espaço para bottom nav */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-layout__fab {
+  position: fixed;
+  bottom: 88px;
+  right: var(--sp-lg);
+  z-index: 40;
+}
+
+.app-layout__fab button,
+.fab-button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-elevated);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.app-layout__fab button:hover,
+.fab-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+@media (min-width: 900px) {
+  .app-layout__content {
+    padding-bottom: var(--sp-lg);
+    padding-left: var(--sp-xxl);
+    padding-right: var(--sp-xxl);
+  }
+
+  .app-layout__header {
+    padding-left: var(--sp-xxl);
+    padding-right: var(--sp-xxl);
+  }
+
+  .app-layout__fab {
+    bottom: var(--sp-xl);
+    right: var(--sp-xl);
+  }
+
+  .app-layout__header-spacer {
+    display: none;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .app-layout__content {
+    padding-left: var(--sp-xl);
+    padding-right: var(--sp-xl);
+  }
+}

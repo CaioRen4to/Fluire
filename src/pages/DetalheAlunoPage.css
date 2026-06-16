@@ -1,0 +1,19 @@
+.detalhe-aluno { display: flex; flex-direction: column; gap: var(--sp-lg); max-width: 600px; margin: 0 auto; }
+.detalhe-aluno__card { background: var(--color-card); border-radius: var(--radius-xl); padding: var(--sp-xl); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-card); }
+.detalhe-aluno__avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: var(--fw-bold); color: var(--color-primary); }
+.detalhe-aluno__nome { font-size: var(--fs-title-lg); font-weight: var(--fw-semibold); color: var(--color-text-primary); margin-top: var(--sp-md); }
+.detalhe-aluno__sub { font-size: var(--fs-body-md); color: var(--color-text-secondary); }
+.detalhe-aluno__badge { margin-top: var(--sp-sm); padding: 2px 14px; border-radius: 20px; font-size: 12px; font-weight: var(--fw-semibold); background: rgba(109,184,154,0.15); color: var(--color-sucesso); }
+.detalhe-aluno__badge--inativo { background: rgba(232,122,122,0.15); color: var(--color-erro); }
+.detalhe-aluno__stats { display: flex; gap: var(--sp-sm); }
+.detalhe-aluno__stat { flex: 1; display: flex; flex-direction: column; align-items: center; padding: var(--sp-lg); background: var(--color-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-card-sm); }
+.detalhe-aluno__stat-val { font-size: 22px; font-weight: var(--fw-bold); }
+.detalhe-aluno__stat-label { font-size: var(--fs-body-sm); color: var(--color-text-secondary); margin-top: 2px; }
+.detalhe-aluno__info { background: var(--color-card); border-radius: var(--radius-lg); padding: var(--sp-lg); box-shadow: var(--shadow-card); }
+.detalhe-aluno__info h3 { font-size: var(--fs-title-md); font-weight: var(--fw-semibold); margin-bottom: var(--sp-md); }
+.detalhe-aluno__row { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm) 0; }
+.detalhe-aluno__row .material-icons-outlined { color: var(--color-primary); font-size: 20px; flex-shrink: 0; }
+.detalhe-aluno__row div { display: flex; flex-direction: column; }
+.detalhe-aluno__row small { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
+.detalhe-aluno__row span { font-size: var(--fs-body-md); color: var(--color-text-primary); }
+.detalhe-aluno__actions { display: flex; flex-direction: column; gap: var(--sp-sm); }

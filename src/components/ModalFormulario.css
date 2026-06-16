@@ -1,0 +1,9 @@
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
+@media (min-width: 600px) { .modal-overlay { align-items: center; padding: var(--sp-lg); } }
+.modal-content { background: var(--color-card); border-radius: var(--radius-xxl) var(--radius-xxl) 0 0; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-modal); }
+@media (min-width: 600px) { .modal-content { border-radius: var(--radius-xxl); } }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-lg) var(--sp-lg) 0; }
+.modal-titulo { font-size: var(--fs-title-lg); font-weight: var(--fw-semibold); color: var(--color-text-primary); }
+.modal-fechar { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: var(--color-text-secondary); transition: background 0.15s; }
+.modal-fechar:hover { background: rgba(0,0,0,0.05); }
+.modal-body { padding: var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-md); }

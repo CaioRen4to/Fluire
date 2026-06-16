@@ -1,0 +1,15 @@
+.perfil-content { display: flex; flex-direction: column; gap: var(--sp-lg); max-width: 500px; margin: 0 auto; }
+.perfil-card { background: var(--color-card); border-radius: var(--radius-xl); padding: var(--sp-xxl) var(--sp-xl); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-card); }
+.perfil-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; }
+.perfil-avatar .material-icons { font-size: 60px; color: var(--color-primary); }
+.perfil-nome { margin-top: var(--sp-md); font-size: var(--fs-title-lg); font-weight: var(--fw-semibold); }
+.perfil-email { font-size: var(--fs-body-md); color: var(--color-text-secondary); }
+.perfil-badge { margin-top: var(--sp-sm); padding: 4px 16px; border-radius: var(--radius-md); background: rgba(237,202,138,0.3); font-size: var(--fs-body-sm); font-weight: var(--fw-medium); }
+.perfil-info { background: var(--color-card); border-radius: var(--radius-lg); padding: var(--sp-lg); box-shadow: var(--shadow-card); }
+.perfil-info h3 { font-size: var(--fs-title-md); font-weight: var(--fw-semibold); margin-bottom: var(--sp-md); }
+.perfil-row { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-md) 0; }
+.perfil-row .material-icons-outlined { color: var(--color-primary); font-size: 20px; }
+.perfil-row div { display: flex; flex-direction: column; }
+.perfil-row small { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
+.perfil-row span { font-size: var(--fs-body-md); }
+.perfil-actions { background: var(--color-card); border-radius: var(--radius-lg); padding: var(--sp-lg); box-shadow: var(--shadow-card); }

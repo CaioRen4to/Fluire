@@ -1,0 +1,177 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AppLayout from '../components/AppLayout';
+import CardAula from '../components/CardAula';
+import { EstadoCarregando, EstadoErro, EstadoVazio } from '../components/EstadoVisual';
+import ModalFormulario from '../components/ModalFormulario';
+import InputPadrao from '../components/InputPadrao';
+import BotaoPrimario from '../components/BotaoPrimario';
+import * as aulasService from '../services/aulasService';
+import * as aulaAlunoService from '../services/aulaAlunoService';
+import * as alunosService from '../services/alunosService';
+import * as usuariosService from '../services/usuariosService';
+import { getUserId } from '../services/api';
+import { diaSemanaAtual } from '../utils/helpers';
+import './AulasPage.css';
+
+const DIAS = [
+  { dia: 'Seg', nome: 'segunda-feira' }, { dia: 'Ter', nome: 'terça-feira' },
+  { dia: 'Qua', nome: 'quarta-feira' }, { dia: 'Qui', nome: 'quinta-feira' },
+  { dia: 'Sex', nome: 'sexta-feira' }, { dia: 'Sáb', nome: 'sábado' },
+  { dia: 'Dom', nome: 'domingo' },
+];
+
+export default function AulasPage() {
+  const [aulas, setAulas] = useState([]);
+  const [estado, setEstado] = useState('carregando');
+  const [erro, setErro] = useState(null);
+  const [diaSelecionado, setDiaSelecionado] = useState(diaSemanaAtual());
+  const [busca, setBusca] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editAula, setEditAula] = useState(null);
+  const [form, setForm] = useState({ nome: '', horarioInicio: '', horarioFim: '', diaSemana: 'segunda-feira', frequencia: 'Semanal' });
+  const [professores, setProfessores] = useState([]);
+  const [alunos, setAlunos] = useState([]);
+  const [alunosSelecionados, setAlunosSelecionados] = useState([]);
+  const [salvando, setSalvando] = useState(false);
+  const navigate = useNavigate();
+
+  const carregar = async () => {
+    setEstado('carregando');
+    try {
+      const [aulasData, assocData] = await Promise.all([aulasService.listar(), aulaAlunoService.listar().catch(() => [])]);
+      const mapAssoc = {};
+      for (const a of assocData) { const k = a.aulaId.toString(); if (!mapAssoc[k]) mapAssoc[k] = []; mapAssoc[k].push(a.alunoId.toString()); }
+      setAulas(aulasData.map((a) => ({ ...a, alunoIds: mapAssoc[a.id] || a.alunoIds || [] })));
+      setEstado(aulasData.length === 0 ? 'vazio' : 'sucesso');
+      // Load profs and alunos for modal
+      try { const u = await usuariosService.listar(); setProfessores(u); } catch {}
+      try { const a = await alunosService.listar(); setAlunos(a); } catch {}
+    } catch (e) { setErro(e.message); setEstado('erro'); }
+  };
+
+  useEffect(() => { carregar(); }, []);
+
+  const filtradas = aulas
+    .filter((a) => a.diaSemana.toLowerCase().trim() === diaSelecionado.toLowerCase().trim())
+    .filter((a) => !busca.trim() || a.nome.toLowerCase().includes(busca.toLowerCase()) || (a.professorNome || '').toLowerCase().includes(busca.toLowerCase()));
+
+  const hoje = new Date();
+  const inicioSemana = new Date(hoje);
+  inicioSemana.setDate(hoje.getDate() - (hoje.getDay() === 0 ? 6 : hoje.getDay() - 1));
+
+  const openModal = (aula = null) => {
+    if (aula) {
+      setEditAula(aula);
+      setForm({ nome: aula.nome, horarioInicio: aula.horarioInicio, horarioFim: aula.horarioFim, diaSemana: aula.diaSemana, frequencia: aula.frequencia });
+      setAlunosSelecionados(aula.alunoIds || []);
+    } else {
+      setEditAula(null);
+      setForm({ nome: '', horarioInicio: '', horarioFim: '', diaSemana: diaSelecionado, frequencia: 'Semanal' });
+      setAlunosSelecionados([]);
+    }
+    setModalOpen(true);
+  };
+
+  const handleSalvar = async (e) => {
+    e.preventDefault();
+    setSalvando(true);
+    try {
+      const userId = getUserId();
+      const aulaData = { ...form, usuarioId: userId?.toString() || '', alunoIds: alunosSelecionados };
+      if (editAula) {
+        await aulasService.atualizar({ ...aulaData, id: editAula.id });
+        // Sync aluno associations
+        const aulaId = parseInt(editAula.id);
+        const existentes = await aulaAlunoService.obterAlunosDeUmaAula(aulaId).catch(() => []);
+        const idsExistentes = new Set(existentes.map((e) => (e.aluno_id || e.id)?.toString()).filter(Boolean));
+        const novos = new Set(alunosSelecionados);
+        for (const idExist of idsExistentes) { if (!novos.has(idExist)) await aulaAlunoService.remover(aulaId, parseInt(idExist)).catch(() => {}); }
+        for (const idNovo of novos) { if (!idsExistentes.has(idNovo)) await aulaAlunoService.associar(aulaId, parseInt(idNovo)).catch(() => {}); }
+      } else {
+        const criada = await aulasService.criar(aulaData);
+        const aulaId = parseInt(criada.id);
+        if (aulaId) { for (const aId of alunosSelecionados) { await aulaAlunoService.associar(aulaId, parseInt(aId)).catch(() => {}); } }
+      }
+      setModalOpen(false);
+      carregar();
+    } catch {}
+    setSalvando(false);
+  };
+
+  const toggleAluno = (aId) => {
+    setAlunosSelecionados((prev) => prev.includes(aId) ? prev.filter((x) => x !== aId) : [...prev, aId]);
+  };
+
+  return (
+    <AppLayout titulo="Aulas">
+      {/* Day selector */}
+      <div className="aulas-dias">
+        {DIAS.map((d, i) => {
+          const data = new Date(inicioSemana);
+          data.setDate(inicioSemana.getDate() + i);
+          const sel = diaSelecionado === d.nome;
+          return (
+            <div key={d.nome} className={`aulas-dia ${sel ? 'aulas-dia--sel' : ''}`} onClick={() => setDiaSelecionado(d.nome)}>
+              <span className="aulas-dia__sigla">{d.dia}</span>
+              <span className="aulas-dia__num">{data.getDate()}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="alunos-search" style={{ marginBottom: 'var(--sp-lg)' }}>
+        <span className="material-icons alunos-search-icon">search</span>
+        <input className="alunos-search-input" placeholder="Buscar aula ou professor" value={busca} onChange={(e) => setBusca(e.target.value)} />
+      </div>
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        {estado === 'carregando' && <EstadoCarregando mensagem="Carregando aulas..." />}
+        {estado === 'erro' && <EstadoErro mensagem={erro} onTentarNovamente={carregar} />}
+        {estado === 'vazio' && <EstadoVazio titulo="Nenhuma aula neste dia" subtitulo="Crie uma nova aula" icone="event_busy" onAcao={() => openModal()} textoAcao="Nova aula" />}
+        {estado === 'sucesso' && filtradas.length === 0 && <EstadoVazio titulo="Sem aulas para este dia" subtitulo="Selecione outro dia ou crie uma aula" icone="event_note" />}
+        {estado === 'sucesso' && filtradas.length > 0 && (
+          <div className="aulas-list">
+            {filtradas.map((aula, i) => (
+              <div key={aula.id} className="fade-slide-up" style={{ animationDelay: `${i * 40}ms` }}>
+                <CardAula aula={aula} totalAlunos={aula.alunoIds.length}
+                  onDetalhes={() => navigate(`/aulas/${aula.id}`)}
+                  onFrequencia={() => navigate(`/frequencia/${aula.id}`)}
+                  onEditar={() => openModal(aula)} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div style={{ paddingTop: 'var(--sp-md)' }}>
+        <BotaoPrimario texto="Nova aula" icone="add" onClick={() => openModal()} />
+      </div>
+
+      <ModalFormulario titulo={editAula ? 'Editar Aula' : 'Nova Aula'} aberto={modalOpen} onFechar={() => setModalOpen(false)}>
+        <form onSubmit={handleSalvar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
+          <InputPadrao label="Nome da aula" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} icone="event_note" />
+          <InputPadrao label="Horário início" hint="08:00" value={form.horarioInicio} onChange={(e) => setForm({ ...form, horarioInicio: e.target.value })} icone="schedule" />
+          <InputPadrao label="Horário fim" hint="09:00" value={form.horarioFim} onChange={(e) => setForm({ ...form, horarioFim: e.target.value })} icone="schedule" />
+          <div className="input-padrao">
+            <label className="input-padrao__label">Dia da semana</label>
+            <select className="aulas-select" value={form.diaSemana} onChange={(e) => setForm({ ...form, diaSemana: e.target.value })}>
+              {DIAS.map((d) => <option key={d.nome} value={d.nome}>{d.dia} - {d.nome}</option>)}
+            </select>
+          </div>
+          {alunos.length > 0 && (
+            <div className="input-padrao">
+              <label className="input-padrao__label">Alunos ({alunosSelecionados.length})</label>
+              <div className="aulas-alunos-list">
+                {alunos.map((a) => (
+                  <label key={a.id} className="aulas-aluno-check">
+                    <input type="checkbox" checked={alunosSelecionados.includes(a.id?.toString())} onChange={() => toggleAluno(a.id?.toString())} />
+                    <span>{a.nome}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+          <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
+        </form>
+      </ModalFormulario>
+    </AppLayout>
+  );
+}

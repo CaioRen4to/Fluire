@@ -1,0 +1,102 @@
+.botao-primario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  width: 100%;
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--color-primary);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  min-height: 52px;
+}
+
+.botao-primario:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.botao-primario:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.botao-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.botao-primario--erro {
+  background: var(--color-erro);
+  color: var(--color-text-light);
+}
+
+.botao-primario__icone {
+  font-size: 20px;
+}
+
+.botao-primario__spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(48, 44, 29, 0.3);
+  border-top-color: var(--color-text-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Texto */
+.botao-texto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--sp-sm) var(--sp-md);
+  color: var(--color-primary);
+  font-size: var(--fs-title-md);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border-radius: var(--radius-sm);
+}
+
+.botao-texto:hover {
+  opacity: 0.8;
+  background: rgba(236, 163, 29, 0.06);
+}
+
+.botao-texto--erro {
+  color: var(--color-erro);
+}
+
+.botao-texto--erro:hover {
+  background: rgba(232, 122, 122, 0.06);
+}
+
+/* Outline */
+.botao-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  width: 100%;
+  padding: var(--sp-md) var(--sp-lg);
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.botao-outline:hover {
+  background: rgba(236, 163, 29, 0.08);
+}
+
+.botao-outline__icone {
+  font-size: 20px;
+}

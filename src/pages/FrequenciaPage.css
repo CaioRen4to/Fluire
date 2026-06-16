@@ -1,0 +1,15 @@
+.freq-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
+.freq-select-wrap { display: flex; flex-direction: column; gap: var(--sp-xs); }
+.freq-alunos { display: flex; flex-direction: column; gap: var(--sp-md); }
+.freq-data { font-size: var(--fs-body-md); color: var(--color-text-secondary); font-weight: var(--fw-medium); margin-bottom: var(--sp-sm); }
+.freq-aluno-row { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-md) var(--sp-lg); background: var(--color-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-sm); }
+.freq-aluno-info { display: flex; align-items: center; gap: var(--sp-md); }
+.freq-aluno-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-weight: var(--fw-bold); color: var(--color-primary); font-size: 16px; flex-shrink: 0; }
+.freq-aluno-nome { font-weight: var(--fw-medium); color: var(--color-text-primary); }
+.freq-btns { display: flex; gap: var(--sp-sm); }
+.freq-btn { width: 44px; height: 44px; border-radius: 50%; font-size: 16px; font-weight: var(--fw-bold); border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.freq-btn--presente { background: rgba(131,185,5,0.15); color: var(--color-btn-presente); border-color: transparent; }
+.freq-btn--presente.freq-btn--active { background: var(--color-btn-presente); color: white; }
+.freq-btn--falta { background: rgba(237,114,20,0.15); color: var(--color-btn-falta); border-color: transparent; }
+.freq-btn--falta.freq-btn--active { background: var(--color-btn-falta); color: white; }
+.freq-btn:hover:not(:disabled) { transform: scale(1.08); }
