@@ -30,13 +30,9 @@ function ProtectedRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const { autenticado, loading } = useAuth();
+  const { loading } = useAuth();
 
   if (loading) return null;
-
-  if (autenticado) {
-    return <Navigate to="/dashboard" replace />;
-  }
 
   return children;
 }

@@ -10,6 +10,12 @@ export default function CardAula({ aula, totalAlunos, onDetalhes, onFrequencia, 
         <div className="card-aula__info">
           <span className="card-aula__nome">{aula.nome}</span>
           <span className="card-aula__horario">{aula.horarioInicio} - {aula.horarioFim}</span>
+          {aula.professorNome && (
+            <span className="card-aula__professor" style={{ fontSize: '12px', color: 'var(--color-primary)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span className="material-icons" style={{ fontSize: '14px' }}>person</span>
+              Prof. {aula.professorNome}
+            </span>
+          )}
         </div>
         <div className="card-aula__right">
           <span className="card-aula__alunos">{totalAlunos} alunos</span>

@@ -63,16 +63,17 @@ export function normalizarDia(dia) {
 }
 
 // Verifica se horário está em andamento
-export function isHorarioEmAndamento(horario) {
+export function isHorarioEmAndamento(inicio, fim) {
+  if (!inicio || !fim) return false;
   try {
-    const parts = horario.split('-');
-    if (parts.length !== 2) return false;
-    const [startH, startM] = parts[0].trim().split(':').map(Number);
-    const [endH, endM] = parts[1].trim().split(':').map(Number);
+    const parseTime = (timeStr) => {
+      const parts = timeStr.trim().split(':').map(Number);
+      return (parts[0] || 0) * 60 + (parts[1] || 0);
+    };
+    const startMin = parseTime(inicio);
+    const endMin = parseTime(fim);
     const now = new Date();
     const currentMin = now.getHours() * 60 + now.getMinutes();
-    const startMin = startH * 60 + startM;
-    const endMin = endH * 60 + endM;
     return currentMin >= startMin && currentMin <= endMin;
   } catch {
     return false;

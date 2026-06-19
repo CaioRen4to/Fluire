@@ -44,9 +44,12 @@ export default function DetalheAlunoPage() {
     try {
       await alunosService.atualizar({ ...aluno, nome, email, telefone, modalidade });
       setEditOpen(false);
-      carregar();
-    } catch {}
-    setSalvando(false);
+      navigate('/alunos', { replace: true });
+    } catch {
+      // Se houver erro, ignora silenciosamente como antes ou adicione lógica de erro se necessário
+    } finally {
+      setSalvando(false);
+    }
   };
 
   const handleExcluir = async () => {

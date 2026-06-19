@@ -54,14 +54,16 @@ export async function criar(aula) {
   try {
     const payload = {
       nome: aula.nome,
-      usuario_id: aula.usuarioId,
+      usuario_id: aula.usuarioId || '',
       horario_inicio: aula.horarioInicio,
       horario_fim: aula.horarioFim,
       frequencia: aula.frequencia,
       dia_semana: aula.diaSemana,
     };
-    const userId = getUserId();
-    if (userId) payload.usuario_id = userId.toString();
+    if (!payload.usuario_id) {
+      const userId = getUserId();
+      if (userId) payload.usuario_id = userId.toString();
+    }
 
     const response = await api.post('/aulas', payload);
     return { ...aula, id: response.data?.id?.toString() || aula.id };
@@ -75,14 +77,16 @@ export async function atualizar(aula) {
     const id = parseInt(aula.id, 10);
     const payload = {
       nome: aula.nome,
-      usuario_id: aula.usuarioId,
+      usuario_id: aula.usuarioId || '',
       horario_inicio: aula.horarioInicio,
       horario_fim: aula.horarioFim,
       frequencia: aula.frequencia,
       dia_semana: aula.diaSemana,
     };
-    const userId = getUserId();
-    if (userId) payload.usuario_id = userId.toString();
+    if (!payload.usuario_id) {
+      const userId = getUserId();
+      if (userId) payload.usuario_id = userId.toString();
+    }
 
     await api.put(`/aulas/${id}`, payload);
     return aula;

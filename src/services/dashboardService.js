@@ -9,70 +9,29 @@ const DIAS_SEMANA = {
 };
 
 export async function buscarDashboard() {
-  try {
-    const response = await api.get('/dashboard');
-    if (response.status === 200 && response.data) {
-      return parseDashboard(response.data);
-    }
-  } catch {
-    // fallback abaixo
-  }
+  // Ignora o endpoint /dashboard do backend (conforme Regra de Ouro) e faz o cálculo 100% no front-end
   return await montarDashboardLocal();
 }
 
-function parseDashboard(json) {
-  const data = json.data && typeof json.data === 'object' ? json.data : json;
+function getInicioFimDaSemanaAtual() {
+  const now = new Date();
+  // Considerando a semana de Segunda a Domingo
+  const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1; // Seg=0, Dom=6
+  const inicioSemana = new Date(now);
+  inicioSemana.setDate(now.getDate() - dayOfWeek);
+  inicioSemana.setHours(0, 0, 0, 0);
 
-  const totalAlunos = toInt(data.total_alunos ?? data.totalAlunos ?? 0);
-  const totalAulas = toInt(data.total_aulas ?? data.totalAulas ?? 0);
-  const alunosComFalta = toInt(data.total_alunos_com_falta ?? data.alunos_com_falta ?? data.alunosComFalta ?? data.faltas ?? 0);
-  const alunosPresentes = toInt(data.alunos_presentes ?? data.alunosPresentes ?? 0);
-  const alunosPresentesCalc = alunosPresentes > 0 ? alunosPresentes : Math.max(0, totalAlunos - alunosComFalta);
-  const aulasHoje = toInt(data.aulas_hoje ?? data.aulasHoje ?? 0);
-  const emAndamento = toInt(data.em_andamento ?? data.emAndamento ?? 0);
-  const frequenciaMedia = toInt(data.frequencia_media ?? data.frequenciaMedia ?? data.media_frequencia ?? 0);
+  const fimSemana = new Date(inicioSemana);
+  fimSemana.setDate(inicioSemana.getDate() + 6);
+  fimSemana.setHours(23, 59, 59, 999);
 
-  return {
-    totalAlunos,
-    totalAulas,
-    alunosPresentes: alunosPresentesCalc,
-    aulasHoje,
-    emAndamento,
-    frequenciaMedia,
-    weeklyFrequency: parseWeeklyFrequency(
-      data.semana_frequencia ?? data.weekly_frequency ?? data.weeklyFrequency ??
-      data.estatisticas_semanais ?? data.estatisticasSemanais ?? []
-    ),
-    todayClasses: parseTodayClasses(
-      data.today_classes ?? data.todayClasses ?? data.proximas_aulas ?? data.proximasAulas ?? []
-    ),
-    alunosComFalta,
-  };
-}
-
-function parseWeeklyFrequency(value) {
-  if (!Array.isArray(value)) return [];
-  return value.map((item) => ({
-    day: (item.day || item.dia || '').toString(),
-    value: parseFloat(item.value ?? item.valor ?? 0),
-  }));
-}
-
-function parseTodayClasses(value) {
-  if (!Array.isArray(value)) return [];
-  return value.map((item) => ({
-    title: (item.title || item.nome || 'Aula').toString(),
-    teacher: (item.teacher || item.professor || 'Professor').toString(),
-    time: (item.time || item.horario_inicio || '').toString(),
-    students: item.students?.toString() || `${toInt(item.alunos ?? item.total_alunos)} alunos`,
-    status: (item.status || 'ativa').toString(),
-  }));
+  return { inicioSemana, fimSemana };
 }
 
 async function montarDashboardLocal() {
   const [alunos, aulas] = await Promise.all([
-    alunosService.listar(),
-    aulasService.listar(),
+    alunosService.listar().catch(() => []),
+    aulasService.listar().catch(() => []),
   ]);
 
   let frequencias = [];
@@ -91,52 +50,60 @@ async function montarDashboardLocal() {
     f.dataPresenca.startsWith(hojeStr) && f.presente === 1
   ).length;
 
-  const totalFreq = frequencias.length;
-  const totalPresentes = frequencias.filter((f) => f.presente === 1).length;
-  const media = totalFreq === 0 ? 0 : Math.round((totalPresentes / totalFreq) * 100);
+  // Lógica da Média Semanal Real (apenas da semana atual)
+  const { inicioSemana, fimSemana } = getInicioFimDaSemanaAtual();
+  
+  const frequenciasDaSemana = frequencias.filter((f) => {
+    if (!f.dataPresenca) return false;
+    const d = new Date(f.dataPresenca + 'T00:00:00');
+    return d >= inicioSemana && d <= fimSemana;
+  });
+
+  const totalMarcacoesNaSemana = frequenciasDaSemana.length;
+  const presencasNaSemana = frequenciasDaSemana.filter((f) => f.presente === 1).length;
+  const faltasNaSemana = frequenciasDaSemana.filter((f) => f.presente === 0).length;
+  const frequenciaMedia = totalMarcacoesNaSemana === 0 ? 0 : Math.round((presencasNaSemana / totalMarcacoesNaSemana) * 100);
 
   return {
     totalAlunos: alunos.length,
     totalAulas: aulas.length,
     alunosPresentes: presentesHoje,
     aulasHoje: aulasHoje.length,
-    emAndamento: aulasHoje.length > 0 ? 1 : 0,
-    frequenciaMedia: media,
-    weeklyFrequency: frequenciaSemanalDeDados(frequencias),
+    emAndamento: 0, // Será calculado precisamente no DashboardPage.jsx
+    frequenciaMedia: frequenciaMedia,
+    weeklyFrequency: frequenciaSemanalDeAulas(aulas),
     todayClasses: aulasHoje.map((a) => ({
+      id: a.id,
       title: a.nome,
       teacher: a.professorNome || 'Professor',
       time: `${a.horarioInicio} - ${a.horarioFim}`,
-      students: `${a.alunoIds.length} alunos`,
+      horarioInicio: a.horarioInicio,
+      horarioFim: a.horarioFim,
+      alunoIds: a.alunoIds || [],
+      students: `${(a.alunoIds || []).length} alunos`,
       status: 'ativa',
     })),
-    alunosComFalta: frequencias.filter((f) => f.presente === 0).length,
+    alunosComFalta: faltasNaSemana,
   };
 }
 
-function frequenciaSemanalDeDados(frequencias) {
-  const dias = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-  const contagem = [0, 0, 0, 0, 0, 0, 0];
+function frequenciaSemanalDeAulas(aulas) {
+  const diasNomes = ['segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado', 'domingo'];
+  const diasSiglas = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  const contagemSemana = [0, 0, 0, 0, 0, 0, 0];
 
-  for (const f of frequencias) {
-    if (f.presente !== 1) continue;
-    if (!f.dataPresenca) continue;
-    try {
-      const data = new Date(f.dataPresenca);
-      const idx = data.getDay() === 0 ? 6 : data.getDay() - 1;
-      if (idx >= 0 && idx < 7) contagem[idx]++;
-    } catch { /* ignore */ }
+  for (const aula of aulas) {
+    const diaNorm = (aula.diaSemana || '').toLowerCase().trim();
+    const idx = diasNomes.indexOf(diaNorm);
+    if (idx !== -1) {
+      contagemSemana[idx]++;
+    }
   }
 
-  const max = Math.max(...contagem, 0);
-  return dias.map((day, i) => ({
+  const max = Math.max(...contagemSemana, 0);
+  return diasSiglas.map((day, i) => ({
     day,
-    value: max === 0 ? 0 : (contagem[i] / max) * 80 + 20,
+    value: max === 0 ? 0 : (contagemSemana[i] / max) * 80 + 20, // Altura visual da barra (20% a 100%)
+    count: contagemSemana[i] // Valor matemático real da quantidade de aulas no dia
   }));
-}
-
-function toInt(value) {
-  if (value == null) return 0;
-  const n = parseInt(value, 10);
-  return isNaN(n) ? 0 : n;
 }

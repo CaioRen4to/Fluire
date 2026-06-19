@@ -23,7 +23,8 @@ export default function ValidarCodigoPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { validarCodigoAlterarSenha, recuperarSenha, erro, limparErro } = useAuth();
   const navigate = useNavigate();
-  const [sucesso, setSucesso] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastExit, setToastExit] = useState(false);
 
   // Timer de 2 minutos
   const [timer, setTimer] = useState(TIMER_DURATION);
@@ -56,7 +57,7 @@ export default function ValidarCodigoPage() {
   }, [startTimer]);
 
   const handleReenviar = async () => {
-    if (!emailFromState || reenviando) return;
+    if (!emailFromState || reenviando || showToast) return;
     limparErro();
     setReenviando(true);
     try {
@@ -71,17 +72,22 @@ export default function ValidarCodigoPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (senha !== confirm) return;
+    if (senha !== confirm || showToast) return;
     limparErro();
     setIsLoading(true);
     try {
       const ok = await validarCodigoAlterarSenha(emailFromState, codigo, senha);
       if (ok) {
         if (intervalRef.current) clearInterval(intervalRef.current);
-        setSucesso(true);
+        setShowToast(true);
+        // Inicia a animação de saída um pouco antes de redirecionar
+        setTimeout(() => {
+          setToastExit(true);
+        }, 3200);
+        // Redireciona após ~3.6 segundos (dentro do intervalo de 3 a 4s)
         setTimeout(() => {
           navigate('/login', { replace: true });
-        }, 4000);
+        }, 3600);
         return;
       }
     } finally {
@@ -93,81 +99,83 @@ export default function ValidarCodigoPage() {
 
   return (
     <>
+      {showToast && (
+        <div className={`toast-sucesso ${toastExit ? 'toast-sucesso--hide' : ''}`} role="status" aria-live="polite">
+          <span className="material-icons toast-sucesso__icone">check_circle</span>
+          <span className="toast-sucesso__texto">Senha alterada com sucesso!</span>
+        </div>
+      )}
+
       <AuthLayout
-        titulo={sucesso ? '' : 'Alterar senha'}
-        subtitulo={sucesso ? '' : 'Digite o código e nova senha'}
+        titulo="Alterar senha"
+        subtitulo="Digite o código e nova senha"
         rodape={
-          sucesso ? null : (
-            timerExpirado ? (
-              <span
-                className="auth-layout__link"
-                onClick={handleReenviar}
-                style={{ opacity: reenviando ? 0.5 : 1 }}
-              >
-                Código expirado. <span className="auth-layout__link-bold">
-                  {reenviando ? 'Reenviando...' : 'Reenviar código'}
-                </span>
+          timerExpirado ? (
+            <span
+              className="auth-layout__link"
+              onClick={handleReenviar}
+              style={{ opacity: (reenviando || showToast) ? 0.5 : 1 }}
+            >
+              Código expirado. <span className="auth-layout__link-bold">
+                {reenviando ? 'Reenviando...' : 'Reenviar código'}
               </span>
-            ) : (
-              <span className="auth-layout__link" onClick={() => navigate(-1)}>
-                Não recebeu o código? <span className="auth-layout__link-bold">Solicitar novamente</span>
-              </span>
-            )
+            </span>
+          ) : (
+            <span className="auth-layout__link" onClick={() => navigate(-1)}>
+              Não recebeu o código? <span className="auth-layout__link-bold">Solicitar novamente</span>
+            </span>
           )
         }
       >
-        {sucesso ? (
-          /* ===== TELA DE SUCESSO ===== */
-          <div className="feedback-card fade-slide-up" role="alert" aria-live="assertive">
-            <div className="feedback-card__icon feedback-card__icon--sucesso">
-              <span className="material-icons">check_circle</span>
-            </div>
-            <h2 className="feedback-card__titulo">Senha alterada!</h2>
-            <p className="feedback-card__descricao">
-              Sua senha foi alterada com sucesso.
-            </p>
-            <div className="feedback-card__divider" />
-            <div className="feedback-card__info-row">
-              <span className="material-icons feedback-card__info-icon">mail</span>
-              <p className="feedback-card__info-text">
-                Um e-mail de confirmação foi enviado.
-              </p>
-            </div>
-            <div className="feedback-card__redirect">
-              <div className="feedback-card__spinner" />
-              <span>Redirecionando para o login...</span>
-            </div>
+        {/* Timer visual */}
+        <div className="timer-container" aria-label={`Tempo restante: ${formatTimer(timer)}`}>
+          <div className="timer-bar">
+            <div
+              className={`timer-bar__fill ${timerExpirado ? 'timer-bar__fill--expired' : ''}`}
+              style={{ width: `${timerPercent}%` }}
+            />
           </div>
-        ) : (
-          /* ===== FORMULÁRIO ===== */
-          <>
-            {/* Timer visual */}
-            <div className="timer-container" aria-label={`Tempo restante: ${formatTimer(timer)}`}>
-              <div className="timer-bar">
-                <div
-                  className={`timer-bar__fill ${timerExpirado ? 'timer-bar__fill--expired' : ''}`}
-                  style={{ width: `${timerPercent}%` }}
-                />
-              </div>
-              <div className={`timer-text ${timerExpirado ? 'timer-text--expired' : ''}`}>
-                <span className="material-icons" style={{ fontSize: 16 }}>
-                  {timerExpirado ? 'timer_off' : 'timer'}
-                </span>
-                <span>
-                  {timerExpirado ? 'Código expirado' : `Código válido por ${formatTimer(timer)}`}
-                </span>
-              </div>
-            </div>
+          <div className={`timer-text ${timerExpirado ? 'timer-text--expired' : ''}`}>
+            <span className="material-icons" style={{ fontSize: 16 }}>
+              {timerExpirado ? 'timer_off' : 'timer'}
+            </span>
+            <span>
+              {timerExpirado ? 'Código expirado' : `Código válido por ${formatTimer(timer)}`}
+            </span>
+          </div>
+        </div>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-lg)', marginTop: 'var(--sp-lg)' }}>
-              <InputPadrao label="Código de 6 dígitos" hint="123456" value={codigo} onChange={(e) => setCodigo(e.target.value)} icone="security" type="text" />
-              <InputPadrao label="Nova senha" hint="••••••••" value={senha} onChange={(e) => setSenha(e.target.value)} icone="lock" obscureText />
-              <InputPadrao label="Confirmar senha" hint="••••••••" value={confirm} onChange={(e) => setConfirm(e.target.value)} icone="lock" obscureText />
-              {erro && <p style={{ color: 'var(--color-erro)', fontSize: 13, textAlign: 'center' }}>{erro}</p>}
-              <BotaoPrimario texto="Alterar senha" tipo="submit" carregando={isLoading} disabled={timerExpirado} />
-            </form>
-          </>
-        )}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-lg)', marginTop: 'var(--sp-lg)' }}>
+          <InputPadrao
+            label="Código de 6 dígitos"
+            hint="123456"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            icone="security"
+            type="text"
+            disabled={showToast}
+          />
+          <InputPadrao
+            label="Nova senha"
+            hint="••••••••"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            icone="lock"
+            obscureText
+            disabled={showToast}
+          />
+          <InputPadrao
+            label="Confirmar senha"
+            hint="••••••••"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            icone="lock"
+            obscureText
+            disabled={showToast}
+          />
+          {erro && <p style={{ color: 'var(--color-erro)', fontSize: 13, textAlign: 'center' }}>{erro}</p>}
+          <BotaoPrimario texto="Alterar senha" tipo="submit" carregando={isLoading} disabled={timerExpirado || showToast} />
+        </form>
       </AuthLayout>
 
       <LoadingOverlay visivel={isLoading} texto="Alterando senha..." />

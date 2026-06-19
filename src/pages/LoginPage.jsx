@@ -23,7 +23,8 @@ export default function LoginPage() {
         navigate('/dashboard', { replace: true });
         return;
       }
-    } finally {
+      setIsLoading(false);
+    } catch (error) {
       setIsLoading(false);
     }
   };

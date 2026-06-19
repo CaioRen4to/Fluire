@@ -19,59 +19,47 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (email, senha) => {
-    setLoading(true);
     setErro(null);
     try {
       const user = await authService.login(email, senha);
       setUsuario(user);
-      setLoading(false);
       return true;
     } catch (e) {
       setErro(e.message);
-      setLoading(false);
       return false;
     }
   }, []);
 
   const cadastrar = useCallback(async (nome, email, senha) => {
-    setLoading(true);
     setErro(null);
     try {
       const user = await authService.cadastrar(nome, email, senha);
       setUsuario(user);
-      setLoading(false);
       return true;
     } catch (e) {
       setErro(e.message);
-      setLoading(false);
       return false;
     }
   }, []);
 
   const recuperarSenha = useCallback(async (email) => {
-    setLoading(true);
     setErro(null);
     try {
       await authService.recuperarSenha(email);
-      setLoading(false);
       return true;
     } catch (e) {
       setErro(e.message);
-      setLoading(false);
       return false;
     }
   }, []);
 
   const validarCodigoAlterarSenha = useCallback(async (email, codigo, novaSenha) => {
-    setLoading(true);
     setErro(null);
     try {
       await authService.validarCodigoAlterarSenha(email, codigo, novaSenha);
-      setLoading(false);
       return true;
     } catch (e) {
       setErro(e.message);
-      setLoading(false);
       return false;
     }
   }, []);

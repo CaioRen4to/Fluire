@@ -45,7 +45,7 @@ export default function DashboardPage() {
   const diaSemanaHoje = () => { const dow = new Date().getDay(); return DIAS_SEMANA[dow === 0 ? 7 : dow]; };
   const aulasHoje = aulas.filter((a) => normalizarDia(a.diaSemana) === normalizarDia(diaSemanaHoje()));
   const aulasHojeCount = aulasHoje.length;
-  const emAndamento = aulasHoje.filter((a) => isHorarioEmAndamento(`${a.horarioInicio} - ${a.horarioFim}`)).length;
+  const emAndamento = aulasHoje.filter((a) => isHorarioEmAndamento(a.horarioInicio, a.horarioFim)).length;
 
   const todayClassesReal = aulasHoje
     .sort((a, b) => a.horarioInicio.localeCompare(b.horarioInicio))
@@ -55,23 +55,24 @@ export default function DashboardPage() {
       teacher: a.professorNome || `Professor #${a.usuarioId}`,
       time: `${a.horarioInicio} - ${a.horarioFim}`,
       students: `${a.alunoIds.length} alunos`,
-      status: isHorarioEmAndamento(`${a.horarioInicio} - ${a.horarioFim}`) ? 'andamento' : 'ativa',
+      status: isHorarioEmAndamento(a.horarioInicio, a.horarioFim) ? 'andamento' : 'ativa',
     }));
 
-  // Frequência semanal calculada
+  // Frequência semanal recebida limpamente do dashboardService
   const frequenciaSemana = (() => {
     if (!dashboard) return [];
-    const dePara = { 'Seg': 'Ter', 'Ter': 'Qua', 'Qua': 'Qui', 'Qui': 'Sex', 'Sex': 'Sáb', 'Sáb': 'Dom', 'Dom': 'Seg' };
-    const apiValues = {};
-    for (const item of (dashboard.weeklyFrequency || [])) {
-      apiValues[item.day] = item.value;
-    }
-    return DIAS_SIGLAS.map((sigla, i) => {
-      const siglaApi = dePara[sigla] || sigla;
-      const val = apiValues[siglaApi] ?? 20;
-      const pct = Math.round(Math.max(0, Math.min(100, ((val - 20) / 80) * 100)));
-      const presencas = Math.round((pct / 100) * (dashboard.totalAlunos || 0));
-      return { day: sigla, fullName: DIAS_NOMES[i], value: val, presencas, total: dashboard.totalAlunos, percentual: pct };
+    return (dashboard.weeklyFrequency || []).map((item, i) => {
+      const presencas = item.count || 0;
+      const total = dashboard.totalAlunos || 0;
+      const pct = total === 0 ? 0 : Math.round((presencas / total) * 100);
+      return { 
+        day: item.day, 
+        fullName: DIAS_NOMES[i] || item.day, 
+        value: item.value, 
+        presencas, 
+        total, 
+        percentual: pct 
+      };
     });
   })();
 
@@ -92,7 +93,7 @@ export default function DashboardPage() {
         {/* Cards Estatísticos */}
         <div className="dash-cards">
           <div className="dash-stat-card">
-            <div className="dash-stat-info"><span className="dash-stat-label">Alunos Presentes</span><span className="dash-stat-value">{dashboard.alunosPresentes}</span></div>
+            <div className="dash-stat-info"><span className="dash-stat-label">Total de Alunos</span><span className="dash-stat-value">{dashboard.totalAlunos}</span></div>
             <div className="dash-stat-icon" style={{ background: 'rgba(236,163,29,0.12)' }}><span className="material-icons" style={{ color: 'var(--color-primary)' }}>people_outline</span></div>
           </div>
           <div className="dash-stat-card">
@@ -112,7 +113,7 @@ export default function DashboardPage() {
         {/* Gráfico Frequência Semanal */}
         <div className="dash-chart-card">
           <div className="dash-chart-header">
-            <span className="dash-chart-title">Frequência Semanal</span>
+            <span className="dash-chart-title">Frequência de Aulas (Weekly)</span>
             <span className="dash-chart-date">{mesAnoAtual()}</span>
           </div>
           <div className="dash-chart-bars">

@@ -251,27 +251,31 @@ img {
 }
 
 /* --- Toast de Sucesso --- */
-@keyframes toastSlideDown {
+@keyframes toastSlideIn {
   from {
+    transform: translate(-50%, -100px);
     opacity: 0;
-    transform: translate(-50%, -20px);
   }
   to {
-    opacity: 1;
     transform: translate(-50%, 0);
+    opacity: 1;
   }
 }
 
-@keyframes toastFadeOut {
+@keyframes toastSlideOut {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
   to {
+    transform: translate(-50%, -100px);
     opacity: 0;
-    transform: translate(-50%, -20px);
   }
 }
 
 .toast-sucesso {
   position: fixed;
-  top: 48px;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -284,11 +288,14 @@ img {
   font-size: var(--fs-body-md);
   font-weight: var(--fw-semibold);
   box-shadow: var(--shadow-elevated);
-  z-index: 9999;
-  animation: toastSlideDown 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-             toastFadeOut 0.35s ease 2.6s forwards;
+  z-index: 10005;
   max-width: 90vw;
   white-space: nowrap;
+  animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-sucesso--hide {
+  animation: toastSlideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .toast-sucesso__icone {

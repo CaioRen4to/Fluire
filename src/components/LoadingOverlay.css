@@ -1,36 +1,19 @@
 /* === Loading Overlay === */
-@keyframes iconBreathe {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
+@keyframes spinLogo {
+  from {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: scale(1.06);
-    opacity: 0.8;
-  }
-}
-
-@keyframes ringRotate {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes wordmarkFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(244, 220, 180, 0.96);
+  background: rgba(30, 27, 18, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 10000;
   display: flex;
   align-items: center;
@@ -42,48 +25,31 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sp-lg);
+  justify-content: center;
+  gap: var(--sp-md);
 }
 
-/* Ícone circular com anel giratório */
 .loading-overlay__icon-wrap {
-  position: relative;
-  width: 96px;
-  height: 96px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .loading-overlay__icon {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
-  animation: iconBreathe 2.5s ease-in-out infinite;
-  border-radius: 50%;
-}
-
-.loading-overlay__ring {
-  position: absolute;
-  inset: 0;
-  border: 3px solid rgba(236, 163, 29, 0.15);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: ringRotate 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-/* Wordmark abaixo */
-.loading-overlay__wordmark {
-  width: 120px;
-  height: auto;
-  object-fit: contain;
-  animation: wordmarkFadeIn 0.5s ease 0.15s both;
+  animation: spinLogo 2s linear infinite;
 }
 
 .loading-overlay__texto {
   font-size: var(--fs-body-md);
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: var(--fw-medium);
-  animation: wordmarkFadeIn 0.5s ease 0.3s both;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  margin-top: var(--sp-sm);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }

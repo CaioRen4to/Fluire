@@ -1,15 +1,88 @@
 .hist-filters { display: flex; gap: var(--sp-sm); margin-bottom: var(--sp-lg); }
 .hist-filter { padding: var(--sp-sm) var(--sp-lg); border-radius: var(--radius-lg); background: var(--color-card); color: var(--color-text-secondary); font-weight: var(--fw-medium); font-size: var(--fs-body-md); cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; }
 .hist-filter--active { background: var(--color-primary); color: var(--color-text-primary); }
+
 .hist-list { display: flex; flex-direction: column; gap: var(--sp-md); }
-.hist-item { display: flex; align-items: flex-start; gap: var(--sp-md); padding: var(--sp-lg); background: var(--color-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-sm); }
-.hist-icon { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.hist-icon--aluno { background: rgba(109,184,154,0.15); }
-.hist-icon--aluno .material-icons-outlined { color: var(--color-sucesso); }
-.hist-icon--aula { background: rgba(236,163,29,0.15); }
-.hist-icon--aula .material-icons-outlined { color: var(--color-primary); }
-.hist-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.hist-titulo { font-weight: var(--fw-semibold); color: var(--color-text-primary); }
-.hist-sub { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
-.hist-meta { font-size: var(--fs-body-sm); color: var(--color-text-secondary); font-style: italic; }
-.hist-data { font-size: 11px; color: var(--color-text-secondary); white-space: nowrap; flex-shrink: 0; }
+
+/* Card base otimizado para Mobile */
+.hist-item { 
+  display: flex; 
+  align-items: flex-start; 
+  gap: var(--sp-md); 
+  padding: var(--sp-md) var(--sp-lg); 
+  background: var(--color-card); 
+  border-radius: var(--radius-xl); 
+  box-shadow: var(--shadow-card-sm); 
+}
+
+/* Ícones dinâmicos de auditoria */
+.hist-icon { 
+  width: 40px; 
+  height: 40px; 
+  border-radius: 12px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  flex-shrink: 0; 
+}
+.hist-icon--criacao { background: rgba(109,184,154,0.15); color: var(--color-sucesso); }
+.hist-icon--atualizacao { background: rgba(236,163,29,0.15); color: var(--color-primary); }
+
+/* Container do texto */
+.hist-content { 
+  flex: 1; 
+  min-width: 0; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 4px; 
+}
+
+/* Header com o título e a data flutuante */
+.hist-header { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  flex-wrap: nowrap;
+}
+.hist-title { 
+  font-size: var(--fs-body-sm); 
+  font-weight: var(--fw-bold); 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px; 
+  color: var(--color-text-secondary); 
+}
+.hist-date { 
+  font-size: 11px; 
+  color: var(--color-text-secondary); 
+  white-space: nowrap; 
+}
+
+/* Body: O sujeito da ação */
+.hist-body { margin-top: 2px; }
+.hist-subject { 
+  font-size: var(--fs-body-md); 
+  font-weight: var(--fw-semibold); 
+  color: var(--color-text-primary); 
+  display: block;
+}
+
+/* Footer: Usuário Responsável */
+.hist-footer { 
+  display: flex; 
+  align-items: center; 
+  gap: 6px; 
+  margin-top: 6px; 
+  padding-top: 6px; 
+  border-top: 1px dashed var(--color-border); 
+}
+.hist-user-icon { 
+  font-size: 14px; 
+  color: var(--color-text-secondary); 
+}
+.hist-user-name { 
+  font-size: var(--fs-body-sm); 
+  color: var(--color-text-secondary); 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

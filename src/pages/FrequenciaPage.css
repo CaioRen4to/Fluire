@@ -1,15 +1,202 @@
-.freq-content { display: flex; flex-direction: column; gap: var(--sp-lg); }
-.freq-select-wrap { display: flex; flex-direction: column; gap: var(--sp-xs); }
-.freq-alunos { display: flex; flex-direction: column; gap: var(--sp-md); }
-.freq-data { font-size: var(--fs-body-md); color: var(--color-text-secondary); font-weight: var(--fw-medium); margin-bottom: var(--sp-sm); }
-.freq-aluno-row { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-md) var(--sp-lg); background: var(--color-card); border-radius: var(--radius-xl); box-shadow: var(--shadow-card-sm); }
-.freq-aluno-info { display: flex; align-items: center; gap: var(--sp-md); }
-.freq-aluno-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-weight: var(--fw-bold); color: var(--color-primary); font-size: 16px; flex-shrink: 0; }
-.freq-aluno-nome { font-weight: var(--fw-medium); color: var(--color-text-primary); }
-.freq-btns { display: flex; gap: var(--sp-sm); }
-.freq-btn { width: 44px; height: 44px; border-radius: 50%; font-size: 16px; font-weight: var(--fw-bold); border: 2px solid transparent; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-.freq-btn--presente { background: rgba(131,185,5,0.15); color: var(--color-btn-presente); border-color: transparent; }
-.freq-btn--presente.freq-btn--active { background: var(--color-btn-presente); color: white; }
-.freq-btn--falta { background: rgba(237,114,20,0.15); color: var(--color-btn-falta); border-color: transparent; }
-.freq-btn--falta.freq-btn--active { background: var(--color-btn-falta); color: white; }
-.freq-btn:hover:not(:disabled) { transform: scale(1.08); }
+/* === Frequência Page Styles (Totem Layout) === */
+
+.freq-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+/* Painel de Informações da Aula (Topo) */
+.freq-aula-info-card {
+  background: var(--color-card);
+  padding: var(--sp-lg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.freq-aula-info-card h3 {
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--sp-md);
+  border-bottom: 2px solid var(--color-divider);
+  padding-bottom: var(--sp-xs);
+}
+
+.freq-aula-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: var(--sp-md);
+}
+
+.freq-aula-info-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-medium);
+}
+
+.freq-aula-info-item span.material-icons {
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+.freq-alunos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+}
+
+.freq-data {
+  font-size: var(--fs-body-md);
+  color: var(--color-text-primary);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--sp-xs);
+  border-left: 4px solid var(--color-primary);
+  padding-left: var(--sp-xs);
+}
+
+/* Aluno Card Layout (Mobile First) */
+.freq-aluno-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--color-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.freq-aluno-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.freq-aluno-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+}
+
+.freq-aluno-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+  font-size: 18px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card-sm);
+}
+
+.freq-aluno-nome {
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--fs-title-md);
+}
+
+/* Flex Row para Botões de Ação Largos */
+.freq-actions {
+  display: flex;
+  gap: var(--sp-sm);
+}
+
+.freq-action-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-xs);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+}
+
+/* Estado Neutro (Não selecionado) */
+.freq-action-btn--presente {
+  background: rgba(109, 184, 154, 0.08);
+  color: #55967b;
+}
+
+.freq-action-btn--falta {
+  background: rgba(232, 122, 122, 0.08);
+  color: #cc6060;
+}
+
+/* Estado Ativo (Selecionado) */
+.freq-action-btn--presente-active {
+  background: var(--color-sucesso);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(109, 184, 154, 0.3);
+}
+
+.freq-action-btn--falta-active {
+  background: var(--color-erro);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(232, 122, 122, 0.3);
+}
+
+/* Estado Inativo/Desbotado (Opção oposta selecionada) */
+.freq-action-btn--inactive {
+  opacity: 0.35;
+  filter: grayscale(0.8);
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--color-text-secondary);
+  box-shadow: none;
+}
+
+.freq-action-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Botões do Rodapé (Lote) */
+.freq-bottom-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+  background: var(--color-card);
+  padding: var(--sp-lg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Toast Flutuante */
+.freq-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(48, 44, 29, 0.9);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #fff;
+  padding: var(--sp-sm) var(--sp-md);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  box-shadow: var(--shadow-elevated);
+  z-index: 9999;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.freq-toast span {
+  font-size: 16px;
+}

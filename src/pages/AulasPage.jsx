@@ -29,7 +29,7 @@ export default function AulasPage() {
   const [busca, setBusca] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editAula, setEditAula] = useState(null);
-  const [form, setForm] = useState({ nome: '', horarioInicio: '', horarioFim: '', diaSemana: 'segunda-feira', frequencia: 'Semanal' });
+  const [form, setForm] = useState({ nome: '', horarioInicio: '', horarioFim: '', diaSemana: 'segunda-feira', frequencia: 'Semanal', usuarioId: '' });
   const [professores, setProfessores] = useState([]);
   const [alunos, setAlunos] = useState([]);
   const [alunosSelecionados, setAlunosSelecionados] = useState([]);
@@ -39,15 +39,38 @@ export default function AulasPage() {
   const carregar = async () => {
     setEstado('carregando');
     try {
-      const [aulasData, assocData] = await Promise.all([aulasService.listar(), aulaAlunoService.listar().catch(() => [])]);
+      const [aulasData, assocData, usersData, alunosData] = await Promise.all([
+        aulasService.listar(),
+        aulaAlunoService.listar().catch(() => []),
+        usuariosService.listar().catch(() => []),
+        alunosService.listar().catch(() => [])
+      ]);
+      
+      setProfessores(usersData);
+      setAlunos(alunosData);
+
       const mapAssoc = {};
-      for (const a of assocData) { const k = a.aulaId.toString(); if (!mapAssoc[k]) mapAssoc[k] = []; mapAssoc[k].push(a.alunoId.toString()); }
-      setAulas(aulasData.map((a) => ({ ...a, alunoIds: mapAssoc[a.id] || a.alunoIds || [] })));
-      setEstado(aulasData.length === 0 ? 'vazio' : 'sucesso');
-      // Load profs and alunos for modal
-      try { const u = await usuariosService.listar(); setProfessores(u); } catch {}
-      try { const a = await alunosService.listar(); setAlunos(a); } catch {}
-    } catch (e) { setErro(e.message); setEstado('erro'); }
+      for (const a of assocData) {
+        const k = a.aulaId.toString();
+        if (!mapAssoc[k]) mapAssoc[k] = [];
+        mapAssoc[k].push(a.alunoId.toString());
+      }
+
+      const mappedAulas = aulasData.map((a) => {
+        const prof = usersData.find((u) => u.id?.toString() === a.usuarioId?.toString());
+        return {
+          ...a,
+          alunoIds: mapAssoc[a.id] || a.alunoIds || [],
+          professorNome: prof ? prof.nome : 'Professor não atribuído'
+        };
+      });
+
+      setAulas(mappedAulas);
+      setEstado(mappedAulas.length === 0 ? 'vazio' : 'sucesso');
+    } catch (e) {
+      setErro(e.message);
+      setEstado('erro');
+    }
   };
 
   useEffect(() => { carregar(); }, []);
@@ -63,11 +86,25 @@ export default function AulasPage() {
   const openModal = (aula = null) => {
     if (aula) {
       setEditAula(aula);
-      setForm({ nome: aula.nome, horarioInicio: aula.horarioInicio, horarioFim: aula.horarioFim, diaSemana: aula.diaSemana, frequencia: aula.frequencia });
+      setForm({
+        nome: aula.nome,
+        horarioInicio: aula.horarioInicio,
+        horarioFim: aula.horarioFim,
+        diaSemana: aula.diaSemana,
+        frequencia: aula.frequencia,
+        usuarioId: aula.usuarioId?.toString() || ''
+      });
       setAlunosSelecionados(aula.alunoIds || []);
     } else {
       setEditAula(null);
-      setForm({ nome: '', horarioInicio: '', horarioFim: '', diaSemana: diaSelecionado, frequencia: 'Semanal' });
+      setForm({
+        nome: '',
+        horarioInicio: '',
+        horarioFim: '',
+        diaSemana: diaSelecionado,
+        frequencia: 'Semanal',
+        usuarioId: ''
+      });
       setAlunosSelecionados([]);
     }
     setModalOpen(true);
@@ -77,8 +114,11 @@ export default function AulasPage() {
     e.preventDefault();
     setSalvando(true);
     try {
-      const userId = getUserId();
-      const aulaData = { ...form, usuarioId: userId?.toString() || '', alunoIds: alunosSelecionados };
+      const aulaData = {
+        ...form,
+        usuarioId: form.usuarioId || '',
+        alunoIds: alunosSelecionados
+      };
       if (editAula) {
         await aulasService.atualizar({ ...aulaData, id: editAula.id });
         // Sync aluno associations
@@ -154,6 +194,21 @@ export default function AulasPage() {
             <label className="input-padrao__label">Dia da semana</label>
             <select className="aulas-select" value={form.diaSemana} onChange={(e) => setForm({ ...form, diaSemana: e.target.value })}>
               {DIAS.map((d) => <option key={d.nome} value={d.nome}>{d.dia} - {d.nome}</option>)}
+            </select>
+          </div>
+          <div className="input-padrao">
+            <label className="input-padrao__label">Professor Responsável</label>
+            <select
+              className="aulas-select"
+              value={form.usuarioId}
+              onChange={(e) => setForm({ ...form, usuarioId: e.target.value })}
+            >
+              <option value="">Selecione um professor...</option>
+              {professores.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.nome}
+                </option>
+              ))}
             </select>
           </div>
           {alunos.length > 0 && (
