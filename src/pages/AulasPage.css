@@ -1,15 +1,277 @@
-.aulas-dias { display: flex; gap: var(--sp-md); overflow-x: auto; padding-bottom: var(--sp-lg); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+/* Seletor de Dias */
+.aulas-dias {
+  display: flex;
+  gap: var(--sp-sm);
+  overflow-x: auto;
+  padding-bottom: var(--sp-md);
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
 .aulas-dias::-webkit-scrollbar { display: none; }
-.aulas-dia { width: 68px; min-width: 68px; padding: var(--sp-md) 0; display: flex; flex-direction: column; align-items: center; gap: var(--sp-sm); background: var(--color-card); border-radius: var(--radius-lg); cursor: pointer; transition: background 0.2s, color 0.2s; }
-.aulas-dia--sel { background: var(--color-primary); }
-.aulas-dia__sigla { font-size: var(--fs-body-md); color: var(--color-text-secondary); }
-.aulas-dia--sel .aulas-dia__sigla { color: var(--color-text-light); }
-.aulas-dia__num { font-size: var(--fs-h3); font-weight: var(--fw-bold); color: var(--color-text-primary); }
-.aulas-dia--sel .aulas-dia__num { color: var(--color-text-light); }
-.aulas-list { display: flex; flex-direction: column; gap: var(--sp-lg); }
-.aulas-select { width: 100%; padding: var(--sp-md) var(--sp-lg); background: var(--color-card); border: 2px solid transparent; border-radius: var(--radius-sm); font-size: var(--fs-body-md); color: var(--color-text-primary); outline: none; appearance: auto; }
-.aulas-select:focus { border-color: var(--color-primary); }
-.aulas-alunos-list { max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: var(--sp-xs); background: var(--color-bg); border-radius: var(--radius-sm); padding: var(--sp-sm); }
-.aulas-aluno-check { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-xs) var(--sp-sm); cursor: pointer; font-size: var(--fs-body-md); border-radius: var(--radius-sm); }
-.aulas-aluno-check:hover { background: var(--color-primary-light); }
-.aulas-aluno-check input { accent-color: var(--color-primary); }
+
+.aulas-dia {
+  width: 64px;
+  min-width: 64px;
+  padding: var(--sp-md) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-xs);
+  background: var(--gradient-card);
+  border: 1px solid rgba(236, 163, 29, 0.1);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.aulas-dia:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.aulas-dia:active {
+  transform: scale(0.96);
+}
+
+.aulas-dia--sel {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  box-shadow: var(--shadow-button-hover);
+  transform: translateY(-2px);
+}
+
+.aulas-dia__sigla {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--fw-medium);
+}
+
+.aulas-dia--sel .aulas-dia__sigla {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.aulas-dia__num {
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+
+.aulas-dia--sel .aulas-dia__num {
+  color: #fff;
+}
+
+/* Lista de Aulas */
+.aulas-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+/* ===== Pills de dia da semana (modal) ===== */
+.aulas-dias-pills {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--sp-xs);
+  width: 100%;
+}
+
+.aulas-dia-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 4px;
+  background: var(--color-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.15);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  font-family: inherit;
+  min-height: 44px;
+}
+
+.aulas-dia-pill:hover {
+  background: rgba(236, 163, 29, 0.1);
+  color: var(--color-text-primary);
+  border-color: rgba(236, 163, 29, 0.35);
+}
+
+.aulas-dia-pill:active {
+  transform: scale(0.93);
+}
+
+.aulas-dia-pill--sel {
+  background: var(--gradient-primary);
+  color: var(--color-text-primary);
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(236, 163, 29, 0.3);
+  font-weight: var(--fw-bold);
+}
+
+/* ===== Chips de alunos (modal) ===== */
+.aulas-alunos-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--sp-sm);
+  padding: 2px 10px;
+  background: var(--gradient-primary);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+
+.aulas-alunos-chips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-xs);
+  max-height: 220px;
+  overflow-y: auto;
+  padding: var(--sp-xs);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-light) transparent;
+}
+
+.aulas-alunos-chips::-webkit-scrollbar {
+  width: 4px;
+}
+
+.aulas-alunos-chips::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 2px;
+}
+
+.aulas-aluno-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  padding: 10px var(--sp-md);
+  background: var(--color-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.12);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  min-height: 52px;
+}
+
+.aulas-aluno-chip:hover {
+  background: rgba(236, 163, 29, 0.07);
+  border-color: rgba(236, 163, 29, 0.3);
+}
+
+.aulas-aluno-chip:active {
+  transform: scale(0.98);
+}
+
+.aulas-aluno-chip--sel {
+  background: rgba(236, 163, 29, 0.1);
+  border-color: var(--color-primary);
+  border-width: 2px;
+}
+
+.aulas-aluno-chip__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--gradient-primary-soft);
+  border: 1.5px solid rgba(236, 163, 29, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  color: var(--color-icon-active);
+  flex-shrink: 0;
+}
+
+.aulas-aluno-chip--sel .aulas-aluno-chip__avatar {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  color: var(--color-text-primary);
+}
+
+.aulas-aluno-chip__nome {
+  flex: 1;
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-primary);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aulas-aluno-chip--sel .aulas-aluno-chip__nome {
+  font-weight: var(--fw-semibold);
+}
+
+.aulas-aluno-chip__check {
+  font-size: 18px;
+  color: var(--color-icon-active);
+  flex-shrink: 0;
+  animation: scaleIn 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Select estilizado (professor, etc.) */
+.aulas-select {
+  width: 100%;
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--color-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.18);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-md);
+  color: var(--color-text-primary);
+  outline: none;
+  appearance: auto;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-height: 52px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.aulas-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(236, 163, 29, 0.14);
+}
+
+/* Lista de alunos legada (mantida por compatibilidade) */
+.aulas-alunos-list {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: rgba(244, 220, 180, 0.3);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-sm);
+  border: 1px solid rgba(236, 163, 29, 0.1);
+}
+
+.aulas-aluno-check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: 8px var(--sp-md);
+  cursor: pointer;
+  font-size: var(--fs-body-md);
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+  color: var(--color-text-primary);
+}
+
+.aulas-aluno-check:hover {
+  background: var(--color-primary-light);
+}
+
+.aulas-aluno-check input {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+}
+

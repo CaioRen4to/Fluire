@@ -1,16 +1,126 @@
-.profs-list { display: flex; flex-direction: column; gap: var(--sp-md); }
-.prof-card { background: var(--color-card); border-radius: var(--radius-xxl); box-shadow: var(--shadow-card-sm); overflow: hidden; }
-.prof-top { display: flex; align-items: center; gap: var(--sp-md); padding: var(--sp-lg); cursor: pointer; transition: background 0.15s; }
-.prof-top:hover { background: rgba(236,163,29,0.04); }
-.prof-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; font-weight: var(--fw-bold); color: var(--color-primary); font-size: 18px; flex-shrink: 0; }
-.prof-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.prof-nome { font-weight: var(--fw-semibold); color: var(--color-text-primary); }
-.prof-email { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
-.prof-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
-.prof-count { font-size: var(--fs-body-sm); color: var(--color-text-secondary); font-weight: var(--fw-medium); }
-.prof-hoje { font-size: 11px; color: var(--color-sucesso); font-weight: var(--fw-semibold); }
-.prof-aulas { padding: 0 var(--sp-lg) var(--sp-lg); display: flex; flex-direction: column; gap: var(--sp-sm); }
-.prof-sem-aulas { font-size: var(--fs-body-sm); color: var(--color-text-secondary); font-style: italic; }
-.prof-aula-item { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-sm) var(--sp-md); background: var(--color-bg); border-radius: var(--radius-md); cursor: pointer; transition: background 0.15s; font-size: var(--fs-body-md); }
-.prof-aula-item:hover { background: var(--color-primary-light); }
-.prof-aula-dia { margin-left: auto; font-size: 11px; color: var(--color-text-secondary); text-transform: capitalize; }
+.profs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+}
+
+.prof-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xxl);
+  border: 1px solid rgba(236, 163, 29, 0.1);
+  box-shadow: var(--shadow-card-sm);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.prof-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.prof-top {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  padding: var(--sp-lg);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.prof-top:hover {
+  background: rgba(236, 163, 29, 0.05);
+}
+
+.prof-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--gradient-primary-soft);
+  border: 2px solid rgba(236, 163, 29, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--fw-bold);
+  color: var(--color-icon-active);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.prof-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prof-nome {
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--fs-body-lg);
+}
+
+.prof-email {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.prof-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.prof-count {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--fw-medium);
+  background: rgba(236, 163, 29, 0.1);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.prof-hoje {
+  font-size: 11px;
+  color: var(--color-sucesso);
+  font-weight: var(--fw-semibold);
+}
+
+.prof-aulas {
+  padding: 0 var(--sp-lg) var(--sp-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+
+.prof-sem-aulas {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.prof-aula-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: var(--sp-sm) var(--sp-md);
+  background: rgba(244, 220, 180, 0.4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: var(--fs-body-md);
+  border: 1px solid rgba(236, 163, 29, 0.08);
+}
+
+.prof-aula-item:hover {
+  background: var(--color-primary-light);
+}
+
+.prof-aula-dia {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+}

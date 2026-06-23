@@ -285,58 +285,81 @@ export default function DetalheAulaPage() {
             onChange={(e) => setForm({ ...form, horarioFim: e.target.value })}
             icone="schedule"
           />
+
+          {/* Dia da semana — pills visuais */}
           <div className="input-padrao">
             <label className="input-padrao__label">Dia da semana</label>
-            <select
-              className="aulas-select"
-              value={form.diaSemana}
-              onChange={(e) => setForm({ ...form, diaSemana: e.target.value })}
-            >
+            <div className="aulas-dias-pills">
               {DIAS.map((d) => (
-                <option key={d.nome} value={d.nome}>
-                  {d.dia} - {d.nome}
-                </option>
+                <button
+                  key={d.nome}
+                  type="button"
+                  className={`aulas-dia-pill ${form.diaSemana === d.nome ? 'aulas-dia-pill--sel' : ''}`}
+                  onClick={() => setForm({ ...form, diaSemana: d.nome })}
+                >
+                  {d.dia}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
+
+          {/* Professor */}
           <div className="input-padrao">
             <label className="input-padrao__label">Professor Responsável</label>
-            <select
-              className="aulas-select"
-              value={form.usuarioId}
-              onChange={(e) => setForm({ ...form, usuarioId: e.target.value })}
-            >
-              <option value="">Selecione um professor...</option>
-              {professores.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.nome}
-                </option>
-              ))}
-            </select>
+            <div className="select-wrapper">
+              <span className="material-icons select-wrapper__icon">person</span>
+              <select
+                className="select-wrapper__select"
+                value={form.usuarioId}
+                onChange={(e) => setForm({ ...form, usuarioId: e.target.value })}
+              >
+                <option value="">Selecione um professor...</option>
+                {professores.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nome}
+                  </option>
+                ))}
+              </select>
+              <span className="material-icons select-wrapper__arrow">expand_more</span>
+            </div>
           </div>
+
           <InputPadrao
             label="Frequência"
             value={form.frequencia}
             onChange={(e) => setForm({ ...form, frequencia: e.target.value })}
             icone="repeat"
           />
+
+          {/* Alunos — chips toggle estilizados */}
           {alunos.length > 0 && (
             <div className="input-padrao">
-              <label className="input-padrao__label">Alunos ({alunosSelecionados.length})</label>
-              <div className="aulas-alunos-list">
-                {alunos.map((a) => (
-                  <label key={a.id} className="aulas-aluno-check">
-                    <input
-                      type="checkbox"
-                      checked={alunosSelecionados.includes(a.id?.toString())}
-                      onChange={() => toggleAluno(a.id?.toString())}
-                    />
-                    <span>{a.nome}</span>
-                  </label>
-                ))}
+              <label className="input-padrao__label">
+                Alunos
+                {alunosSelecionados.length > 0 && (
+                  <span className="aulas-alunos-badge">{alunosSelecionados.length} selecionado{alunosSelecionados.length > 1 ? 's' : ''}</span>
+                )}
+              </label>
+              <div className="aulas-alunos-chips">
+                {alunos.map((a) => {
+                  const sel = alunosSelecionados.includes(a.id?.toString());
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      className={`aulas-aluno-chip ${sel ? 'aulas-aluno-chip--sel' : ''}`}
+                      onClick={() => toggleAluno(a.id?.toString())}
+                    >
+                      <span className="aulas-aluno-chip__avatar">{(a.nome || '?')[0].toUpperCase()}</span>
+                      <span className="aulas-aluno-chip__nome">{a.nome}</span>
+                      {sel && <span className="material-icons aulas-aluno-chip__check">check</span>}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
+
           <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
         </form>
       </ModalFormulario>

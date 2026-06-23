@@ -201,23 +201,26 @@ export default function FrequenciaPage() {
         {/* Seletor de Aula */}
         <div className="freq-select-wrap" style={{ marginBottom: 'var(--sp-md)' }}>
           <label className="input-padrao__label">Selecione a Aula</label>
-          <select
-            className="aulas-select"
-            value={aulaSelecionada || ''}
-            onChange={(e) => handleSelectAula(e.target.value)}
-            style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius-lg)', background: 'var(--color-bg-tertiary)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--color-text-primary)', cursor: 'pointer', outline: 'none' }}
-          >
-            <option value="">Selecione uma aula...</option>
-            {aulas.map((aula) => {
-              const p = professores.find((u) => u.id?.toString() === aula.usuarioId?.toString());
-              const pNome = p ? p.nome : 'Professor não atribuído';
-              return (
-                <option key={aula.id} value={aula.id}>
-                  {aula.nome} - Prof. {pNome} ({aula.diaSemana})
-                </option>
-              );
-            })}
-          </select>
+          <div className="select-wrapper">
+            <span className="material-icons select-wrapper__icon">school</span>
+            <select
+              className="select-wrapper__select"
+              value={aulaSelecionada || ''}
+              onChange={(e) => handleSelectAula(e.target.value)}
+            >
+              <option value="">Selecione uma aula...</option>
+              {aulas.map((aula) => {
+                const p = professores.find((u) => u.id?.toString() === aula.usuarioId?.toString());
+                const pNome = p ? p.nome : 'Professor não atribuído';
+                return (
+                  <option key={aula.id} value={aula.id}>
+                    {aula.nome} - Prof. {pNome} ({aula.diaSemana})
+                  </option>
+                );
+              })}
+            </select>
+            <span className="material-icons select-wrapper__arrow">expand_more</span>
+          </div>
         </div>
 
         {/* Professor Responsável Elegante */}
@@ -288,7 +291,7 @@ export default function FrequenciaPage() {
               return (
                 <div
                   key={id || i}
-                  className="freq-aluno-card fade-slide-up"
+                  className={`freq-aluno-card fade-slide-up${status === 1 ? ' freq-aluno-card--presente' : status === 0 ? ' freq-aluno-card--falta' : ''}`}
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
                   <div className="freq-aluno-header">

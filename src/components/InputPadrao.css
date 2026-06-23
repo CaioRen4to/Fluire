@@ -6,23 +6,26 @@
 }
 
 .input-padrao__label {
-  font-size: var(--fs-body-lg);
-  font-weight: var(--fw-medium);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
   color: var(--color-text-primary);
+  margin-bottom: 2px;
 }
 
 .input-padrao__wrapper {
   display: flex;
   align-items: center;
   background: var(--color-card);
-  border-radius: var(--radius-sm);
-  border: 2px solid transparent;
-  transition: border-color 0.2s ease;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid rgba(236, 163, 29, 0.18);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   overflow: hidden;
+  min-height: 52px;
 }
 
 .input-padrao__wrapper:focus-within {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(236, 163, 29, 0.14);
 }
 
 .input-padrao__icon {
@@ -30,6 +33,11 @@
   color: var(--color-text-secondary);
   font-size: 20px;
   flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.input-padrao__wrapper:focus-within .input-padrao__icon {
+  color: var(--color-primary);
 }
 
 .input-padrao__field {
@@ -44,7 +52,7 @@
 }
 
 .input-padrao__field::placeholder {
-  color: var(--color-text-secondary);
+  color: rgba(138, 131, 108, 0.6);
 }
 
 .input-padrao__toggle {
@@ -52,6 +60,8 @@
   color: var(--color-text-secondary);
   display: flex;
   align-items: center;
+  transition: color 0.2s;
+  min-height: 44px;
 }
 
 .input-padrao__toggle:hover {

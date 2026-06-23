@@ -57,9 +57,17 @@
   /* Sombras */
   --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.04);
   --shadow-card-sm: 0 2px 6px rgba(0, 0, 0, 0.02);
+  --shadow-card-hover: 0 8px 28px rgba(48, 44, 29, 0.12);
   --shadow-button: 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-button-hover: 0 6px 20px rgba(236, 163, 29, 0.32);
   --shadow-modal: 0 10px 20px rgba(0, 0, 0, 0.1);
   --shadow-elevated: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+  /* Gradientes derivados da paleta existente */
+  --gradient-bg: linear-gradient(160deg, #f4dcb4 0%, #f8e8b9 60%, #f4dcb4 100%);
+  --gradient-card: linear-gradient(135deg, rgba(248, 248, 246, 0.92) 0%, rgba(248, 232, 185, 0.35) 100%);
+  --gradient-primary: linear-gradient(135deg, #eca31d 0%, #a37315 100%);
+  --gradient-primary-soft: linear-gradient(135deg, rgba(236,163,29,0.18) 0%, rgba(163,115,21,0.08) 100%);
 
   /* Tipografia */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -197,6 +205,44 @@ img {
   50% { opacity: 0.5; }
 }
 
+/* Shimmer para skeleton screens */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Scale pop para confirmação de presença */
+@keyframes scaleIn {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.08); }
+  70%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+/* Slide up para modais/sheets */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Entrada de página */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .fade-slide-up {
   animation: fadeSlideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -204,6 +250,110 @@ img {
 .fade-in {
   animation: fadeIn 0.3s ease both;
 }
+
+.page-enter {
+  animation: pageEnter 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Skeleton loading */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(236, 163, 29, 0.08) 25%,
+    rgba(236, 163, 29, 0.18) 50%,
+    rgba(236, 163, 29, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-text {
+  height: 14px;
+  border-radius: var(--radius-sm);
+}
+
+/* Delays escalonados para listas */
+.stagger-1 { animation-delay: 40ms; }
+.stagger-2 { animation-delay: 80ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 160ms; }
+.stagger-5 { animation-delay: 200ms; }
+
+/* ===== Select Wrapper — Select Estilizado (componente global) ===== */
+/* Uso: <div class="select-wrapper"> + ícone + <select class="select-wrapper__select"> */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--gradient-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.18);
+  border-radius: var(--radius-lg);
+  min-height: 52px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.select-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(236, 163, 29, 0.14);
+}
+
+.select-wrapper__icon {
+  padding-left: var(--sp-lg);
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+  pointer-events: none;
+}
+
+.select-wrapper:focus-within .select-wrapper__icon {
+  color: var(--color-primary);
+}
+
+.select-wrapper__select {
+  flex: 1;
+  padding: var(--sp-md) var(--sp-sm) var(--sp-md) var(--sp-md);
+  background: transparent;
+  border: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  font-size: var(--fs-body-md);
+  font-family: inherit;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  min-width: 0;
+}
+
+.select-wrapper__select option {
+  background: #f8f0e0;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  padding: 8px;
+}
+
+.select-wrapper__select option:checked {
+  background: rgba(236, 163, 29, 0.2);
+}
+
+/* Seta customizada */
+.select-wrapper__arrow {
+  padding-right: var(--sp-md);
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  flex-shrink: 0;
+  pointer-events: none;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.select-wrapper:focus-within .select-wrapper__arrow {
+  color: var(--color-primary);
+  transform: rotate(180deg);
+}
+
+
 
 /* --- Utility Classes --- */
 .text-center { text-align: center; }

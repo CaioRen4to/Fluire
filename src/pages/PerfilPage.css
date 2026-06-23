@@ -1,15 +1,137 @@
-.perfil-content { display: flex; flex-direction: column; gap: var(--sp-lg); max-width: 500px; margin: 0 auto; }
-.perfil-card { background: var(--color-card); border-radius: var(--radius-xl); padding: var(--sp-xxl) var(--sp-xl); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-card); }
-.perfil-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--color-primary-light); display: flex; align-items: center; justify-content: center; }
-.perfil-avatar .material-icons { font-size: 60px; color: var(--color-primary); }
-.perfil-nome { margin-top: var(--sp-md); font-size: var(--fs-title-lg); font-weight: var(--fw-semibold); }
-.perfil-email { font-size: var(--fs-body-md); color: var(--color-text-secondary); }
-.perfil-badge { margin-top: var(--sp-sm); padding: 4px 16px; border-radius: var(--radius-md); background: rgba(237,202,138,0.3); font-size: var(--fs-body-sm); font-weight: var(--fw-medium); }
-.perfil-info { background: var(--color-card); border-radius: var(--radius-lg); padding: var(--sp-lg); box-shadow: var(--shadow-card); }
-.perfil-info h3 { font-size: var(--fs-title-md); font-weight: var(--fw-semibold); margin-bottom: var(--sp-md); }
-.perfil-row { display: flex; align-items: center; gap: var(--sp-sm); padding: var(--sp-md) 0; }
-.perfil-row .material-icons-outlined { color: var(--color-primary); font-size: 20px; }
-.perfil-row div { display: flex; flex-direction: column; }
-.perfil-row small { font-size: var(--fs-body-sm); color: var(--color-text-secondary); }
-.perfil-row span { font-size: var(--fs-body-md); }
-.perfil-actions { background: var(--color-card); border-radius: var(--radius-lg); padding: var(--sp-lg); box-shadow: var(--shadow-card); }
+.perfil-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Card principal do perfil */
+.perfil-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xxl);
+  border: 1px solid rgba(236, 163, 29, 0.12);
+  padding: var(--sp-xxl) var(--sp-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: var(--shadow-card);
+  gap: var(--sp-xs);
+}
+
+/* Avatar com ring de gradiente */
+.perfil-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--gradient-primary-soft);
+  border: 3px solid var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 5px rgba(236, 163, 29, 0.14);
+  margin-bottom: var(--sp-sm);
+}
+
+.perfil-avatar .material-icons {
+  font-size: 56px;
+  color: var(--color-icon-active);
+}
+
+.perfil-nome {
+  margin-top: var(--sp-sm);
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.3px;
+}
+
+.perfil-email {
+  font-size: var(--fs-body-md);
+  color: var(--color-text-secondary);
+}
+
+.perfil-badge {
+  margin-top: var(--sp-sm);
+  padding: 5px 18px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-primary-soft);
+  border: 1px solid rgba(236, 163, 29, 0.25);
+  font-size: var(--fs-body-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-icon-active);
+  letter-spacing: 0.2px;
+}
+
+/* Card de informações */
+.perfil-info {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(236, 163, 29, 0.1);
+  padding: var(--sp-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.perfil-info h3 {
+  font-size: var(--fs-title-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--sp-md);
+  letter-spacing: -0.2px;
+}
+
+.perfil-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  padding: var(--sp-md) var(--sp-sm);
+  border-radius: var(--radius-md);
+  transition: background 0.15s;
+}
+
+.perfil-row:not(:last-child) {
+  border-bottom: 1px solid rgba(236, 163, 29, 0.1);
+}
+
+.perfil-row:hover {
+  background: rgba(236, 163, 29, 0.05);
+}
+
+.perfil-row .material-icons-outlined {
+  color: var(--color-primary);
+  font-size: 22px;
+  flex-shrink: 0;
+  background: rgba(236, 163, 29, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-row div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.perfil-row small {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.perfil-row span {
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-medium);
+  color: var(--color-text-primary);
+}
+
+/* Card de ações */
+.perfil-actions {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(236, 163, 29, 0.1);
+  padding: var(--sp-lg);
+  box-shadow: var(--shadow-card);
+}
