@@ -100,13 +100,17 @@ export default function DetalheAlunoPage() {
           <BotaoTexto texto="Excluir aluno" cor="erro" onClick={handleExcluir} />
         </div>
       </div>
-      <ModalFormulario titulo="Editar Aluno" aberto={editOpen} onFechar={() => setEditOpen(false)}>
-        <form onSubmit={handleEditar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
+      <ModalFormulario
+        titulo="Editar Aluno"
+        aberto={editOpen}
+        onFechar={() => setEditOpen(false)}
+        rodape={<BotaoPrimario texto="Salvar" tipo="submit" form="form-editar-aluno" carregando={salvando} />}
+      >
+        <form id="form-editar-aluno" onSubmit={handleEditar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
           <InputPadrao label="Nome" value={nome} onChange={(e) => setNome(e.target.value)} icone="person" />
           <InputPadrao label="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} icone="mail" />
           <InputPadrao label="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} icone="phone" />
           <InputPadrao label="Modalidade" value={modalidade} onChange={(e) => setModalidade(e.target.value)} icone="category" />
-          <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
         </form>
       </ModalFormulario>
     </AppLayout>

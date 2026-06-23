@@ -263,8 +263,13 @@ export default function DetalheAulaPage() {
         </div>
       </div>
 
-      <ModalFormulario titulo="Editar Aula" aberto={editOpen} onFechar={() => setEditOpen(false)}>
-        <form onSubmit={handleEditar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
+      <ModalFormulario
+        titulo="Editar Aula"
+        aberto={editOpen}
+        onFechar={() => setEditOpen(false)}
+        rodape={<BotaoPrimario texto="Salvar" tipo="submit" form="form-editar-aula" carregando={salvando} />}
+      >
+        <form id="form-editar-aula" onSubmit={handleEditar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
           <InputPadrao
             label="Nome da aula"
             value={form.nome}
@@ -360,7 +365,6 @@ export default function DetalheAulaPage() {
             </div>
           )}
 
-          <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
         </form>
       </ModalFormulario>
     </AppLayout>

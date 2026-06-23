@@ -9,6 +9,8 @@
   align-items: flex-end;
   justify-content: center;
   padding: 0;
+  /* No mobile, respeita a bottom nav (72px) para o botão não ficar escondido */
+  padding-bottom: 72px;
   animation: fadeIn 0.2s ease;
 }
 
@@ -19,16 +21,20 @@
   }
 }
 
+/* ===== Modal Content (Bottom-Sheet no mobile, centered no desktop) ===== */
 .modal-content {
   background: var(--gradient-card);
-  border-radius: var(--radius-xxl) var(--radius-xxl) 0 0;
+  /* No mobile: modal flutua acima da bottom nav — cantos arredondados em cima */
+  border-radius: var(--radius-xxl) var(--radius-xxl) var(--radius-xl) var(--radius-xl);
   width: 100%;
   max-width: 500px;
-  max-height: 92vh;
-  overflow-y: auto;
+  /* Ocupa o espaço disponível (tela - bottom nav já descontada pelo overlay) */
+  max-height: calc(100dvh - 72px);
+  /* Flex column: header + body rolável + footer fixo */
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-modal), 0 -4px 24px rgba(48, 44, 29, 0.1);
   animation: slideInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-  /* Handle bar drag indicator no topo (mobile) */
   padding-top: 12px;
   position: relative;
 }
@@ -44,23 +50,28 @@
   height: 4px;
   background: rgba(138, 131, 108, 0.3);
   border-radius: 2px;
+  flex-shrink: 0;
 }
 
 @media (min-width: 600px) {
   .modal-content {
     border-radius: var(--radius-xxl);
     padding-top: 0;
+    max-height: 90dvh;
   }
   .modal-content::before {
     display: none;
   }
 }
 
+
+/* ===== Header — nunca rola ===== */
 .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--sp-lg) var(--sp-lg) 0;
+  flex-shrink: 0;
 }
 
 .modal-titulo {
@@ -79,6 +90,7 @@
   border-radius: 50%;
   color: var(--color-text-secondary);
   transition: background 0.15s, transform 0.15s;
+  flex-shrink: 0;
 }
 
 .modal-fechar:hover {
@@ -90,9 +102,33 @@
   transform: scale(0.92);
 }
 
+/* ===== Body — ÚNICA região que rola ===== */
 .modal-body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: var(--sp-lg);
   display: flex;
   flex-direction: column;
   gap: var(--sp-md);
+  /* Scrollbar discreta na paleta */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(236, 163, 29, 0.25) transparent;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(236, 163, 29, 0.25);
+  border-radius: 2px;
+}
+
+/* ===== Footer — SEMPRE visível, nunca some ===== */
+.modal-footer {
+  flex-shrink: 0;
+  padding: var(--sp-sm) var(--sp-lg) calc(var(--sp-lg) + env(safe-area-inset-bottom, 0px));
+  background: var(--gradient-card);
+  border-top: 1px solid rgba(236, 163, 29, 0.1);
 }

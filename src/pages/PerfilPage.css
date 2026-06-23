@@ -135,3 +135,290 @@
   padding: var(--sp-lg);
   box-shadow: var(--shadow-card);
 }
+
+/* ===== Zona de Perigo ===== */
+.perfil-danger-zone {
+  background: linear-gradient(135deg, rgba(232, 122, 122, 0.06), rgba(232, 122, 122, 0.02));
+  border-radius: var(--radius-xl);
+  border: 1.5px solid rgba(232, 122, 122, 0.3);
+  padding: var(--sp-lg);
+  box-shadow: 0 2px 16px rgba(232, 122, 122, 0.08);
+}
+
+.perfil-danger-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  margin-bottom: var(--sp-sm);
+}
+
+.perfil-danger-icon {
+  font-size: 20px;
+  color: var(--color-erro);
+}
+
+.perfil-danger-title {
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-erro);
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.perfil-danger-desc {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  margin-bottom: var(--sp-lg);
+}
+
+.perfil-danger-desc strong {
+  color: var(--color-erro);
+  font-weight: var(--fw-semibold);
+}
+
+.perfil-danger-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  padding: 14px var(--sp-lg);
+  background: transparent;
+  border: 1.5px solid rgba(232, 122, 122, 0.4);
+  border-radius: var(--radius-lg);
+  color: var(--color-erro);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  min-height: 52px;
+}
+
+.perfil-danger-btn .material-icons {
+  font-size: 20px;
+}
+
+.perfil-danger-btn:hover {
+  background: rgba(232, 122, 122, 0.08);
+  border-color: var(--color-erro);
+  box-shadow: 0 4px 16px rgba(232, 122, 122, 0.15);
+  transform: translateY(-1px);
+}
+
+.perfil-danger-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== Modal de Confirmação de Exclusão ===== */
+.perfil-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(48, 44, 29, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 72px;
+  animation: fadeIn 0.2s ease;
+}
+
+.perfil-modal-sheet {
+  background: var(--gradient-card);
+  border-radius: var(--radius-xxl) var(--radius-xxl) var(--radius-xl) var(--radius-xl);
+  width: 100%;
+  max-width: 480px;
+  padding: var(--sp-xl) var(--sp-xl) var(--sp-xxl);
+  box-shadow: 0 -8px 40px rgba(232, 122, 122, 0.15), 0 -2px 12px rgba(48, 44, 29, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-md);
+  position: relative;
+}
+
+.perfil-modal-handle {
+  width: 36px;
+  height: 4px;
+  background: rgba(138, 131, 108, 0.3);
+  border-radius: 2px;
+  margin-bottom: var(--sp-sm);
+}
+
+.perfil-modal-alert-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(232, 122, 122, 0.12);
+  border: 2px solid rgba(232, 122, 122, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.perfil-modal-alert-icon .material-icons {
+  font-size: 36px;
+  color: var(--color-erro);
+}
+
+.perfil-modal-titulo {
+  font-size: var(--fs-title-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  text-align: center;
+  letter-spacing: -0.3px;
+}
+
+.perfil-modal-desc {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.perfil-modal-confirm-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+}
+
+.perfil-modal-confirm-label {
+  font-size: var(--fs-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.perfil-modal-confirm-label strong {
+  color: var(--color-erro);
+  font-weight: var(--fw-bold);
+  font-family: monospace;
+}
+
+.perfil-modal-confirm-input {
+  width: 100%;
+  padding: var(--sp-md) var(--sp-lg);
+  background: var(--color-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.18);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-md);
+  font-family: monospace;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-height: 52px;
+  box-sizing: border-box;
+}
+
+.perfil-modal-confirm-input:focus {
+  border-color: var(--color-erro);
+  box-shadow: 0 0 0 3px rgba(232, 122, 122, 0.14);
+}
+
+.perfil-modal-confirm-input--erro {
+  border-color: var(--color-erro);
+  background: rgba(232, 122, 122, 0.04);
+}
+
+.perfil-modal-erro {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-body-sm);
+  color: var(--color-erro);
+}
+
+.perfil-modal-actions {
+  display: flex;
+  gap: var(--sp-md);
+  width: 100%;
+  margin-top: var(--sp-sm);
+}
+
+.perfil-modal-cancel {
+  flex: 1;
+  padding: 14px var(--sp-lg);
+  background: var(--color-card);
+  border: 1.5px solid rgba(236, 163, 29, 0.2);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-semibold);
+  font-family: inherit;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  min-height: 52px;
+}
+
+.perfil-modal-cancel:hover {
+  background: rgba(236, 163, 29, 0.07);
+}
+
+.perfil-modal-cancel:active {
+  transform: scale(0.97);
+}
+
+.perfil-modal-delete {
+  flex: 1.5;
+  padding: 14px var(--sp-lg);
+  background: var(--color-erro);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-bold);
+  font-family: inherit;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  min-height: 52px;
+  box-shadow: 0 4px 16px rgba(232, 122, 122, 0.3);
+}
+
+.perfil-modal-delete .material-icons {
+  font-size: 20px;
+}
+
+.perfil-modal-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.perfil-modal-delete:not(:disabled):hover {
+  box-shadow: 0 6px 24px rgba(232, 122, 122, 0.45);
+  transform: translateY(-1px);
+}
+
+.perfil-modal-delete:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.perfil-modal-delete--loading {
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+/* Spinner para o estado carregando */
+.perfil-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+

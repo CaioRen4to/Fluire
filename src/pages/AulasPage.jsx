@@ -185,8 +185,13 @@ export default function AulasPage() {
         <BotaoPrimario texto="Nova aula" icone="add" onClick={() => openModal()} />
       </div>
 
-      <ModalFormulario titulo={editAula ? 'Editar Aula' : 'Nova Aula'} aberto={modalOpen} onFechar={() => setModalOpen(false)}>
-        <form onSubmit={handleSalvar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
+      <ModalFormulario
+        titulo={editAula ? 'Editar Aula' : 'Nova Aula'}
+        aberto={modalOpen}
+        onFechar={() => setModalOpen(false)}
+        rodape={<BotaoPrimario texto="Salvar" tipo="submit" form="form-nova-aula" carregando={salvando} />}
+      >
+        <form id="form-nova-aula" onSubmit={handleSalvar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
           <InputPadrao label="Nome da aula" value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} icone="event_note" />
           <InputPadrao label="Horário início" hint="08:00" value={form.horarioInicio} onChange={(e) => setForm({ ...form, horarioInicio: e.target.value })} icone="schedule" />
           <InputPadrao label="Horário fim" hint="09:00" value={form.horarioFim} onChange={(e) => setForm({ ...form, horarioFim: e.target.value })} icone="schedule" />
@@ -258,7 +263,6 @@ export default function AulasPage() {
             </div>
           )}
 
-          <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
         </form>
       </ModalFormulario>
     </AppLayout>

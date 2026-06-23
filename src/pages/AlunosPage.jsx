@@ -83,12 +83,16 @@ export default function AlunosPage() {
         <input className="alunos-search-input" placeholder="Buscar aluno..." value={busca} onChange={(e) => setBusca(e.target.value)} />
       </div>
       {conteudo()}
-      <ModalFormulario titulo="Novo Aluno" aberto={modalOpen} onFechar={() => setModalOpen(false)}>
-        <form onSubmit={handleCriar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
+      <ModalFormulario
+        titulo="Novo Aluno"
+        aberto={modalOpen}
+        onFechar={() => setModalOpen(false)}
+        rodape={<BotaoPrimario texto="Salvar" tipo="submit" form="form-novo-aluno" carregando={salvando} />}
+      >
+        <form id="form-novo-aluno" onSubmit={handleCriar} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-md)' }}>
           <InputPadrao label="Nome" value={nome} onChange={(e) => setNome(e.target.value)} icone="person" />
           <InputPadrao label="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} icone="mail" keyboardType="email" />
           <InputPadrao label="Telefone" value={telefone} onChange={(e) => setTelefone(e.target.value)} icone="phone" />
-          <BotaoPrimario texto="Salvar" tipo="submit" carregando={salvando} />
         </form>
       </ModalFormulario>
     </AppLayout>
