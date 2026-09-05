@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { STORAGE_KEYS } from '../constants/storageKeys';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000',
@@ -12,23 +13,23 @@ const api = axios.create({
 // --- Helpers de sessão ---
 
 export function getToken() {
-  return localStorage.getItem('api_token');
+  return localStorage.getItem(STORAGE_KEYS.TOKEN);
 }
 
 export function getUserId() {
-  const id = localStorage.getItem('api_user_id');
+  const id = localStorage.getItem(STORAGE_KEYS.USER_ID);
   return id ? parseInt(id, 10) : null;
 }
 
 export function setSession(token, userId) {
-  localStorage.setItem('api_token', token);
-  localStorage.setItem('api_user_id', String(userId));
+  localStorage.setItem(STORAGE_KEYS.TOKEN, token);
+  localStorage.setItem(STORAGE_KEYS.USER_ID, String(userId));
 }
 
 export function clearSession() {
-  localStorage.removeItem('api_token');
-  localStorage.removeItem('api_user_id');
-  localStorage.removeItem('api_usuario');
+  localStorage.removeItem(STORAGE_KEYS.TOKEN);
+  localStorage.removeItem(STORAGE_KEYS.USER_ID);
+  localStorage.removeItem(STORAGE_KEYS.USUARIO);
 }
 
 export function isAuthenticated() {

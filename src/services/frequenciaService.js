@@ -33,11 +33,13 @@ export async function registrar({ aulaId, alunoId, presente, dataPresenca }) {
 }
 
 function parseFrequencia(json) {
+  // presente vem como boolean do PostgreSQL (true/false), converte para 1/0
+  const presente = json.presente === true || json.presente === 1 || json.presente === '1' ? 1 : 0;
   return {
     id: json.id?.toString() || null,
     aulaId: parseInt(json.aula_id, 10) || 0,
     alunoId: parseInt(json.aluno_id, 10) || 0,
-    presente: parseInt(json.presente, 10) || 0,
+    presente,
     dataPresenca: (json.data_presenca || json.dataPresenca || '').toString(),
   };
 }

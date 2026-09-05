@@ -1,0 +1,36 @@
+---
+description: Estrutura de pastas e fluxo de dependências do Fluirê React
+alwaysApply: true
+---
+
+# Organização do React (Fluirê)
+
+## Pastas
+
+- `components/` — UI reutilizável e "burra" (só props). Uma pasta por componente: `Componente/Componente.jsx` + CSS.
+- `screens/` — Uma pasta por tela: `Login/LoginScreen.jsx`. Orquestra hooks, services e components.
+- `navigation/` — Rotas (`RootNavigator`, `AuthNavigator`, `AppNavigator`).
+- `hooks/` — Lógica reutilizável (`useAuth.js`). Sem JSX de tela.
+- `contexts/` — Estado global (`AuthContext.jsx`). Separar por domínio.
+- `services/` — Ponte com o backend Flask. Nunca chamar axios direto na tela.
+- `utils/` — Funções puras (formatação, validação). Sem React.
+- `constants/` — Valores fixos (dias da semana, storage keys, status).
+- `types/` — Tipos JSDoc espelhando modelos do Flask.
+- `assets/` — `images/`, `icons/`, `fonts/`.
+
+## Fluxo de dependência
+
+```
+screens → hooks → services → api
+screens → components (puros)
+screens/hooks → contexts
+qualquer camada → utils, constants, types
+```
+
+Nunca importar `screens` de `components` ou `utils`. Dependência sempre de cima para baixo.
+
+## Regras
+
+- Screen não faz fetch direto — delega para `services/` ou `hooks/`.
+- Componente que chama API ou navega não é puro — mover lógica para screen/hook.
+- Novos arquivos seguem a pasta correta antes de criar código.

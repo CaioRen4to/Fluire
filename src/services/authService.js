@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from '../constants/storageKeys';
 import api, { extrairErro, setSession, clearSession, getUserId } from './api';
 
 // --- Login ---
@@ -14,7 +15,7 @@ export async function login(email, senha) {
     }
 
     setSession(token, parseInt(usuario.id, 10));
-    localStorage.setItem('api_usuario', JSON.stringify(usuario));
+    localStorage.setItem(STORAGE_KEYS.USUARIO, JSON.stringify(usuario));
 
     return usuario;
   } catch (error) {
@@ -70,7 +71,7 @@ export function logout() {
 // --- Carregar sessão salva ---
 export function carregarUsuarioSalvo() {
   try {
-    const json = localStorage.getItem('api_usuario');
+    const json = localStorage.getItem(STORAGE_KEYS.USUARIO);
     if (json) {
       return JSON.parse(json);
     }
